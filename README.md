@@ -22,3 +22,7 @@ npm run build
 ```
 
 You can preview the production build with `npm run preview`.
+
+## Formatting
+
+Run `npm run format` before committing to format using recommended settings. This ensures there are no unnecessary diffs due to spacing and other inconsistencies from personal editor configuration and os line ending differences.
