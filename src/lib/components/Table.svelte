@@ -1,23 +1,33 @@
 <script>
+    import district_names_list from '$lib/data/district_names_list.json';
+    export let firedata;
+    const district_data = {};
+
+    district_names_list.forEach((d) => {
+        district_data[d] = 0;
+    });
+
+    firedata.forEach((element) => {
+        const district_name = element['District'];
+        district_data[district_name] += 1;
+    });
 </script>
 
 <div class="basis-1/2">
     <table class="border-separate">
         <thead>
             <tr class="h-12">
-                <td class="bg-brand-light-grey px-4 font-medium">Season till date</td>
-                <td class="bg-brand-light-grey px-4 font-medium">This month</td>
-                <td class="bg-brand-light-grey px-4 font-medium">Last 7 days</td>
-                <td class="bg-brand-light-grey px-4 font-medium">Last 24 hours</td>
+                <td class="bg-brand-light-grey px-4 font-medium">District</td>
+                <td class="bg-brand-light-grey px-4 font-medium">No of fires detected</td>
             </tr>
         </thead>
         <tbody>
-            <tr class="h-12">
-                <td class="bg-brand-light-grey px-4">3000</td>
-                <td class="bg-brand-light-grey px-4">1000</td>
-                <td class="bg-brand-light-grey px-4">200</td>
-                <td class="bg-brand-light-grey px-4">50</td>
-            </tr>
+            {#each Object.entries(district_data) as dist}
+                <tr class="h-8 text-sm">
+                    <td class="bg-brand-light-grey px-4">{dist[0]}</td>
+                    <td class="bg-brand-light-grey px-4">{dist[1]}</td>
+                </tr>
+            {/each}
         </tbody>
     </table>
 </div>
