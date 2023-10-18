@@ -26,12 +26,12 @@
                 stubble burning in India.
             </h2>
         </div>
-        <div class="my-8">
-            <p>Data as on 15th October 2023</p>
+        <div class="hidden my-8">
+            <h3>15th October 2023</h3>
         </div>
-        <div class="flex flex-col-reverse md:flex-row gap-16 mb-16">
-            <Table {firedata} />
+        <div class="flex flex-col md:flex-row gap-16 mb-16">
             <PunjabMap />
+            <Table {firedata} />
         </div>
         <LeafletMap {locations} />
     </div>

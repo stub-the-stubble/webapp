@@ -13,7 +13,7 @@
     });
 </script>
 
-<div class="basis-1/2">
+<div class="basis-1/3">
     <table class="border-separate">
         <thead>
             <tr class="h-12">

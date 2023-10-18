@@ -7,8 +7,8 @@
     })
 
 </script>
-<div class="basis-1/2">
-    <div class="w-96 h-96 mx-auto">
+<div class="basis-2/3">
+    <div class="w-100 h-100 mx-auto">
         {#if show}
         <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full stroke-brand-black" fill="none" viewBox="0 0 800 887">
             <g id="PUNJAB_DISTRICT_BDY">
