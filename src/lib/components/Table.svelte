@@ -17,8 +17,8 @@
     <table class="border-separate">
         <thead>
             <tr class="h-12">
-                <td class="bg-brand-light-grey px-4 font-medium">District</td>
-                <td class="bg-brand-light-grey px-4 font-medium">No of fires detected</td>
+                <td class="bg-brand-light-grey px-4 font-semibold">District</td>
+                <td class="bg-brand-light-grey px-4 font-semibold">No of fires detected</td>
             </tr>
         </thead>
         <tbody>
