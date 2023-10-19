@@ -1,10 +1,10 @@
 <script>
     import LeafletMap from '$lib/components/LeafletMap.svelte';
     import PunjabMap from '$lib/components/PunjabMap.svelte';
-    import Table from '$lib/components/Table.svelte';
     import CumulativeDataTable from '$lib/components/CumulativeDataTable.svelte';
 
     import firedata from '$lib/data/15_Oct_Punjab.json';
+    import DistrictBarchart from '../lib/components/DistrictBarchart.svelte';
 
     const cumulative_numbers = [1388, 1388, 442, 69];
     const locations = firedata.map((value) => {
@@ -32,11 +32,11 @@
             <h3>15th October 2023</h3>
         </div>
         <div class="my-16">
-            <CumulativeDataTable {cumulative_numbers}/>
+            <CumulativeDataTable {cumulative_numbers} />
         </div>
         <div class="flex flex-col md:flex-row gap-16 mb-16">
             <PunjabMap />
-            <Table {firedata} />
+            <DistrictBarchart {firedata} />
         </div>
         <LeafletMap {locations} />
     </div>

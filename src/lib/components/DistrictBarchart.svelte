@@ -1,0 +1,81 @@
+<script>
+    import { scaleBand, scaleLinear } from 'd3-scale';
+    import { slide } from 'svelte/transition';
+    import district_names_list from '$lib/data/district_names_list.json';
+    import { onMount } from 'svelte';
+
+    export let firedata;
+
+    const district_data = {};
+
+    district_names_list.forEach((d) => {
+        district_data[d] = 0;
+    });
+
+    firedata.forEach((element) => {
+        const district_name = element['District'];
+        district_data[district_name] += 1;
+    });
+
+    const data_array = Object.entries(district_data);
+    let width = 800;
+    let height = 1000;
+
+    const xDomain = data_array.map((d) => d[1]);
+
+    const yScale = scaleBand().domain(district_names_list).range([0, height]).paddingInner(0.5);
+    const xScale = scaleLinear()
+        .domain([0, Math.max.apply(null, xDomain)])
+        .range([0, width - 150]);
+
+    let show = false;
+
+    onMount(() => {
+        show = true;
+    });
+</script>
+
+<div class=" basis-1/2">
+    <svg class="w-full h-auto overflow-visible" viewBox={`0 0 ${width} ${height}`}>
+        <g class="fill-brand-black">
+            {#each data_array as d, i}
+                <text
+                    text-anchor="end"
+                    x="130"
+                    dy="0.32em"
+                    y={yScale(d[0]) + yScale.bandwidth() / 2}
+                >
+                    {d[0]}
+                </text>
+                {#if show}
+                    <rect
+                        in:slide={{ duration: 1000, axis: 'x' }}
+                        x={150}
+                        y={yScale(d[0])}
+                        width={xScale(d[1])}
+                        height={yScale.bandwidth()}
+                    />
+                {/if}
+                {#if d[1] == 0}
+                    <text
+                        class="stroke-brand-black"
+                        text-anchor="end"
+                        x={xScale(d[1]) + 160}
+                        dy="0.32em"
+                        y={yScale(d[0]) + yScale.bandwidth() / 2}>0</text
+                    >
+                {:else}
+                    <text
+                        class="stroke-brand-light-grey"
+                        text-anchor="end"
+                        x={xScale(d[1]) + 145}
+                        dy="0.32em"
+                        y={yScale(d[0]) + yScale.bandwidth() / 2}
+                    >
+                        {d[1]}
+                    </text>
+                {/if}
+            {/each}
+        </g>
+    </svg>
+</div>
