@@ -1,23 +1,12 @@
 <script>
     import { scaleBand, scaleLinear } from 'd3-scale';
     import { slide } from 'svelte/transition';
-    import district_names_list from '$lib/data/district_names_list.json';
     import { onMount } from 'svelte';
+    import district_names_list from '$lib/data/district_names_list.json';
 
-    export let firedata;
 
-    const district_data = {};
+    export let data_array;
 
-    district_names_list.forEach((d) => {
-        district_data[d] = 0;
-    });
-
-    firedata.forEach((element) => {
-        const district_name = element['District'];
-        district_data[district_name] += 1;
-    });
-
-    const data_array = Object.entries(district_data);
     let width = 800;
     let height = 1000;
 
@@ -36,7 +25,7 @@
 </script>
 
 <div class=" basis-1/2">
-    <svg class="w-full h-auto overflow-visible" viewBox={`0 0 ${width} ${height}`}>
+    <svg class="w-full h-auto overflow-visible fill-brand-black" viewBox={`0 0 ${width} ${height}`}>
         <g class="fill-brand-black">
             {#each data_array as d, i}
                 <text
@@ -58,7 +47,6 @@
                 {/if}
                 {#if d[1] == 0}
                     <text
-                        class="stroke-brand-black"
                         text-anchor="end"
                         x={xScale(d[1]) + 160}
                         dy="0.32em"
@@ -66,7 +54,7 @@
                     >
                 {:else}
                     <text
-                        class="stroke-brand-light-grey"
+                        class="fill-brand-lightest-grey"
                         text-anchor="end"
                         x={xScale(d[1]) + 145}
                         dy="0.32em"

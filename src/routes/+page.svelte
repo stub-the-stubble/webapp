@@ -2,9 +2,10 @@
     import LeafletMap from '$lib/components/LeafletMap.svelte';
     import PunjabMap from '$lib/components/PunjabMap.svelte';
     import CumulativeDataTable from '$lib/components/CumulativeDataTable.svelte';
+    import DistrictBarchart from '../lib/components/DistrictBarchart.svelte';
 
     import firedata from '$lib/data/15_Oct_Punjab.json';
-    import DistrictBarchart from '../lib/components/DistrictBarchart.svelte';
+    import district_names_list from '$lib/data/district_names_list.json';
 
     const cumulative_numbers = [1388, 1388, 442, 69];
     const locations = firedata.map((value) => {
@@ -17,6 +18,18 @@
             frp: value['FRP']
         };
     });
+
+    const district_data = {};
+    district_names_list.forEach((d) => {
+        district_data[d] = 0;
+    });
+
+    firedata.forEach((element) => {
+        const district_name = element['District'];
+        district_data[district_name] += 1;
+    });
+
+    const data_array = Object.entries(district_data);
 </script>
 
 <div class="container my-16">
@@ -35,8 +48,8 @@
             <CumulativeDataTable {cumulative_numbers} />
         </div>
         <div class="flex flex-col md:flex-row gap-16 mb-16">
-            <PunjabMap />
-            <DistrictBarchart {firedata} />
+            <PunjabMap {data_array} />
+            <DistrictBarchart {data_array} />
         </div>
         <LeafletMap {locations} />
     </div>
