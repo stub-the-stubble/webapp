@@ -30,7 +30,11 @@ export default {
             lg: '1280px',
             xl: '1536px',
         },
-        extend: {}
+        extend: {
+            aspectRatio : {
+                '4/3': '4 / 3'
+            }
+        }
     },
     plugins: []
 };
