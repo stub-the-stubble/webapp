@@ -2,9 +2,11 @@
     import LeafletMap from '$lib/components/LeafletMap.svelte';
     import PunjabMap from '$lib/components/PunjabMap.svelte';
     import Table from '$lib/components/Table.svelte';
+    import CumulativeDataTable from '$lib/components/CumulativeDataTable.svelte';
 
     import firedata from '$lib/data/15_Oct_Punjab.json';
 
+    const cumulative_numbers = [1388, 1388, 442, 69];
     const locations = firedata.map((value) => {
         return {
             lat: value['Latitude'],
@@ -18,7 +20,7 @@
 </script>
 
 <div class="container my-16">
-    <div class="w-3/4 mx-auto">
+    <div class="w-full md:w-3/4 mx-auto">
         <div class="mb-16">
             <h1 class="text-5xl mb-8">Stub The Stubble</h1>
             <h2 class="text-2xl max-w-prose">
@@ -28,6 +30,9 @@
         </div>
         <div class="hidden my-8">
             <h3>15th October 2023</h3>
+        </div>
+        <div class="my-16">
+            <CumulativeDataTable {cumulative_numbers}/>
         </div>
         <div class="flex flex-col md:flex-row gap-16 mb-16">
             <PunjabMap />
