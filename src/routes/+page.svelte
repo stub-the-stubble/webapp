@@ -7,7 +7,7 @@
     import firedata from '$lib/data/15_Oct_Punjab.json';
     import district_names_list from '$lib/data/district_names_list.json';
 
-    const cumulative_numbers = [1388, 1388, 442, 69];
+    const cumulative_numbers = [69, 442, 1388, 1388];
     const locations = firedata.map((value) => {
         return {
             lat: value['Latitude'],

@@ -8,10 +8,10 @@
     </caption>
     <thead>
         <tr class="h-12">
-            <th class="bg-brand-light-grey px-4 font-semibold w-1/4">Season till date</th>
-            <th class="bg-brand-light-grey px-4 font-semibold w-1/4">Last month</th>
-            <th class="bg-brand-light-grey px-4 font-semibold w-1/4">Last week</th>
             <th class="bg-brand-light-grey px-4 font-semibold w-1/4">Today</th>
+            <th class="bg-brand-light-grey px-4 font-semibold w-1/4">Last week</th>
+            <th class="bg-brand-light-grey px-4 font-semibold w-1/4">Last month</th>
+            <th class="bg-brand-light-grey px-4 font-semibold w-1/4">Season till date</th>
         </tr>
     </thead>
     <tbody>
