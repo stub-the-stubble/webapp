@@ -1,10 +1,14 @@
 <script>
+    
     import total_numbers from '$lib/data/total_numbers.json';
 
+    // Get today total count as a prop
     export let total;
 
+    // Get yesterday's total fire count
     const yesterday = total_numbers[total_numbers.length - 1];
 
+    // Calculate fire counts for this week, this month and for all season
     let week = 0,
         month = 0,
         all = 0;

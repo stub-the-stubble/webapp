@@ -17,17 +17,22 @@
         };
     });
 
+    // Initialize each district fire count with 0
     const district_data = {};
     district_names_list.forEach((d) => {
         district_data[d] = 0;
     });
 
+    // Count all the fire counts for each district
     firedata.forEach((element) => {
         const district_name = element['district'];
         district_data[district_name] += 1;
     });
 
+    // Convert district fire count data to array
     const data_array = Object.entries(district_data);
+
+    // Get total value of all fire counts
     const total = data_array.reduce((total, value, index, array) => {
         return total + array[index][1];
     }, 0);
@@ -59,6 +64,8 @@
     <p class="text-center text-brand-grey">
         Stub the Stubble is a public interest project by <a
             class="underline underline-offset-4"
-            href="https://www.saroja.earth">Saroja Earth</a>
+            href="https://www.saroja.earth">
+            Saroja Earth
+        </a>
     </p>
 </footer>
