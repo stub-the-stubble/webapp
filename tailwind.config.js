@@ -15,6 +15,7 @@ export default {
             brand: {
                 white: '#ffffff',
                 black: colors.stone['900'],
+                grey: colors.stone['500'],
                 'lightest-grey': colors.stone['50'],
                 'light-grey': colors.stone['200'],
             },

@@ -55,12 +55,10 @@
         <LeafletMap {locations} />
     </div>
 </div>
-<footer class="mb-2">
-    <p class="text-center">
-        "A public interest project by <a
+<footer class="mb-8">
+    <p class="text-center text-brand-grey">
+        Stub the Stubble is a public interest project by <a
             class="underline underline-offset-4"
-            href="https://www.saroja.earth/"
-            target="_blank">Saroja Earth</a
-        >"
+            href="https://www.saroja.earth">Saroja Earth</a>
     </p>
 </footer>
