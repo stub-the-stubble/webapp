@@ -49,4 +49,4 @@
     ></script>
 </svelte:head>
 
-<div id="map" class="w-full aspect-video mx-auto" />
+<div id="map" class="w-full aspect-square sm:aspect-video mx-auto" />

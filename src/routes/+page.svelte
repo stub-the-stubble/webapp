@@ -32,7 +32,6 @@
         return total + array[index][1];
     },0);
 
-    console.log(data_array);
 </script>
 
 <div class="container my-16">
