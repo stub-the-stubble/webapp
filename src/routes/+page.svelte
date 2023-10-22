@@ -2,20 +2,18 @@
     import LeafletMap from '$lib/components/LeafletMap.svelte';
     import PunjabMap from '$lib/components/PunjabMap.svelte';
     import CumulativeDataTable from '$lib/components/CumulativeDataTable.svelte';
-    import DistrictBarchart from '../lib/components/DistrictBarchart.svelte';
+    import DistrictBarchart from '$lib/components/DistrictBarchart.svelte';
 
-    import firedata from '$lib/data/15_Oct_Punjab.json';
+    import firedata from '$lib/data/data.json';
     import district_names_list from '$lib/data/district_names_list.json';
 
-    const cumulative_numbers = [69, 442, 1388, 1388];
     const locations = firedata.map((value) => {
         return {
-            lat: value['Latitude'],
-            long: value['Longitude'],
-            time: value['ACQ_TIME'],
-            dist: value['District'],
-            tb: value['Tehsil'],
-            frp: value['FRP']
+            lat: value['lat'],
+            long: value['lon'],
+            time: value['acqtime'],
+            dist: value['district'],
+            frp: value['radiative_']
         };
     });
 
@@ -25,11 +23,16 @@
     });
 
     firedata.forEach((element) => {
-        const district_name = element['District'];
+        const district_name = element['district'];
         district_data[district_name] += 1;
     });
 
     const data_array = Object.entries(district_data);
+    const total = data_array.reduce((total, value, index, array) => {
+        return total + array[index][1];
+    },0);
+
+    console.log(data_array);
 </script>
 
 <div class="container my-16">
@@ -45,7 +48,7 @@
             <h3>15th October 2023</h3>
         </div>
         <div class="my-16">
-            <CumulativeDataTable {cumulative_numbers} />
+            <CumulativeDataTable {total} />
         </div>
         <div class="flex flex-col md:flex-row gap-16 mb-16">
             <PunjabMap {data_array} />

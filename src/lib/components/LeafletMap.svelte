@@ -26,8 +26,8 @@
                     map
                 );
                 const marker_html = `District : ${element.dist} <br>
-                           Tehsil/Block : ${element.tb}  <br>
-                           Time : ${element.time} <br>`;
+                           Time : ${element.time} <br>
+                           FRP : ${element.frp} <br>`;
                 marker.bindPopup(marker_html, { closeButton: false }).openPopup();
             });
         }

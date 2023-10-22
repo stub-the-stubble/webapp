@@ -1,5 +1,22 @@
 <script>
-    export let cumulative_numbers;
+    import total_numbers from '$lib/data/total_numbers.json';
+
+    export let total;
+
+    const yesterday = total_numbers[total_numbers.length - 1];
+
+    let week = 0,
+        month = 0,
+        all = 0;
+    for (let i = total_numbers.length - 1, j = 0; i > 0; i--, j++) {
+        if (j < 7) {
+            week += total_numbers[i];
+        }
+        if (j < 30) {
+            month += total_numbers[i];
+        }
+        all += total_numbers[i];
+    }
 </script>
 
 <table class="w-full border-separate text-center">
@@ -8,18 +25,20 @@
     </caption>
     <thead>
         <tr class="h-12">
-            <th class="bg-brand-light-grey px-4 font-semibold w-1/4">Today</th>
-            <th class="bg-brand-light-grey px-4 font-semibold w-1/4">Last week</th>
-            <th class="bg-brand-light-grey px-4 font-semibold w-1/4">Last month</th>
-            <th class="bg-brand-light-grey px-4 font-semibold w-1/4">Season till date</th>
+            <th class="bg-brand-light-grey px-4 font-semibold w-1/5">Today</th>
+            <th class="bg-brand-light-grey px-4 font-semibold w-1/5">Yesterday</th>
+            <th class="bg-brand-light-grey px-4 font-semibold w-1/5">Last week</th>
+            <th class="bg-brand-light-grey px-4 font-semibold w-1/5">Last month</th>
+            <th class="bg-brand-light-grey px-4 font-semibold w-1/5">Season till date</th>
         </tr>
     </thead>
     <tbody>
         <tr class="h-12">
-            <td class="bg-brand-light-grey px-4">{cumulative_numbers[0]}</td>
-            <td class="bg-brand-light-grey px-4">{cumulative_numbers[1]}</td>
-            <td class="bg-brand-light-grey px-4">{cumulative_numbers[2]}</td>
-            <td class="bg-brand-light-grey px-4">{cumulative_numbers[3]}</td>
+            <td class="bg-brand-light-grey px-4">{total}</td>
+            <td class="bg-brand-light-grey px-4">{yesterday}</td>
+            <td class="bg-brand-light-grey px-4">{week}</td>
+            <td class="bg-brand-light-grey px-4">{month}</td>
+            <td class="bg-brand-light-grey px-4">{all}</td>
         </tr>
     </tbody>
 </table>

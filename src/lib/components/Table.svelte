@@ -6,7 +6,6 @@
     district_names_list.forEach((d) => {
         district_data[d] = 0;
     });
-
     firedata.forEach((element) => {
         const district_name = element['District'];
         district_data[district_name] += 1;
