@@ -30,8 +30,7 @@
     const data_array = Object.entries(district_data);
     const total = data_array.reduce((total, value, index, array) => {
         return total + array[index][1];
-    },0);
-
+    }, 0);
 </script>
 
 <div class="container my-16">
@@ -56,3 +55,12 @@
         <LeafletMap {locations} />
     </div>
 </div>
+<footer class="mb-2">
+    <p class="text-center">
+        "A public interest project by <a
+            class="underline underline-offset-4"
+            href="https://www.saroja.earth/"
+            target="_blank">Saroja Earth</a
+        >"
+    </p>
+</footer>
