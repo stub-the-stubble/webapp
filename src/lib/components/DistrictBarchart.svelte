@@ -34,7 +34,8 @@
             {#each data_array as d, i}
                 <text
                     text-anchor="end"
-                    x="130"
+                    font-size="1.25em"
+                    x="145"
                     dy="0.32em"
                     y={yScale(d[0]) + yScale.bandwidth() / 2}
                 >
@@ -43,7 +44,7 @@
                 {#if show}
                     <rect
                         in:slide={{ duration: 1000, axis: 'x' }}
-                        x={150}
+                        x={165}
                         y={yScale(d[0])}
                         width={xScale(d[1])}
                         height={yScale.bandwidth()}
@@ -52,7 +53,7 @@
                 {#if d[1] == 0}
                     <text
                         text-anchor="end"
-                        x={xScale(d[1]) + 160}
+                        x={xScale(d[1]) + 175}
                         dy="0.32em"
                         y={yScale(d[0]) + yScale.bandwidth() / 2}>0</text
                     >
@@ -60,7 +61,7 @@
                     <text
                         class="fill-brand-lightest-grey"
                         text-anchor="end"
-                        x={xScale(d[1]) + 145}
+                        x={xScale(d[1]) + 160}
                         dy="0.32em"
                         y={yScale(d[0]) + yScale.bandwidth() / 2}
                     >
