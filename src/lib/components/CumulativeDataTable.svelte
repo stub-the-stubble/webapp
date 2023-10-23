@@ -56,7 +56,7 @@
         </tr>
     </tbody>
 </table>
-<p class="mt-2 italic text-xs text-right">
+<p class="mt-2 italic text-xs text-right text-brand-grey">
     *New data is added to the system as soon as it is available to us.<br />
     Last updated at 1:10 PM
 </p>
