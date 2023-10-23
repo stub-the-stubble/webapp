@@ -50,7 +50,7 @@
                     {#each paths as path, i}
                         <path
                             fill={color_scale(data_array[i][1])}
-                            transition:draw|global={{ duration: 500, delay: 500 }}
+                            transition:draw|global={{ duration: 1000, delay: 1000 }}
                             d={path}
                         />
                     {/each}
