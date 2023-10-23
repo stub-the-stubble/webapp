@@ -9,9 +9,9 @@
     const fc_yesterday = total_numbers[total_numbers.length - 1].count;
 
     // Calculate fire counts for this week, this month and for all season
-    let fc_this_week = 0,
-        fc_this_month = 0,
-        fc_all = 0;
+    let fc_this_week = fc_today,
+        fc_this_month = fc_today,
+        fc_all = fc_today;
 
     const today = new Date();
     const this_week = getWeek(today, { weekStartsOn: 1 });
@@ -58,5 +58,5 @@
 </table>
 <p class="mt-2 italic text-xs text-right text-brand-grey">
     *New data is added to the system as soon as it is available to us.<br />
-    Last updated at 1:10 PM
+    Last updated at 2:26 PM
 </p>
