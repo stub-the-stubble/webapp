@@ -1,25 +1,34 @@
 <script>
-    
     import total_numbers from '$lib/data/total_numbers.json';
+    import { parse, getWeek, getMonth } from 'date-fns';
 
     // Get today total count as a prop
-    export let total;
+    export let fc_today;
 
     // Get yesterday's total fire count
-    const yesterday = total_numbers[total_numbers.length - 1];
+    const fc_yesterday = total_numbers[total_numbers.length - 1].count;
 
     // Calculate fire counts for this week, this month and for all season
-    let week = 0,
-        month = 0,
-        all = 0;
-    for (let i = total_numbers.length - 1, j = 0; i > 0; i--, j++) {
-        if (j < 7) {
-            week += total_numbers[i];
+    let fc_this_week = 0,
+        fc_this_month = 0,
+        fc_all = 0;
+
+    const today = new Date();
+    const this_week = getWeek(today, { weekStartsOn: 1 });
+    const this_month = getMonth(today);
+    for (const { date, count } of total_numbers) {
+        const parsed_date = parse(date, 'yyyy-MM-dd', new Date());
+        const month = getMonth(parsed_date);
+        const week = getWeek(parsed_date, { weekStartsOn: 1 });
+
+        if (month == this_month) {
+            fc_this_month += count;
         }
-        if (j < 30) {
-            month += total_numbers[i];
+        if (week == this_week) {
+            fc_this_week += count;
         }
-        all += total_numbers[i];
+        fc_all += count;
+        //console.log(date, month, week);
     }
 </script>
 
@@ -32,18 +41,18 @@
         <tr class="h-12">
             <th class="bg-brand-light-grey px-2 font-semibold w-1/5">Today</th>
             <th class="bg-brand-light-grey px-2 font-semibold w-1/5">Yesterday</th>
-            <th class="bg-brand-light-grey px-2 font-semibold w-1/5">Last week</th>
-            <th class="bg-brand-light-grey px-2 font-semibold w-1/5">Last month</th>
+            <th class="bg-brand-light-grey px-2 font-semibold w-1/5">This week</th>
+            <th class="bg-brand-light-grey px-2 font-semibold w-1/5">This month</th>
             <th class="bg-brand-light-grey px-2 font-semibold w-1/5">Season till date</th>
         </tr>
     </thead>
     <tbody>
         <tr class="h-12">
-            <td class="bg-brand-light-grey px-2">{total}</td>
-            <td class="bg-brand-light-grey px-2">{yesterday}</td>
-            <td class="bg-brand-light-grey px-2">{week}</td>
-            <td class="bg-brand-light-grey px-2">{month}</td>
-            <td class="bg-brand-light-grey px-2">{all}</td>
+            <td class="bg-brand-light-grey px-2">{fc_today}</td>
+            <td class="bg-brand-light-grey px-2">{fc_yesterday}</td>
+            <td class="bg-brand-light-grey px-2">{fc_this_week}</td>
+            <td class="bg-brand-light-grey px-2">{fc_this_month}</td>
+            <td class="bg-brand-light-grey px-2">{fc_all}</td>
         </tr>
     </tbody>
 </table>

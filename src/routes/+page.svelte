@@ -33,8 +33,8 @@
     const data_array = Object.entries(district_data);
 
     // Get total value of all fire counts
-    const total = data_array.reduce((total, value, index, array) => {
-        return total + array[index][1];
+    const fc_today = data_array.reduce((fc_today, value, index, array) => {
+        return fc_today + array[index][1];
     }, 0);
 </script>
 
@@ -51,7 +51,7 @@
             <h3>15th October 2023</h3>
         </div>
         <div class="my-16">
-            <CumulativeDataTable {total} />
+            <CumulativeDataTable {fc_today} />
         </div>
         <div class="flex flex-col md:flex-row gap-16 mb-16">
             <PunjabMap {data_array} />
