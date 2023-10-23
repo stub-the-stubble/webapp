@@ -33,12 +33,12 @@
 </script>
 
 <table class="w-full border-separate text-center">
-    <caption class="caption-top text-sm xs:text-base mb-2">
+    <caption class="caption-top text-sm xs:text-base text-left xs:text-center mb-2">
         <span class="inline-block">Detected fire data for this Kharif season</span>
         <span class="inline-block">(15th September 2023 onwards)</span>
     </caption>
     <thead>
-        <tr class="h-12">
+        <tr class="h-12 text-sm xs:text-base">
             <th class="bg-brand-light-grey px-2 font-semibold w-1/5">Today</th>
             <th class="bg-brand-light-grey px-2 font-semibold w-1/5">Yesterday</th>
             <th class="bg-brand-light-grey px-2 font-semibold w-1/5">This week</th>
@@ -56,7 +56,7 @@
         </tr>
     </tbody>
 </table>
-<p class="mt-2 italic text-xs text-right text-brand-grey">
+<p class="mt-2 italic text-xs text-left xs:text-right text-brand-grey">
     *New data is added to the system as soon as it is available to us.<br />
-    Last updated at 2:26 PM
+    Last updated at 2:26 PM, 23rd Oct 2023 
 </p>
