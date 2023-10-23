@@ -33,7 +33,7 @@
 </script>
 
 <table class="w-full border-separate text-center">
-    <caption class="caption-top mb-2">
+    <caption class="caption-top text-sm xs:text-base mb-2">
         <span class="inline-block">Detected fire data for this Kharif season</span>
         <span class="inline-block">(15th September 2023 onwards)</span>
     </caption>

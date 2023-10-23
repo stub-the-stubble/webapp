@@ -41,8 +41,8 @@
 <div class="container my-16">
     <div class="w-full md:w-3/4 mx-auto">
         <div class="mb-16">
-            <h1 class="text-5xl mb-8">Stub The Stubble</h1>
-            <h2 class="text-2xl max-w-prose">
+            <h1 class="text-4xl xs:text-5xl mb-8">Stub The Stubble</h1>
+            <h2 class="text-lg xs:text-2xl max-w-prose">
                 Stub the Stubble is a platform to understand the problems and solutions related to
                 stubble burning in India.
             </h2>
@@ -61,7 +61,7 @@
     </div>
 </div>
 <footer class="mb-8">
-    <p class="text-center text-brand-grey">
+    <p class="text-sm xs:text-base text-center text-brand-grey">
         Stub the Stubble is a public interest project by <a
             class="underline underline-offset-4"
             href="https://www.saroja.earth">
