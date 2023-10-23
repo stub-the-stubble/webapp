@@ -34,7 +34,7 @@
 
 <table class="w-full border-separate text-center">
     <caption class="caption-top mb-2">
-        <span class="inline-block">Detected fire data for the season</span>
+        <span class="inline-block">Detected fire data for this Kharif season</span>
         <span class="inline-block">(15th September 2023 onwards)</span>
     </caption>
     <thead>
@@ -56,3 +56,7 @@
         </tr>
     </tbody>
 </table>
+<p class="mt-2 italic text-xs text-right">
+    *New data is added to the system as soon as it is available to us.<br />
+    Last updated at 1:10 PM
+</p>
