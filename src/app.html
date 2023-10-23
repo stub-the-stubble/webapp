@@ -14,6 +14,10 @@
     <body data-sveltekit-preload-data="hover" class="bg-brand-lightest-grey">
         <div style="display: contents">%sveltekit.body%</div>
     </body>
+    <script>
+        // Only load on production environment.
+        if (window.location.host !== 'stubthestubble.com') window.goatcounter = { no_onload: true };
+    </script>
     <script
         data-goatcounter="https://stub-the-stubble.goatcounter.com/count"
         async
