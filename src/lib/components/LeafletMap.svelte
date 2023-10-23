@@ -4,9 +4,9 @@
 
     export let locations;
 
-    onMount(() => {
-        if (browser) {
-            const map = L.map('map').setView([31.0, 76.5000], 8);
+    if (browser) {
+        onMount(() => {
+            const map = L.map('map').setView([31.0, 76.5], 8);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 minZoom: 8,
@@ -30,8 +30,8 @@
                            FRP : ${element.frp} <br>`;
                 marker.bindPopup(marker_html, { closeButton: false }).openPopup();
             });
-        }
-    });
+        });
+    }
 </script>
 
 <svelte:head>

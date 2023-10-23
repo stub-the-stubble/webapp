@@ -32,21 +32,16 @@
 
     const color_scale = scaleLinear().domain([0, 50]).range(['white', 'red']);
 
-    let show = false;
-    onMount(() => {
-        show = true;
-    });
 </script>
 
 <div class="basis-1/2">
     <div class="w-100 h-100 mx-auto">
-        {#if show}
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="w-full h-full stroke-brand-black"
                 viewBox="0 0 800 887"
             >
-                <g transition:fade={{ duration: 1500 }} id="PUNJAB_DISTRICT_BDY">
+                <g id="PUNJAB_DISTRICT_BDY">
                     {#each paths as path, i}
                         <path
                             fill={color_scale(data_array[i][1])}
@@ -56,6 +51,5 @@
                     {/each}
                 </g>
             </svg>
-        {/if}
     </div>
 </div>
