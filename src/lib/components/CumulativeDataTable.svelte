@@ -58,5 +58,5 @@
 </table>
 <p class="mt-2 italic text-xs text-left xs:text-right text-brand-grey">
     *New data is added to the system as soon as it is available to us.
-    Last updated at 2:26 PM, 23rd Oct 2023.
+    Last updated at 4:48 PM, 23rd Oct 2023.
 </p>
