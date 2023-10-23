@@ -12,6 +12,10 @@
 
     const xDomain = data_array.map((d) => d[1]);
 
+    // Prevent domain collapsing to midpoint if all values are zero
+    if (Math.max(...xDomain) == 0) {
+        xDomain.push(1)
+    }
     const yScale = scaleBand().domain(district_names_list).range([0, height]).paddingInner(0.5);
     const xScale = scaleLinear()
         .domain([0, Math.max.apply(null, xDomain)])
