@@ -21,7 +21,6 @@ export default {
             padding: '1.5rem'
         },
         screens: {
-            xxs: '376px',
             xs: '540px',
             sm: '768px',
             md: '1024px',
