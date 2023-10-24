@@ -39,7 +39,6 @@
 </script>
 
 <div class="container my-20">
-    <div class="fixed top-0 left-0 w-full md:w-fit h-16 md:h-20 xl:h-24 bg-brand-lightest-grey" />
     <div class="w-full md:w-3/4 mx-auto">
         <div class="mb-0">
             <div class="flex gap-2 xs:gap-4 items-end mb-4">
