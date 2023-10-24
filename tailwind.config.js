@@ -30,7 +30,10 @@ export default {
         extend: {
             aspectRatio: {
                 '4/3': '4 / 3'
-            }
+            },
+            fontSize: {
+                '6.5xl': '4rem',
+            },
         }
     },
     plugins: []
