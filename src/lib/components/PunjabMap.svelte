@@ -46,11 +46,11 @@
             viewBox="0 0 800 887"
         >
             {#if show}
-                <g transition:fade={{ duration: 1000 }} id="PUNJAB_DISTRICT_BDY">
+                <g id="PUNJAB_DISTRICT_BDY">
                     {#each paths as path, i}
                         <path
                             fill={color_scale(data_array[i][1])}
-                            transition:draw|global={{ duration: 1000, delay: 1000 }}
+                            in:draw|global={{ duration: 1000, delay: 1000 }}
                             d={path}
                         />
                     {/each}
