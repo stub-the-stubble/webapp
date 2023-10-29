@@ -46,7 +46,7 @@
             viewBox="0 0 800 887"
         >
             {#if show}
-                <g id="PUNJAB_DISTRICT_BDY">
+                <g in:fade = {{ duration: 1500}} id="PUNJAB_DISTRICT_BDY">
                     {#each paths as path, i}
                         <path
                             fill={color_scale(data_array[i][1])}

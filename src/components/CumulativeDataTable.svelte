@@ -1,34 +1,43 @@
 <script>
-    import total_numbers from '$lib/data/total_numbers.json';
     import { parse, getWeek, getMonth } from 'date-fns';
 
-    // Get today total count as a prop
-    export let fc_today;
+    // Get data as a prop
+    export let data;
 
-    // Get yesterday's total fire count
-    const fc_yesterday = total_numbers[total_numbers.length - 1].count;
-
-    // Calculate fire counts for this week, this month and for all season
-    let fc_this_week = fc_today,
-        fc_this_month = fc_today,
-        fc_all = fc_today;
+    let fc_today = 0,
+        fc_yesterday = 0,
+        fc_all = 0,
+        fc_this_month = 0,
+        fc_this_week = 0;
 
     const today = new Date();
     const this_week = getWeek(today, { weekStartsOn: 1 });
     const this_month = getMonth(today);
-    for (const { date, count } of total_numbers) {
-        const parsed_date = parse(date, 'yyyy-MM-dd', new Date());
-        const month = getMonth(parsed_date);
-        const week = getWeek(parsed_date, { weekStartsOn: 1 });
 
-        if (month == this_month) {
-            fc_this_month += count;
+    $: if (data) {
+        // Get today and yesterday's total fire count
+        fc_yesterday = data.counts[data.counts.length - 2].count;
+        fc_today = data.counts[data.counts.length - 1].count;
+
+        // Calculate fire counts for this week, this month and for all season
+        fc_this_week = 0;
+        fc_this_month = 0;
+        fc_all = 0;
+
+        for (const { date, count } of data.counts) {
+            const parsed_date = parse(date, 'yyyy-MM-dd', new Date());
+            const month = getMonth(parsed_date);
+            const week = getWeek(parsed_date, { weekStartsOn: 1 });
+
+            if (month == this_month) {
+                fc_this_month += count;
+            }
+            if (week == this_week) {
+                fc_this_week += count;
+            }
+            fc_all += count;
+            //console.log(date, month, week, count);
         }
-        if (week == this_week) {
-            fc_this_week += count;
-        }
-        fc_all += count;
-        //console.log(date, month, week);
     }
 </script>
 
@@ -57,6 +66,7 @@
     </tbody>
 </table>
 <p class="mt-2 italic text-xs text-left xs:text-right text-brand-grey">
-    *New data is added to the system as soon as it is available to us.
-    Last updated at 2:36 PM, 25th Oct 2023.
+    *New data is added to the system as soon as it is available to us. Last updated at {#if data}
+        {data.last_update}.
+    {/if}
 </p>
