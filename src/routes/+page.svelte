@@ -10,27 +10,31 @@
 
     // Initialize each district fire count with 0
     const district_data = {};
-        district_names_list.forEach((d) => {
-            district_data[d] = 0;
-        });
+    district_names_list.forEach((d) => {
+        district_data[d] = 0;
+    });
 
     // Convert district fire count data to array
     $: data_array = Object.entries(district_data);
 
     onMount(async () => {
-        const res = await fetch(`https://stub-the-stubble.github.io/data-pipeline/total_numbers.json`);
+        const res = await fetch(
+            `https://stub-the-stubble.github.io/data-pipeline/total_numbers.json`
+        );
 
         const currentDate = new Date();
-        const currentDateStr = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000 ))
-                    .toISOString()
-                    .split("T")[0];
+        const currentDateStr = new Date(
+            currentDate.getTime() - currentDate.getTimezoneOffset() * 60000
+        )
+            .toISOString()
+            .split('T')[0];
         const res2 = await fetch(
             `https://stub-the-stubble.github.io/data-pipeline/${currentDateStr}.json`
         );
         if (res2.ok) {
             locations_data = await res2.json();
         } else {
-            locations_data = []
+            locations_data = [];
         }
         numbers_data = await res.json();
 
@@ -39,7 +43,7 @@
             const district_name = element['district'];
             district_data[district_name] += 1;
         });
-
+        
     });
 </script>
 
@@ -67,12 +71,10 @@
         </div>
 
         <div class="flex flex-col md:flex-row gap-16 mb-16">
-            <PunjabMap {data_array}/>
+            <PunjabMap {data_array} />
             <DistrictBarchart {data_array} />
         </div>
-        {#if locations_data}
-            <LeafletMap {locations_data} />
-        {/if}
+        <LeafletMap {locations_data} />
     </div>
 </div>
 <footer class="mb-8">
