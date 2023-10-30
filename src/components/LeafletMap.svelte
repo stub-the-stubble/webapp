@@ -7,11 +7,15 @@
 
     onMount(async () => {
         L = await import('leaflet');
-        l_map = L.map(mapElement).setView([31.0, 76.5], 8);
+
+        l_map = L.map(mapElement, { preferCanvas: true }).setView([31.0, 76.5], 8);
+
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             minZoom: 8,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            attribution:
+                '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            preferCanvas: true
         }).addTo(l_map);
 
         fire_icon = L.icon({
@@ -22,13 +26,16 @@
         });
     });
 
-    $: if (locations_data && L) {
+    // Update markers whenever L is available and we get new data
+    $: if (L && locations_data) {
+
         locations_data.forEach((element) => {
-            const marker = L.marker([element.lat, element.lon], { icon: fire_icon }).addTo(l_map);
             const marker_html = `District : ${element.district} <br>
                            Time : ${element.acqtime} <br>
                            FRP : ${element.radiative_} <br>`;
-            marker.bindPopup(marker_html, { closeButton: false });
+            const l_marker = L.marker([element.lat, element.lon], { icon: fire_icon })
+                .bindPopup(marker_html, { closeButton: false })
+                .addTo(l_map);
         });
     }
 </script>

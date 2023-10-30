@@ -15,6 +15,7 @@
     const this_month = getMonth(today);
 
     $: if (data) {
+
         // Get today and yesterday's total fire count
         fc_yesterday = data.counts[data.counts.length - 2].count;
         fc_today = data.counts[data.counts.length - 1].count;

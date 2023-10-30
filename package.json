@@ -28,6 +28,7 @@
     "type": "module",
     "dependencies": {
         "date-fns": "^2.30.0",
-        "leaflet": "^1.9.4"
+        "leaflet": "^1.9.4",
+        "leaflet-markers-canvas": "^0.2.2"
     }
 }

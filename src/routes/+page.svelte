@@ -4,7 +4,8 @@
     import CumulativeDataTable from '$components/CumulativeDataTable.svelte';
     import DistrictBarchart from '$components/DistrictBarchart.svelte';
     import district_names_list from '$lib/data/district_names_list.json';
-    import { onMount } from 'svelte';
+
+    export let data;
 
     let numbers_data, locations_data, data_array;
 
@@ -14,37 +15,29 @@
         district_data[d] = 0;
     });
 
-    // Convert district fire count data to array
-    $: data_array = Object.entries(district_data);
+    // Convert district fire count data to array, update any time district_data changes
+    $: {
+        data_array = Object.entries(district_data);
+    }
 
-    onMount(async () => {
-        const res = await fetch(
-            `https://stub-the-stubble.github.io/data-pipeline/total_numbers.json`
-        );
-
-        const currentDate = new Date();
-        const currentDateStr = new Date(
-            currentDate.getTime() - currentDate.getTimezoneOffset() * 60000
-        )
-            .toISOString()
-            .split('T')[0];
-        const res2 = await fetch(
-            `https://stub-the-stubble.github.io/data-pipeline/${currentDateStr}.json`
-        );
-        if (res2.ok) {
-            locations_data = await res2.json();
-        } else {
-            locations_data = [];
-        }
-        numbers_data = await res.json();
-
-        // Count all the fire counts for each district
-        locations_data.forEach((element) => {
-            const district_name = element['district'];
-            district_data[district_name] += 1;
-        });
-        
+    data.total_promise.json().then((res) => {
+        numbers_data = res;
     });
+    if (data.locations_promise.status == 200) {
+        data.locations_promise.json().then((res) => {
+            locations_data = res;
+
+            // Count all the fire counts for each district
+            // TODO : get this pre-calculated from the API
+
+            locations_data.forEach((element) => {
+                const district_name = element['district'];
+                district_data[district_name] += 1;
+            });
+        });
+    } else {
+        locations_data = [];
+    }
 </script>
 
 <div class="container my-20">

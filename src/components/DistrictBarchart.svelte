@@ -1,12 +1,10 @@
 <script>
     import { scaleBand, scaleLinear } from 'd3-scale';
     import { slide } from 'svelte/transition';
-    import { onMount } from 'svelte';
     import district_names_list from '$lib/data/district_names_list.json';
 
     export let data_array;
     let xDomain, xScale;
-    let show = false;
 
     const dimns = { width: 800, height: 1000, label_x: 200, gap_x: 15 };
 
@@ -16,6 +14,7 @@
         .paddingInner(0.5);
 
     $: if (data_array) {
+
         xDomain = data_array.map((d) => d[1]);
 
         // Prevent domain collapsing to midpoint if all values are zero
@@ -42,7 +41,7 @@
                     {d[0]}
                 </text>
                 <rect
-                    in:slide={{ duration: 1000, axis: 'x', delay: 500 }}
+                    in:slide={{ duration: 1000, axis: 'x' }}
                     x={dimns.label_x + dimns.gap_x}
                     y={yScale(d[0])}
                     width={xScale(d[1])}
