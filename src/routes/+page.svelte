@@ -1,12 +1,11 @@
 <script>
-    import LeafletMap from '$components/LeafletMap.svelte';
-    import PunjabMap from '$components/PunjabMap.svelte';
-    import CumulativeDataTable from '$components/CumulativeDataTable.svelte';
-    import DistrictBarchart from '$components/DistrictBarchart.svelte';
+    import { LeafletMap, PunjabMap, CumulativeDataTable, DistrictBarchart } from '$components';
+    import IntersectionObserver from '$lib/utils/IntersectionObserver.svelte';
     import district_names_list from '$lib/data/district_names_list.json';
 
     export let data;
 
+    let data_status = { numbers: 'loading', locations: 'loading' };
     let numbers_data, locations_data, data_array;
 
     // Initialize each district fire count with 0
@@ -22,7 +21,9 @@
 
     data.total_promise.json().then((res) => {
         numbers_data = res;
+        data_status.numbers = 'loaded';
     });
+
     if (data.locations_promise.status == 200) {
         data.locations_promise.json().then((res) => {
             locations_data = res;
@@ -34,9 +35,12 @@
                 const district_name = element['district'];
                 district_data[district_name] += 1;
             });
+            data_status.locations = 'loaded';
         });
     } else {
+        // If data is not loaded (file doesn't exist for today's date), load empty dataset
         locations_data = [];
+        data_status.locations = 'loaded';
     }
 </script>
 
@@ -64,10 +68,17 @@
         </div>
 
         <div class="flex flex-col md:flex-row gap-16 mb-16">
-            <PunjabMap {data_array} />
-            <DistrictBarchart {data_array} />
+            <IntersectionObserver>
+                <PunjabMap {data_array} {data_status} />
+            </IntersectionObserver>
+
+            <IntersectionObserver>
+                <DistrictBarchart {data_array} {data_status} />
+            </IntersectionObserver>
         </div>
-        <LeafletMap {locations_data} />
+        <IntersectionObserver>
+            <LeafletMap {locations_data} {data_status} />
+        </IntersectionObserver>
     </div>
 </div>
 <footer class="mb-8">

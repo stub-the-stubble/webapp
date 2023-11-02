@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     import 'leaflet/dist/leaflet.css';
 
-    export let locations_data;
+    export let locations_data, data_status;
     let mapElement, L, l_map, fire_icon;
 
     onMount(async () => {
@@ -27,13 +27,13 @@
     });
 
     // Update markers whenever L is available and we get new data
-    $: if (L && locations_data) {
+    $: if (L && data_status && data_status.locations == 'loaded') {
 
         locations_data.forEach((element) => {
             const marker_html = `District : ${element.district} <br>
                            Time : ${element.acqtime} <br>
                            FRP : ${element.radiative_} <br>`;
-            const l_marker = L.marker([element.lat, element.lon], { icon: fire_icon })
+            L.marker([element.lat, element.lon], { icon: fire_icon })
                 .bindPopup(marker_html, { closeButton: false })
                 .addTo(l_map);
         });

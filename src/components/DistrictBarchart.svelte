@@ -3,7 +3,7 @@
     import { slide } from 'svelte/transition';
     import district_names_list from '$lib/data/district_names_list.json';
 
-    export let data_array;
+    export let data_array, data_status;
     let xDomain, xScale;
 
     const dimns = { width: 800, height: 1000, label_x: 200, gap_x: 15 };
@@ -14,7 +14,6 @@
         .paddingInner(0.5);
 
     $: if (data_array) {
-
         xDomain = data_array.map((d) => d[1]);
 
         // Prevent domain collapsing to midpoint if all values are zero
@@ -27,8 +26,8 @@
     }
 </script>
 
-<div class=" basis-1/2">
-    <svg class="w-full h-auto fill-brand-black" viewBox={`0 0 ${dimns.width} ${dimns.height}`}>
+<svg class="w-full h-auto fill-brand-black" viewBox={`0 0 ${dimns.width} ${dimns.height}`}>
+    {#if data_status.locations == 'loaded'}
         <g class="fill-brand-black">
             {#each data_array as d, i}
                 <text
@@ -41,7 +40,7 @@
                     {d[0]}
                 </text>
                 <rect
-                    in:slide={{ duration: 1000, axis: 'x' }}
+                    in:slide|global={{ axis: 'x' }}
                     x={dimns.label_x + dimns.gap_x}
                     y={yScale(d[0])}
                     width={xScale(d[1])}
@@ -68,5 +67,5 @@
                 {/if}
             {/each}
         </g>
-    </svg>
-</div>
+    {/if}
+</svg>
