@@ -35,7 +35,7 @@ export default {
                 '6.5xl': '4rem'
             },
             animation: {
-                'fadein-up': '0.8s ease-out fadein-up'
+                'fadein-up': '0.8s ease-out fadein-up forwards'
             },
             keyframes: {
                 'fadein-up': {
