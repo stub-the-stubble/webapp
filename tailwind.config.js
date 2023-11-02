@@ -32,8 +32,23 @@ export default {
                 '4/3': '4 / 3'
             },
             fontSize: {
-                '6.5xl': '4rem',
+                '6.5xl': '4rem'
             },
+            animation: {
+                'fadein-up': '0.8s ease-out fadein-up forwards'
+            },
+            keyframes: {
+                'fadein-up': {
+                    from: {
+                        transform: 'translateY(50px)',
+                        opacity: 0
+                    },
+                    to: {
+                        transform: 'translateY(0px)',
+                        opacity: 1
+                    }
+                }
+            }
         }
     },
     plugins: []
