@@ -2,19 +2,21 @@
     import '../app.css';
     import { afterNavigate } from '$app/navigation';
 
+    let scroll_restored = false;
+
     afterNavigate(() => {
         if (!scroll_restored) {
-            main_el.scrollTop = 0;
+            window.scrollY = 0;
         }
         scroll_restored = false;
     });
 
     export const snapshot = {
         capture() {
-            return main_el.scrollTop;
+            return window.scrollY;
         },
         restore(scroll_top) {
-            main_el.scrollTop = scroll_top;
+            window.scrollY = scroll_top;
 
             // Restore is not called for the first navigation to a page,
             // use this flag to track whether to reset the scroll to top or not in afterNavigate
