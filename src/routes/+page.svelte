@@ -64,7 +64,7 @@
             <h3>15th October 2023</h3>
         </div>
         <div class="my-12 xs:my-16">
-            <CumulativeDataTable data={numbers_data} />
+            <CumulativeDataTable data={numbers_data} {data_status}/>
         </div>
 
         <div class="flex flex-col md:flex-row gap-16 mb-16">

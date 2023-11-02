@@ -1,8 +1,9 @@
 <script>
     import { parse, getWeek, getMonth } from 'date-fns';
+    import { fade } from 'svelte/transition';
 
     // Get data as a prop
-    export let data;
+    export let data, data_status;
 
     let fc_today = 0,
         fc_yesterday = 0,
@@ -15,7 +16,6 @@
     const this_month = getMonth(today);
 
     $: if (data) {
-
         // Get today and yesterday's total fire count
         fc_yesterday = data.counts[data.counts.length - 2].count;
         fc_today = data.counts[data.counts.length - 1].count;
@@ -58,16 +58,36 @@
     </thead>
     <tbody>
         <tr class="h-12">
-            <td class="bg-brand-light-grey px-2">{fc_today}</td>
-            <td class="bg-brand-light-grey px-2">{fc_yesterday}</td>
-            <td class="bg-brand-light-grey px-2">{fc_this_week}</td>
-            <td class="bg-brand-light-grey px-2">{fc_this_month}</td>
-            <td class="bg-brand-light-grey px-2">{fc_all}</td>
+            <td class="bg-brand-light-grey px-2">
+                {#if data_status.numbers == 'loaded'}
+                    <span in:fade>{fc_today}</span>
+                {/if}
+            </td>
+            <td class="bg-brand-light-grey px-2">
+                {#if data_status.numbers == 'loaded'}
+                    <span in:fade>{fc_yesterday}</span>
+                {/if}
+            </td>
+            <td class="bg-brand-light-grey px-2">
+                {#if data_status.numbers == 'loaded'}
+                    <span in:fade>{fc_this_week}</span>
+                {/if}
+            </td>
+            <td class="bg-brand-light-grey px-2">
+                {#if data_status.numbers == 'loaded'}
+                    <span in:fade>{fc_this_month}</span>
+                {/if}
+            </td>
+            <td class="bg-brand-light-grey px-2">
+                {#if data_status.numbers == 'loaded'}
+                    <span in:fade>{fc_all}</span>
+                {/if}
+            </td>
         </tr>
     </tbody>
 </table>
 <p class="mt-2 italic text-xs text-left xs:text-right text-brand-grey">
     *New data is added to the system as soon as it is available to us. Last updated at {#if data}
-        {data.last_update}.
+        <span in:fade>{data.last_update}</span>.
     {/if}
 </p>
