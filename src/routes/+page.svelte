@@ -52,7 +52,7 @@
     <div class="w-full md:w-3/4 mx-auto">
         <div class="mb-0">
             <div class="flex gap-2 xs:gap-4 items-end mb-4">
-                <img
+                <img width="16" height="50"
                     class="w-4 xs:w-5 sm:w-6"
                     src="stub_the_stubble_icon.svg"
                     alt="Stub the Stubble logo"
