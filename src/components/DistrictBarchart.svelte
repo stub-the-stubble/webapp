@@ -44,7 +44,7 @@
                     {d[0]}
                 </text>
                 <rect
-                    in:slide|global={{ duration: 1000, delay: 800, axis: 'x' }}
+                    in:slide={{ delay: 800, axis: 'x' }}
                     x={dimns.label_x + dimns.gap_x}
                     y={yScale(d[0])}
                     width={xScale(d[1])}
