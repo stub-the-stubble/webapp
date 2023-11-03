@@ -1,11 +1,14 @@
 <script>
     import { LeafletMap, PunjabMap, CumulativeDataTable, DistrictBarchart } from '$components';
+    import { setContext } from 'svelte';
+    import { data_state } from '$lib/stores/data_state.js';
     import IntersectionObserver from '$lib/utils/IntersectionObserver.svelte';
+
     import district_names_list from '$lib/data/district_names_list.json';
 
     export let data;
 
-    let data_status = { numbers: 'loading', locations: 'loading' };
+    setContext('state', data_state);
     let numbers_data, locations_data, data_array;
 
     // Initialize each district fire count with 0
@@ -21,7 +24,7 @@
 
     data.total_promise.json().then((res) => {
         numbers_data = res;
-        data_status.numbers = 'loaded';
+        $data_state.numbers = 'loaded';
     });
 
     if (data.locations_promise.status == 200) {
@@ -35,12 +38,13 @@
                 const district_name = element['district'];
                 district_data[district_name] += 1;
             });
-            data_status.locations = 'loaded';
+
+            $data_state.locations = 'loaded';
         });
     } else {
         // If data is not loaded (file doesn't exist for today's date), load empty dataset
         locations_data = [];
-        data_status.locations = 'loaded';
+        $data_state.locations = 'loaded';
     }
 </script>
 
@@ -64,20 +68,20 @@
             <h3>15th October 2023</h3>
         </div>
         <div class="my-12 xs:my-16">
-            <CumulativeDataTable data={numbers_data} {data_status}/>
+            <CumulativeDataTable data={numbers_data} />
         </div>
 
         <div class="flex flex-col md:flex-row gap-16 mb-16">
             <IntersectionObserver>
-                <PunjabMap {data_array} {data_status} />
+                <PunjabMap {data_array} />
             </IntersectionObserver>
 
             <IntersectionObserver>
-                <DistrictBarchart {data_array} {data_status} />
+                <DistrictBarchart {data_array} />
             </IntersectionObserver>
         </div>
         <IntersectionObserver>
-            <LeafletMap {locations_data} {data_status} />
+            <LeafletMap {locations_data} />
         </IntersectionObserver>
     </div>
 </div>

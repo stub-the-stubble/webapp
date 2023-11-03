@@ -1,9 +1,13 @@
 <script>
     import { scaleBand, scaleLinear } from 'd3-scale';
     import { slide } from 'svelte/transition';
+    import { getContext } from 'svelte';
+
     import district_names_list from '$lib/data/district_names_list.json';
 
-    export let data_array, data_status;
+    export let data_array;
+    const data_state = getContext('state');
+
     let xDomain, xScale;
 
     const dimns = { width: 800, height: 1000, label_x: 200, gap_x: 15 };
@@ -27,7 +31,7 @@
 </script>
 
 <svg class="w-full h-auto fill-brand-black" viewBox={`0 0 ${dimns.width} ${dimns.height}`}>
-    {#if data_status.locations == 'loaded'}
+    {#if $data_state.locations == 'loaded'}
         <g class="fill-brand-black">
             {#each data_array as d, i}
                 <text
@@ -40,7 +44,7 @@
                     {d[0]}
                 </text>
                 <rect
-                    in:slide|global={{ axis: 'x' }}
+                    in:slide|global={{ duration: 1000, delay: 800, axis: 'x' }}
                     x={dimns.label_x + dimns.gap_x}
                     y={yScale(d[0])}
                     width={xScale(d[1])}

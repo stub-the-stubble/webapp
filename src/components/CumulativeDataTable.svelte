@@ -1,9 +1,12 @@
 <script>
     import { parse, getWeek, getMonth } from 'date-fns';
+    import { getContext } from 'svelte';
     import { fade } from 'svelte/transition';
 
     // Get data as a prop
-    export let data, data_status;
+    export let data;
+
+    const data_state = getContext('state');
 
     let fc_today = 0,
         fc_yesterday = 0,
@@ -59,27 +62,27 @@
     <tbody>
         <tr class="h-12">
             <td class="bg-brand-light-grey px-2">
-                {#if data_status.numbers == 'loaded'}
+                {#if $data_state.numbers == 'loaded'}
                     <span in:fade>{fc_today}</span>
                 {/if}
             </td>
             <td class="bg-brand-light-grey px-2">
-                {#if data_status.numbers == 'loaded'}
+                {#if $data_state.numbers == 'loaded'}
                     <span in:fade>{fc_yesterday}</span>
                 {/if}
             </td>
             <td class="bg-brand-light-grey px-2">
-                {#if data_status.numbers == 'loaded'}
+                {#if $data_state.numbers == 'loaded'}
                     <span in:fade>{fc_this_week}</span>
                 {/if}
             </td>
             <td class="bg-brand-light-grey px-2">
-                {#if data_status.numbers == 'loaded'}
+                {#if $data_state.numbers == 'loaded'}
                     <span in:fade>{fc_this_month}</span>
                 {/if}
             </td>
             <td class="bg-brand-light-grey px-2">
-                {#if data_status.numbers == 'loaded'}
+                {#if $data_state.numbers == 'loaded'}
                     <span in:fade>{fc_all}</span>
                 {/if}
             </td>

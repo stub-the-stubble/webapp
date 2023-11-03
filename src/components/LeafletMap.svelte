@@ -1,8 +1,11 @@
 <script>
     import { onMount } from 'svelte';
+    import { getContext } from 'svelte';
     import 'leaflet/dist/leaflet.css';
 
-    export let locations_data, data_status;
+    export let locations_data;
+    const data_state = getContext('state');
+
     let mapElement, L, l_map, fire_icon;
 
     onMount(async () => {
@@ -27,8 +30,7 @@
     });
 
     // Update markers whenever L is available and we get new data
-    $: if (L && data_status && data_status.locations == 'loaded') {
-
+    $: if (L && locations_data && $data_state.locations == 'loaded') {
         locations_data.forEach((element) => {
             const marker_html = `District : ${element.district} <br>
                            Time : ${element.acqtime} <br>
