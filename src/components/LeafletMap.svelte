@@ -30,6 +30,7 @@
     });
 
     // Update markers whenever L is available and we get new data
+    // TODO : use markers cluster to speed up performance
     $: if (L && locations_data && $data_state.locations == 'loaded') {
         locations_data.forEach((element) => {
             const marker_html = `District : ${element.district} <br>
