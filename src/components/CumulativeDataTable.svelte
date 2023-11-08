@@ -4,7 +4,7 @@
     import { fade } from 'svelte/transition';
 
     // Get data as a prop
-    export let data;
+    export let data, last_updated;
 
     const data_state = getContext('state');
 
@@ -90,7 +90,7 @@
     </tbody>
 </table>
 <p class="mt-2 italic text-xs text-left xs:text-right text-brand-grey">
-    *New data is added to the system as soon as it is available to us. Last updated at {#if data}
-        <span in:fade>{data.last_update}</span>.
+    *New data is added to the system as soon as it is available to us. Last updated at {#if last_updated}
+        <span in:fade>{last_updated}</span>.
     {/if}
 </p>

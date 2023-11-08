@@ -8,7 +8,7 @@
     setContext('state', data_state);
 
     //TODO use svelte-persisted-store for incoming data
-    let numbers_data, locations_data, data_array, todays_data, historical_data;
+    let numbers_data, locations_data, data_array, todays_data, historical_data, last_updated;
 
     //TODO try using tanstack-query instead
     if (browser) {
@@ -36,7 +36,7 @@
 
                 data_array = Object.entries(todays_data.districts);
                 locations_data = todays_data.locations;
-
+                last_updated = data.last_update
                 $data_state.locations = 'loaded';
             });
     }
@@ -64,7 +64,7 @@
             <h3>15th October 2023</h3>
         </div>
         <div class="my-12 xs:my-16">
-            <CumulativeDataTable data={numbers_data} />
+            <CumulativeDataTable data={numbers_data} {last_updated} />
         </div>
 
         <div class="flex flex-col md:flex-row gap-16 mb-16">
