@@ -2,14 +2,17 @@
     import { onMount } from 'svelte';
     import { getContext } from 'svelte';
     import 'leaflet/dist/leaflet.css';
+    import 'leaflet.markercluster/dist/MarkerCluster.css';
+    import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
     export let locations_data;
     const data_state = getContext('state');
 
-    let mapElement, L, l_map, fire_icon;
+    let mapElement, L, L_M, l_map, fire_icon, markers;
 
     onMount(async () => {
         L = await import('leaflet');
+        L_M = await import('leaflet.markercluster/dist/leaflet.markercluster.js');
 
         l_map = L.map(mapElement, { preferCanvas: true }).setView([31.0, 76.5], 8);
 
@@ -27,19 +30,26 @@
             iconAnchor: [7.5, 7.5], // point of the icon which will correspond to marker's location
             popupAnchor: [0, -7.5] // point from which the popup should open relative to the iconAnchor
         });
+
+        markers = new L_M.MarkerClusterGroup({ chunkedLoading: true, showCoverageOnHover: false });
     });
 
     // Update markers whenever L is available and we get new data
     // TODO : use markers cluster to speed up performance
-    $: if (L && locations_data && $data_state.locations == 'loaded') {
+    $: if (l_map && locations_data && $data_state.locations == 'loaded') {
         locations_data.forEach((element) => {
             const marker_html = `District : ${element.district} <br>
                            Time : ${element.acqtime} <br>
                            FRP : ${element.radiative_} <br>`;
-            L.marker([element.lat, element.lon], { icon: fire_icon })
-                .bindPopup(marker_html, { closeButton: false })
-                .addTo(l_map);
+            const marker = L.marker([element.lat, element.lon], { icon: fire_icon }).bindPopup(
+                marker_html,
+                { closeButton: false }
+            );
+
+            markers.addLayer(marker);
         });
+        console.log(l_map);
+        l_map.addLayer(markers);
     }
 </script>
 
