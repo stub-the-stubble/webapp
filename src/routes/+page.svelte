@@ -5,19 +5,18 @@
     import { browser } from '$app/environment';
     import IntersectionObserver from '$lib/utils/IntersectionObserver.svelte';
 
-    import district_names_list from '$lib/data/district_names_list.json';
-
     setContext('state', data_state);
 
     //TODO use svelte-persisted-store for incoming data
-    let numbers_data, locations_data, data_array;
+    let numbers_data, locations_data, data_array, todays_data, historical_data;
 
     //TODO try using tanstack-query instead
     if (browser) {
-        fetch(`https://stub-the-stubble.github.io/data-pipeline/total_numbers.json`)
+        fetch(`https://stub-the-stubble.github.io/data-pipeline/v2/historical_data.json`)
             .then((res) => res.json())
             .then((data) => {
-                numbers_data = data;
+                historical_data = data['PB'];
+                numbers_data = Object.entries(historical_data.total.dates);
                 $data_state.numbers = 'loaded';
             });
 
@@ -30,29 +29,16 @@
             .toISOString()
             .split('T')[0];
 
-        fetch(`https://stub-the-stubble.github.io/data-pipeline/${currentDateStr}.json`)
+        fetch(`https://stub-the-stubble.github.io/data-pipeline/v2/${currentDateStr}.json`)
             .then((res) => res.json())
             .then((data) => {
-                locations_data = data;
+                todays_data = data['PB'];
 
-                // Count all the fire counts for each district
-                // TODO : get this pre-calculated from the data-pipeline
-                locations_data.forEach((element) => {
-                    const district_name = element['district'];
-                    district_data[district_name] += 1;
-                });
+                data_array = Object.entries(todays_data.districts);
+                locations_data = todays_data.locations;
+
                 $data_state.locations = 'loaded';
             });
-    }
-    // Initialize each district fire count with 0
-    const district_data = {};
-    district_names_list.forEach((d) => {
-        district_data[d] = 0;
-    });
-
-    // Convert district fire count data to array, update any time district_data changes
-    $: {
-        data_array = Object.entries(district_data);
     }
 </script>
 

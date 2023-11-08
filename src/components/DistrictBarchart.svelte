@@ -31,9 +31,9 @@
 </script>
 
 <svg class="w-full h-auto fill-brand-black" viewBox={`0 0 ${dimns.width} ${dimns.height}`}>
-    {#if $data_state.locations == 'loaded'}
+    {#if data_array && $data_state.locations == 'loaded'}
         <g class="fill-brand-black">
-            {#each data_array as d, i}
+            {#each data_array as d}
                 <text
                     text-anchor="end"
                     class="text-xl"
@@ -44,7 +44,7 @@
                     {d[0]}
                 </text>
                 <rect
-                    in:slide={{ delay: 800, axis: 'x' }}
+                    in:slide|global={{ delay: 800, axis: 'x' }}
                     x={dimns.label_x + dimns.gap_x}
                     y={yScale(d[0])}
                     width={xScale(d[1])}

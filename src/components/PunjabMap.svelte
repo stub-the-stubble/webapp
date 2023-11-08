@@ -41,7 +41,7 @@
     class="w-full h-full stroke-brand-black"
     viewBox="0 0 800 887"
 >
-    {#if $data_state.locations == 'loaded'}
+    {#if data_array && $data_state.locations == 'loaded'}
         <g>
             {#each paths as path, i}
                 <path

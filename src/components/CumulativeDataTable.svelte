@@ -20,15 +20,15 @@
 
     $: if (data) {
         // Get today and yesterday's total fire count
-        fc_yesterday = data.counts[data.counts.length - 2].count;
-        fc_today = data.counts[data.counts.length - 1].count;
+        fc_yesterday = data[data.length - 2][1];
+        fc_today = data[data.length - 1][1];
 
         // Calculate fire counts for this week, this month and for all season
         fc_this_week = 0;
         fc_this_month = 0;
         fc_all = 0;
 
-        for (const { date, count } of data.counts) {
+        for (const [date, count] of data) {
             const parsed_date = parse(date, 'yyyy-MM-dd', new Date());
             const month = getMonth(parsed_date);
             const week = getWeek(parsed_date, { weekStartsOn: 1 });
