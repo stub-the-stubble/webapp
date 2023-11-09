@@ -43,7 +43,7 @@
 </script>
 
 <div class="container my-20">
-    <div class="w-full md:w-3/4 mx-auto">
+    <div class="w-full xl:w-3/4 mx-auto">
         <div class="mb-0">
             <div class="flex gap-2 xs:gap-4 items-end mb-4">
                 <img
