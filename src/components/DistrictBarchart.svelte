@@ -30,9 +30,9 @@
     }
 </script>
 
-<svg class="w-full h-auto fill-brand-black" viewBox={`0 0 ${dimns.width} ${dimns.height}`}>
+<svg class="w-full h-auto fill-black" viewBox={`0 0 ${dimns.width} ${dimns.height}`}>
     {#if data_array && $data_state.locations == 'loaded'}
-        <g class="fill-brand-black">
+        <g class="fill-black">
             {#each data_array as d}
                 <text
                     text-anchor="end"
@@ -60,7 +60,7 @@
                     >
                 {:else}
                     <text
-                        class="fill-brand-lightest-grey text-xl"
+                        class="fill-lightest-grey text-xl"
                         text-anchor="end"
                         x={dimns.label_x + dimns.gap_x + xScale(d[1]) - 3}
                         dy="0.32em"

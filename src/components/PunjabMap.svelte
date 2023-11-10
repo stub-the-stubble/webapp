@@ -38,7 +38,7 @@
 
 <svg
     xmlns="http://www.w3.org/2000/svg"
-    class="w-full h-full stroke-brand-black"
+    class="w-full h-full stroke-black"
     viewBox="0 0 800 887"
 >
     {#if data_array && $data_state.locations == 'loaded'}

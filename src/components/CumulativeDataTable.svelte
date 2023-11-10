@@ -52,36 +52,36 @@
     </caption>
     <thead>
         <tr class="h-12 text-sm xs:text-base">
-            <th class="bg-brand-light-grey px-2 font-semibold w-1/5">Today</th>
-            <th class="bg-brand-light-grey px-2 font-semibold w-1/5">Yesterday</th>
-            <th class="bg-brand-light-grey px-2 font-semibold w-1/5">This week</th>
-            <th class="bg-brand-light-grey px-2 font-semibold w-1/5">This month</th>
-            <th class="bg-brand-light-grey px-2 font-semibold w-1/5">Season till date</th>
+            <th class="bg-light-grey px-2 font-semibold w-1/5">Today</th>
+            <th class="bg-light-grey px-2 font-semibold w-1/5">Yesterday</th>
+            <th class="bg-light-grey px-2 font-semibold w-1/5">This week</th>
+            <th class="bg-light-grey px-2 font-semibold w-1/5">This month</th>
+            <th class="bg-light-grey px-2 font-semibold w-1/5">Season till date</th>
         </tr>
     </thead>
     <tbody>
         <tr class="h-12">
-            <td class="bg-brand-light-grey px-2">
+            <td class="bg-light-grey px-2">
                 {#if $data_state.numbers == 'loaded'}
                     <span in:fade>{fc_today}</span>
                 {/if}
             </td>
-            <td class="bg-brand-light-grey px-2">
+            <td class="bg-light-grey px-2">
                 {#if $data_state.numbers == 'loaded'}
                     <span in:fade>{fc_yesterday}</span>
                 {/if}
             </td>
-            <td class="bg-brand-light-grey px-2">
+            <td class="bg-light-grey px-2">
                 {#if $data_state.numbers == 'loaded'}
                     <span in:fade>{fc_this_week}</span>
                 {/if}
             </td>
-            <td class="bg-brand-light-grey px-2">
+            <td class="bg-light-grey px-2">
                 {#if $data_state.numbers == 'loaded'}
                     <span in:fade>{fc_this_month}</span>
                 {/if}
             </td>
-            <td class="bg-brand-light-grey px-2">
+            <td class="bg-light-grey px-2">
                 {#if $data_state.numbers == 'loaded'}
                     <span in:fade>{fc_all}</span>
                 {/if}
@@ -89,7 +89,7 @@
         </tr>
     </tbody>
 </table>
-<p class="mt-2 italic text-xs text-left xs:text-right text-brand-grey">
+<p class="mt-2 italic text-xs text-left xs:text-right text-grey">
     *New data is added to the system as soon as it is available to us. Last updated at {#if last_updated}
         <span in:fade>{last_updated}</span>.
     {/if}
