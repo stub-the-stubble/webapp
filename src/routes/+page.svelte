@@ -12,10 +12,10 @@
 
     //TODO try using tanstack-query instead
     if (browser) {
-        fetch(`https://stub-the-stubble.github.io/data-pipeline/v2/historical_data.json`)
+        fetch(`https://stub-the-stubble.github.io/data-pipeline/v2/PB/historical_data.json`)
             .then((res) => res.json())
             .then((data) => {
-                historical_data = data['PB'];
+                historical_data = data;
                 numbers_data = Object.entries(historical_data.total.dates);
                 $data_state.numbers = 'loaded';
             });
@@ -29,10 +29,10 @@
             .toISOString()
             .split('T')[0];
 
-        fetch(`https://stub-the-stubble.github.io/data-pipeline/v2/${currentDateStr}.json`)
+        fetch(`https://stub-the-stubble.github.io/data-pipeline/v2/PB/${currentDateStr}.json`)
             .then((res) => res.json())
             .then((data) => {
-                todays_data = data['PB'];
+                todays_data = data;
 
                 data_array = Object.entries(todays_data.districts);
                 locations_data = todays_data.locations;
