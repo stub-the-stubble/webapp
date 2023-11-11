@@ -48,7 +48,6 @@
 
             markers.addLayer(marker);
         });
-        console.log(l_map);
         l_map.addLayer(markers);
     }
 </script>

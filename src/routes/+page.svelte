@@ -36,7 +36,7 @@
 
                 data_array = Object.entries(todays_data.districts);
                 locations_data = todays_data.locations;
-                last_updated = data.last_update
+                last_updated = data.last_update;
                 $data_state.locations = 'loaded';
             });
     }
