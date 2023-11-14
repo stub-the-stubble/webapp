@@ -1,5 +1,5 @@
 <script>
-    import { parse, getWeek, getMonth } from 'date-fns';
+    import { parse, getWeek, getMonth, isAfter, getYear } from 'date-fns';
     import { getContext } from 'svelte';
     import { fade } from 'svelte/transition';
 
@@ -17,6 +17,8 @@
     const today = new Date();
     const this_week = getWeek(today, { weekStartsOn: 1 });
     const this_month = getMonth(today);
+    const this_year = getYear(today);
+
 
     $: if (data) {
         // Get today and yesterday's total fire count
@@ -27,19 +29,21 @@
         fc_this_week = 0;
         fc_this_month = 0;
         fc_all = 0;
-
         for (const [date, count] of data) {
             const parsed_date = parse(date, 'yyyy-MM-dd', new Date());
             const month = getMonth(parsed_date);
+            const year = getYear(parsed_date);
             const week = getWeek(parsed_date, { weekStartsOn: 1 });
 
-            if (month == this_month) {
+            if (month == this_month && year == this_year ) {
                 fc_this_month += count;
             }
-            if (week == this_week) {
+            if (week == this_week && year == this_year) {
                 fc_this_week += count;
             }
-            fc_all += count;
+            if (isAfter(parsed_date, new Date(2023, 8, 15))) {
+                fc_all += count;
+            }
             //console.log(date, month, week, count);
         }
     }
