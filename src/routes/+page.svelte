@@ -1,5 +1,5 @@
 <script>
-    import { LeafletMap, PunjabMap, CumulativeDataTable, DistrictBarchart } from '$components';
+    import { LeafletMap, StateMap, CumulativeDataTable, DistrictBarchart } from '$components';
     import { setContext } from 'svelte';
     import { data_state } from '$lib/stores/data_state.js';
     import { browser } from '$app/environment';
@@ -69,7 +69,7 @@
 
         <div class="flex flex-col md:flex-row gap-16 mb-16">
             <IntersectionObserver>
-                <PunjabMap {data_array} />
+                <StateMap district_counts={todays_data?.districts} state_code='PB' />
             </IntersectionObserver>
 
             <IntersectionObserver>
