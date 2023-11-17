@@ -6,7 +6,7 @@ export const getDateIST = () => {
 };
 
 export const getDateISO = () => {
-    return formatISO(getIndiaDate(), { representation: 'date' });
+    return formatISO(getDateIST(), { representation: 'date' });
 };
 
 
