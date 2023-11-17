@@ -2,9 +2,10 @@
     import { draw } from 'svelte/transition';
     import { scaleSequential } from 'd3-scale';
     import { interpolateReds } from 'd3-scale-chromatic';
-    import map_paths from '$lib/data/map_paths.json';
+    import { map_paths } from '$lib/data';
 
     export let district_counts, state_code;
+
     const { paths, bbox } = map_paths[state_code];
     const color_scale = scaleSequential([0, 500], interpolateReds);
     

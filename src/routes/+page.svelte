@@ -1,14 +1,9 @@
 <script>
     import { LeafletMap, StateMap, CumulativeDataTable, DistrictBarchart } from '$components';
-    import { setContext } from 'svelte';
-    import { data_state } from '$lib/stores/data_state.js';
     import { browser } from '$app/environment';
-    import IntersectionObserver from '$lib/utils/IntersectionObserver.svelte';
+    import { IntersectionObserver, getDateISO } from '$lib/utils';
 
-    setContext('state', data_state);
-
-    //TODO use svelte-persisted-store for incoming data
-    let numbers_data, locations_data, data_array, todays_data, historical_data, last_updated;
+    let data_array, todays_data, historical_data;
 
     //TODO try using tanstack-query instead
     if (browser) {
@@ -16,28 +11,16 @@
             .then((res) => res.json())
             .then((data) => {
                 historical_data = data;
-                numbers_data = Object.entries(historical_data.total.dates);
-                $data_state.numbers = 'loaded';
             });
 
-        const currentDate = new Date();
-
         //Get date string YYYY-MM-DD format in IST
-        const currentDateStr = new Date(
-            currentDate.getTime() - currentDate.getTimezoneOffset() * 60000
-        )
-            .toISOString()
-            .split('T')[0];
+        const currentDateStr = getDateISO();
 
         fetch(`https://stub-the-stubble.github.io/data-pipeline/v2/PB/${currentDateStr}.json`)
             .then((res) => res.json())
             .then((data) => {
                 todays_data = data;
-
                 data_array = Object.entries(todays_data.districts);
-                locations_data = todays_data.locations;
-                last_updated = data.last_update;
-                $data_state.locations = 'loaded';
             });
     }
 </script>
@@ -64,12 +47,12 @@
             <h3>15th October 2023</h3>
         </div>
         <div class="my-12 xs:my-16">
-            <CumulativeDataTable data={numbers_data} {last_updated} />
+            <CumulativeDataTable data={historical_data?.total.dates} last_updated={todays_data?.last_update} />
         </div>
 
         <div class="flex flex-col md:flex-row gap-16 mb-16">
             <IntersectionObserver>
-                <StateMap district_counts={todays_data?.districts} state_code='PB' />
+                <StateMap district_counts={todays_data?.districts} state_code="PB" />
             </IntersectionObserver>
 
             <IntersectionObserver>
@@ -77,7 +60,7 @@
             </IntersectionObserver>
         </div>
         <IntersectionObserver>
-            <LeafletMap {locations_data} />
+            <LeafletMap locations_data={todays_data?.locations} />
         </IntersectionObserver>
     </div>
 </div>
