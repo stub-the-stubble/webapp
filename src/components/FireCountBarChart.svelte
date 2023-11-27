@@ -19,7 +19,8 @@
     
     $: if (data) {
         data = Object.keys(data).map((key) => [key, data[key]]);
-        let data_filtered = data.slice(data.length - 12).map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
+        let data_filtered = data.slice(data.length - 14)
+            .map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
         
         // Select the svg element
         let svgSelection = select(svg);
@@ -63,6 +64,21 @@
                         .attr('r', 3)
                         .attr('cx', (d) => xScale(new Date(d[0])))
                         .attr('cy', (d) => yScale(d[1]))
+                }
+            );
+            
+            svgSelection.selectAll('.stem')
+            .data(data_filtered)
+            .join(
+                (enter) => {
+                    return enter.append('line')
+                        .attr('class', 'stem')
+                        .attr('stroke', 'red')
+                        .attr('stroke-width', 3)
+                        .attr('x1', (d) => xScale(new Date(d[0])))
+                        .attr('y1', (d) => yScale(d[1]))
+                        .attr('x2', (d) => xScale(new Date(d[0])))
+                        .attr('y2', (d) => yScale(0))
                 }
             );
     }
