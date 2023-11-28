@@ -1,8 +1,9 @@
 <script>
     import { scaleLinear, scaleTime } from 'd3-scale';
-    import { axisLeft, axisBottom } from 'd3-axis';
-    import { line, curveMonotoneX } from 'd3-shape';
+    import { axisLeft, axisRight, axisBottom } from 'd3-axis';
     import { max, extent } from 'd3-array';
+    import { timeMonday } from 'd3-time';
+    import { timeFormat } from 'd3-time-format';
     import { select } from 'd3-selection';
     
     export let data;
@@ -26,7 +27,7 @@
         let svgSelection = select(svg);
         
         let xScale = scaleTime()
-            .domain(extent(data_filtered, (d) => new Date(d[0]))).nice()
+            .domain(extent(data_filtered, (d) => new Date(d[0])))
             .range([dimensions.marginLeft, dimensions.width - dimensions.marginRight]);
         let yScale = scaleLinear()
             .domain([0, max(data_filtered, (d) => d[1])]).nice()
@@ -35,8 +36,11 @@
         // Add the x-axis and labels
         svgSelection.append('g')
             .attr('transform', `translate(0, ${dimensions.height - dimensions.marginBottom})`)
-            .call(axisBottom(xScale).tickSizeOuter(0));
+            .call(axisBottom(xScale).tickSizeOuter(0).ticks(timeMonday).tickFormat(timeFormat("%d %b")));
         // Add the y-axis and labels
+        svgSelection.append('g')
+            .attr('transform', `translate(${dimensions.width - dimensions.marginRight}, 0)`)
+            .call(axisRight(yScale).tickSizeOuter(0));
         svgSelection.append('g')
             .attr('transform', `translate(${dimensions.marginLeft}, 0)`)
             .call(axisLeft(yScale).tickSizeOuter(0));
@@ -47,7 +51,7 @@
                 (enter) => {
                     return enter.append('circle')
                         .attr('class', 'fill-red')
-                        .attr('r', 3)
+                        .attr('r', 4)
                         .attr('cx', (d) => xScale(new Date(d[0])))
                         .attr('cy', (d) => yScale(d[1]))
                 }
@@ -58,8 +62,8 @@
             .join(
                 (enter) => {
                     return enter.append('line')
-                        .attr('class', 'stem stroke-red')
-                        .attr('stroke-width', 3)
+                        .attr('class', 'stem stroke-red/50')
+                        .attr('stroke-width', 6)
                         .attr('x1', (d) => xScale(new Date(d[0])))
                         .attr('y1', (d) => yScale(d[1]))
                         .attr('x2', (d) => xScale(new Date(d[0])))
