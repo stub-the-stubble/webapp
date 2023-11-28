@@ -28,28 +28,14 @@
         let xScale = scaleTime()
             .domain(extent(data_filtered, (d) => new Date(d[0]))).nice()
             .range([dimensions.marginLeft, dimensions.width - dimensions.marginRight]);
-        
         let yScale = scaleLinear()
             .domain([0, max(data_filtered, (d) => d[1])]).nice()
             .range([dimensions.height - dimensions.marginBottom, dimensions.marginTop]);
-            
-        // Create the line generator
-        const linePath = line()
-            .curve(curveMonotoneX)
-            .x((d, i, data) => {
-                console.log('x', d[0], ' - ', i, '-', data);
-                return xScale(new Date(d[0]))
-            })
-            .y((d, i, data) => {
-                console.log('y', d[1], ' - ', i, '-', data);
-                return yScale(d[1])
-            });
             
         // Add the x-axis and labels
         svgSelection.append('g')
             .attr('transform', `translate(0, ${dimensions.height - dimensions.marginBottom})`)
             .call(axisBottom(xScale).tickSizeOuter(0));
-    
         // Add the y-axis and labels
         svgSelection.append('g')
             .attr('transform', `translate(${dimensions.marginLeft}, 0)`)
