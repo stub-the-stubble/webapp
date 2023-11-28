@@ -1,5 +1,5 @@
 <script>
-    import { LeafletMap, StateMap, CumulativeDataTable, FireCountBarChart, DistrictBarchart } from '$components';
+    import { LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart } from '$components';
     import { browser } from '$app/environment';
     import { IntersectionObserver, getDateISO } from '$lib/utils';
 
@@ -66,7 +66,7 @@
                     <h3 class="mb-4 text-xl font-semibold capitalize">
                         Last 14 days' fire count
                     </h3>
-                    <FireCountBarChart data={historical_data?.total.dates} />
+                    <FireCountChart data={historical_data?.total.dates} />
                 </div>
             </IntersectionObserver>
         </div>
