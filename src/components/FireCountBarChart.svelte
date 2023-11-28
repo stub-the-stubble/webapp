@@ -13,7 +13,7 @@
         height: 300,
         marginLeft: 40,
         marginRight: 40,
-        marginTop: 30,
+        marginTop: 10,
         marginBottom: 30,
     };
     
@@ -60,7 +60,7 @@
             .join(
                 (enter) => {
                     return enter.append('circle')
-                        .attr('fill', 'red')
+                        .attr('class', 'fill-red')
                         .attr('r', 3)
                         .attr('cx', (d) => xScale(new Date(d[0])))
                         .attr('cy', (d) => yScale(d[1]))
@@ -72,8 +72,7 @@
             .join(
                 (enter) => {
                     return enter.append('line')
-                        .attr('class', 'stem')
-                        .attr('stroke', 'red')
+                        .attr('class', 'stem stroke-red')
                         .attr('stroke-width', 3)
                         .attr('x1', (d) => xScale(new Date(d[0])))
                         .attr('y1', (d) => yScale(d[1]))

@@ -3,38 +3,42 @@
     import { slide } from 'svelte/transition';
     import { district_names_list } from '$lib/data';
 
-    export let data_array;
+    export let total_count, district_data, district_data_filtered;
 
-    let xDomain, xScale;
+    let xDomain, xScale, yScale;
+    const dimns = { width: 800, height: 300, label_x: 180, gap_x: 10 };
 
-    const dimns = { width: 800, height: 1000, label_x: 200, gap_x: 15 };
-
-    const yScale = scaleBand()
-        .domain(district_names_list)
-        .range([0, dimns.height])
-        .paddingInner(0.5);
-
-    $: if (data_array) {
-        xDomain = data_array.map((d) => d[1]);
-
+    $: if (total_count != 0 && district_data) {
+        district_data.sort((a, b) => b[1] - a[1]);
+        district_data_filtered = district_data.filter((d) => d[1] > 0).slice(0, 5);
+        
+        xDomain = district_data_filtered.map((d) => d[1]);
         // Prevent domain collapsing to midpoint if all values are zero
         if (Math.max(...xDomain) == 0) {
             xDomain.push(1);
         }
+        
         xScale = scaleLinear()
             .domain([0, Math.max.apply(null, xDomain)])
             .range([0, dimns.width - dimns.label_x - dimns.gap_x]);
+            
+        yScale = scaleBand()
+            .domain(district_data_filtered.map((d) => d[0]))
+            .range([0, dimns.height])
+            .paddingInner(0.5);
     }
 </script>
 
+
+
 <svg class="w-full h-auto fill-black" viewBox={`0 0 ${dimns.width} ${dimns.height}`}>
-    {#if data_array}
-        <g class="fill-black">
-            {#each data_array as d}
+    {#if district_data_filtered}
+        <g class="fill-red">
+            {#each district_data_filtered as d}
                 <text
-                    text-anchor="end"
-                    class="text-xl"
-                    x={dimns.label_x}
+                    text-anchor="start"
+                    class="text-xl fill-black"
+                    x="0"
                     dy="0.32em"
                     y={yScale(d[0]) + yScale.bandwidth() / 2}
                 >
@@ -59,7 +63,7 @@
                     <text
                         class="fill-lightest-grey text-xl"
                         text-anchor="end"
-                        x={dimns.label_x + dimns.gap_x + xScale(d[1]) - 3}
+                        x={dimns.label_x + dimns.gap_x + xScale(d[1]) - 8}
                         dy="0.32em"
                         y={yScale(d[0]) + yScale.bandwidth() / 2}
                     >
