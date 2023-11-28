@@ -50,18 +50,20 @@
             <CumulativeDataTable data={historical_data?.total.dates} last_updated={todays_data?.last_update} />
         </div>
 
-        <div class="flex flex-col md:flex-row gap-16 mb-16">
+        <div class="flex flex-col md:flex-row md:items-center gap-16 mb-16">
             <IntersectionObserver>
                 <StateMap district_counts={todays_data?.districts} state_code="PB" />
             </IntersectionObserver>
 
             <IntersectionObserver>
-                <div class="mb-12 last:mb-0">
-                    <h3 class="mb-4 text-xl font-semibold capitalize">
-                        Districts with the most stubble fires
-                    </h3>
-                    <DistrictBarchart total_count={todays_data?.total} district_data={data_array} />
-                </div>
+                {#if todays_data && todays_data.total}
+                    <div class="mb-12 last:mb-0">
+                        <h3 class="mb-4 text-xl font-semibold capitalize">
+                            Districts with the most stubble fires
+                        </h3>
+                        <DistrictBarchart total_count={todays_data.total} district_data={data_array} />
+                    </div>
+                {/if}
                 <div class="mb-12 last:mb-0">
                     <h3 class="mb-4 text-xl font-semibold capitalize">
                         Last 30 days' fire count
