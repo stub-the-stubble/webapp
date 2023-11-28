@@ -64,7 +64,7 @@
                 </div>
                 <div class="mb-12 last:mb-0">
                     <h3 class="mb-4 text-xl font-semibold capitalize">
-                        Last 14 days' fire count
+                        Last 30 days' fire count
                     </h3>
                     <FireCountChart data={historical_data?.total.dates} />
                 </div>

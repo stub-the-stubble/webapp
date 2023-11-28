@@ -19,7 +19,7 @@
     
     $: if (data) {
         data = Object.keys(data).map((key) => [key, data[key]]);
-        let data_filtered = data.slice(data.length - 14)
+        let data_filtered = data.slice(data.length - 30)
             .map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
         
         // Select the svg element
