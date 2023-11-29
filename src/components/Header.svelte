@@ -3,6 +3,12 @@
         text: 'Home',
         url: '/',
     },{
+        text: 'Punjab',
+        url: '/punjab',
+    },{
+        text: 'Haryana',
+        url: '/haryana',
+    },{
         text: 'Insights',
         url: 'https://info.stubthestubble.com/insights/',
     },{
@@ -19,7 +25,7 @@
 
 <div class="container my-4">
     <div class="w-full xl:w-5/6 mx-auto">
-        <nav class="flex justify-between pb-2 border-b border-light-grey">
+        <nav class="flex justify-between pb-2 border-b border-light-grey overflow-x-auto">
             {#if primaryNavItems.length}
                 <ul class="flex">
                     {#each primaryNavItems as item}
