@@ -13,6 +13,7 @@ export default {
             grey: colors.stone['500'],
             'lightest-grey': colors.stone['50'],
             'light-grey': colors.stone['200'],
+            brown: 'rgb(154,103,55)',
             red: colors.red['500'],
         },
         container: {

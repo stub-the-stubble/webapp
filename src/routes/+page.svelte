@@ -1,5 +1,5 @@
 <script>
-    import { LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart, Footer } from '$components';
+    import { Header, LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart, Footer } from '$components';
     import { browser } from '$app/environment';
     import { IntersectionObserver, getDateISO } from '$lib/utils';
 
@@ -25,7 +25,8 @@
     }
 </script>
 
-<div class="container my-20">
+<Header />
+<div class="container my-12">
     <div class="w-full xl:w-5/6 mx-auto">
         <div class="mb-0">
             <div class="flex gap-2 xs:gap-4 items-end mb-4">
