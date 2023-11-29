@@ -2,6 +2,7 @@
     import { Header, LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart, Footer } from '$components';
     import { browser } from '$app/environment';
     import { IntersectionObserver, getDateISO } from '$lib/utils';
+    import logoIcon from '$lib/assets/logo/stub_the_stubble_icon.svg';
 
     let data_array, todays_data, historical_data;
 
@@ -34,7 +35,7 @@
                     width="16"
                     height="50"
                     class="w-4 xs:w-5 sm:w-6"
-                    src="stub_the_stubble_icon.svg"
+                    src={logoIcon}
                     alt="Stub the Stubble logo"
                 />
                 <h1 class="text-4xl xs:text-5xl sm:text-6.5xl">Stub The Stubble</h1>
