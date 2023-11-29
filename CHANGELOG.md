@@ -4,7 +4,14 @@ Release notes for the Stub the Stubble website.
 
 
 
-# 1.2.0 - 2023-11-29
+## Unreleased
+
+### Added
+- Add separate pages for Punjab and Haryana data.
+
+
+
+## 1.2.0 - 2023-11-29
 
 ### Added
 - Added a day-wise fire count chart for Punjab.
