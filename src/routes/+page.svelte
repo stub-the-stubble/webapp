@@ -3,6 +3,8 @@
     import logoIcon from '$lib/assets/logo/stub_the_stubble_icon.svg';
 </script>
 
+
+
 <Header />
 <div class="container my-12">
     <div class="w-full xl:w-5/6 mx-auto">

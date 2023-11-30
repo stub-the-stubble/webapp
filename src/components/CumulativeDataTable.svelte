@@ -4,7 +4,7 @@
     import { fade } from 'svelte/transition';
 
     // Get data as a prop
-    export let data, last_updated;
+    export let data, last_updated, layout;
 
     let fc_today = 0,
         fc_yesterday = 0,
@@ -86,8 +86,10 @@
         </tr>
     </tbody>
 </table>
-<p class="mt-2 italic text-xs text-left xs:text-right text-grey">
-    *The current Kharif season started on 15th September 2023. New data is added to the system as soon as it is available to us. Last updated at {#if last_updated}
-        <span in:fade>{last_updated}</span>.
-    {/if}
-</p>
+{#if layout != 'narrow' && last_updated}
+    <p class="mt-2 italic text-xs text-left xs:text-right text-grey">
+        *The current Kharif season started on 15th September 2023. New data is added to the system as soon as it is available to us. Last updated at {#if last_updated}
+            <span in:fade>{last_updated}</span>.
+        {/if}
+    </p>
+{/if}
