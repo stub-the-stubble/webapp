@@ -1,8 +1,9 @@
 <script>
     import { scaleBand, scaleLinear } from 'd3-scale';
     import { slide } from 'svelte/transition';
-    import { district_names_list } from '$lib/data';
-
+    
+    
+    
     export let total_count, district_data, district_data_filtered;
 
     let xDomain, xScale, yScale;
@@ -10,7 +11,7 @@
 
     $: if (total_count != 0 && district_data) {
         district_data.sort((a, b) => b[1] - a[1]);
-        district_data_filtered = district_data.filter((d) => d[1] > 0).slice(0, 5);
+        district_data_filtered = district_data.slice(0, 5);
         
         xDomain = district_data_filtered.map((d) => d[1]);
         // Prevent domain collapsing to midpoint if all values are zero
@@ -37,7 +38,7 @@
             {#each district_data_filtered as d}
                 <text
                     text-anchor="start"
-                    class="text-xl fill-black"
+                    class={d[1] == 0 ? 'invisible' : 'text-xl fill-black'}
                     x="0"
                     dy="0.32em"
                     y={yScale(d[0]) + yScale.bandwidth() / 2}
@@ -50,10 +51,11 @@
                     y={yScale(d[0])}
                     width={xScale(d[1])}
                     height={yScale.bandwidth()}
+                    class={d[1] == 0 ? 'invisible' : ''}
                 />
                 {#if d[1] == 0}
                     <text
-                        class="text-xl"
+                        class="invisible text-xl"
                         text-anchor="start"
                         x={xScale(d[1]) + dimns.label_x + dimns.gap_x}
                         dy="0.32em"

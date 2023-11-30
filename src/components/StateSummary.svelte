@@ -5,7 +5,7 @@
     
     
     
-    export let state_code, todays_data, district_data, historical_data;
+    export let state_code, todays_data, district_data, historical_data, layout;
     
     //TODO try using tanstack-query instead
     if (browser) {
@@ -29,33 +29,34 @@
 
 
 
-<div class="my-12 xs:my-16">
-    <CumulativeDataTable data={historical_data?.total.dates} last_updated={todays_data?.last_update} />
-</div>
-
-<div class="flex flex-col md:flex-row md:items-center gap-16 mb-16">
-    <IntersectionObserver>
-        <StateMap district_counts={todays_data?.districts} state_code={state_code} />
-    </IntersectionObserver>
-
-    <IntersectionObserver>
-        {#if todays_data && todays_data.total}
+<div>
+    <div class="my-12 xs:my-16">
+        <CumulativeDataTable data={historical_data?.total.dates} last_updated={todays_data?.last_update} {layout} />
+    </div>
+    <div class="flex flex-col {layout === 'narrow' ? '' : 'md:flex-row'} md:items-center gap-16 mb-16">
+        <IntersectionObserver>
+            <div class="aspect-w-1 aspect-h-1">
+                <StateMap district_counts={todays_data?.districts} state_code={state_code} />
+            </div>
+        </IntersectionObserver>
+        <IntersectionObserver>
+            {#if todays_data && todays_data.total}
+                <div class="mb-12 last:mb-0">
+                    <h3 class="mb-6 text-xl font-semibold capitalize">
+                        Districts with the most stubble fires
+                    </h3>
+                    <DistrictBarchart total_count={todays_data.total} {district_data} />
+                </div>
+            {/if}
             <div class="mb-12 last:mb-0">
                 <h3 class="mb-4 text-xl font-semibold capitalize">
-                    Districts with the most stubble fires
+                    Last 30 days' fire count
                 </h3>
-                <DistrictBarchart total_count={todays_data.total} {district_data} />
+                <FireCountChart data={historical_data?.total.dates} />
             </div>
-        {/if}
-        <div class="mb-12 last:mb-0">
-            <h3 class="mb-4 text-xl font-semibold capitalize">
-                Last 30 days' fire count
-            </h3>
-            <FireCountChart data={historical_data?.total.dates} />
-        </div>
+        </IntersectionObserver>
+    </div>
+    <IntersectionObserver>
+        <LeafletMap locations_data={todays_data?.locations} />
     </IntersectionObserver>
 </div>
-
-<IntersectionObserver>
-    <LeafletMap locations_data={todays_data?.locations} />
-</IntersectionObserver>

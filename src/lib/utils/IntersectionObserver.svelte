@@ -16,6 +16,6 @@
     });
 </script>
 
-<div bind:this={container} class:animate-fadein-up={intersecting} class="opacity-0 w-full h-full">
+<div bind:this={container} class:animate-fadein-up={intersecting} class="opacity-0 w-full">
     <slot />
 </div>

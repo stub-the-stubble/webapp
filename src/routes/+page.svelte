@@ -22,7 +22,10 @@
                 stubble burning in India.
             </h2>
         </div>
-        <StateSummary state_code="HR" />
+        <div class="md:grid md:grid-cols-2 md:gap-20">
+            <StateSummary state_code="PB" layout="narrow" />
+            <StateSummary state_code="HR" layout="narrow" />
+        </div>
     </div>
 </div>
 <Footer />
