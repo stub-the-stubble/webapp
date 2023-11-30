@@ -53,11 +53,11 @@
     </caption>
     <thead>
         <tr class="h-12 text-sm xs:text-base">
-            <th class="bg-light-grey px-1 font-semibold w-1/5 capitalize">Today</th>
-            <th class="bg-light-grey px-1 font-semibold w-1/5 capitalize">Yesterday</th>
-            <th class="bg-light-grey px-1 font-semibold w-1/5 capitalize">This week</th>
-            <th class="bg-light-grey px-1 font-semibold w-1/5 capitalize">This month</th>
-            <th class="bg-light-grey px-1 font-semibold w-1/5 capitalize">Season till date</th>
+            <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">Today</th>
+            <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">Yesterday</th>
+            <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">This week</th>
+            <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">This month</th>
+            <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">Season till date</th>
         </tr>
     </thead>
     <tbody>
