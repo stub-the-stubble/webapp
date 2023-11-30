@@ -1,12 +1,13 @@
 <script>
     import { LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart } from '$components';
+    import { state_info } from '$lib/data/state_info';
     import { browser } from '$app/environment';
     import { getDateISO, IntersectionObserver } from '$lib/utils';
-    
-    
-    
+
+
+
     export let state_code, todays_data, district_data, historical_data, layout;
-    
+
     //TODO try using tanstack-query instead
     if (browser) {
         fetch(`https://stub-the-stubble.github.io/data-pipeline/v2/${state_code}/historical_data.json`)
@@ -31,6 +32,11 @@
 
 <div>
     <div class="my-12 xs:my-16">
+        <h2 class="mb-6 text-5xl text-brown font-bold uppercase">
+            <a href="{state_info[state_code].url}" class="hover:underline">
+                {state_info[state_code].name}
+            </a>
+        </h2>
         <CumulativeDataTable data={historical_data?.total.dates} last_updated={todays_data?.last_update} {layout} />
     </div>
     <div class="flex flex-col {layout === 'narrow' ? '' : 'md:flex-row'} md:items-center gap-16 mb-16">

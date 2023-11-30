@@ -47,10 +47,6 @@
 </script>
 
 <table class="w-full border-separate text-center">
-    <caption class="caption-top text-sm xs:text-base text-left xs:text-center mb-2">
-        <span class="inline-block">Detected fire data for this Kharif season</span>
-        <span class="inline-block">(15th September 2023 onwards)</span>
-    </caption>
     <thead>
         <tr class="h-12 text-sm xs:text-base">
             <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">Today</th>
@@ -91,7 +87,7 @@
     </tbody>
 </table>
 <p class="mt-2 italic text-xs text-left xs:text-right text-grey">
-    *New data is added to the system as soon as it is available to us. Last updated at {#if last_updated}
+    *The current Kharif season started on 15th September 2023. New data is added to the system as soon as it is available to us. Last updated at {#if last_updated}
         <span in:fade>{last_updated}</span>.
     {/if}
 </p>
