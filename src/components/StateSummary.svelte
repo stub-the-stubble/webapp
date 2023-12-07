@@ -1,30 +1,17 @@
 <script>
     import { LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart } from '$components';
     import { state_info } from '$lib/data/state_info';
-    import { browser } from '$app/environment';
+    import { fires_data } from '../stores/fires_data.js';
     import { getDateISO, IntersectionObserver } from '$lib/utils';
 
 
 
-    export let state_code, todays_data, district_data, historical_data, layout;
+    export let state_code, todays_data, districts_data, historical_data, layout;
 
-    //TODO try using tanstack-query instead
-    if (browser) {
-        fetch(`https://stub-the-stubble.github.io/data-pipeline/v2/${state_code}/historical_data.json`)
-            .then((res) => res.json())
-            .then((data) => {
-                historical_data = data;
-            });
-
-        //Get date string YYYY-MM-DD format in IST
-        const currentDateStr = getDateISO();
-
-        fetch(`https://stub-the-stubble.github.io/data-pipeline/v2/${state_code}/${currentDateStr}.json`)
-            .then((res) => res.json())
-            .then((data) => {
-                todays_data = data;
-                district_data = Object.entries(todays_data.districts);
-            });
+    $: if ($fires_data) {
+        todays_data = $fires_data[state_code + '_' + 'today'];
+        districts_data = Object.entries(todays_data.districts);
+        historical_data = $fires_data[state_code + '_' + 'historical'];
     }
 </script>
 
@@ -51,7 +38,7 @@
                     <h3 class="mb-6 text-xl font-semibold capitalize">
                         Districts with the most stubble fires
                     </h3>
-                    <DistrictBarchart total_count={todays_data.total} {district_data} />
+                    <DistrictBarchart total_count={todays_data.total} {districts_data} />
                 </div>
             {/if}
             <div class="mb-12 last:mb-0">
