@@ -2,7 +2,7 @@
     import { LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart } from '$components';
     import { state_info } from '$lib/data/state_info';
     import { fires_data } from '../stores/fires_data.js';
-    import { getDateISO, IntersectionObserver } from '$lib/utils';
+    import { IntersectionObserver } from '$lib/utils';
 
 
 
