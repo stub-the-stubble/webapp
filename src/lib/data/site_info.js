@@ -1,4 +1,10 @@
-export const state_info = {
+const site = {
+    'name': 'Stub the Stubble',
+};
+
+
+
+const states = {
     'PB': {
         name: 'Punjab',
         url: '/punjab',
@@ -8,3 +14,7 @@ export const state_info = {
         url: '/haryana',
     },
 };
+
+
+
+export { site, states };

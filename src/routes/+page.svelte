@@ -2,6 +2,7 @@
     import { Header, Footer, StateSummary } from '$components';
     import { fires_data } from '../stores/fires_data.js';
     import { fade } from 'svelte/transition';
+    import { site } from '$lib/data/site_info.js';
     import logoIcon from '$lib/assets/logo/stub_the_stubble_icon.svg';
 
 
@@ -12,6 +13,14 @@
         last_updated = $fires_data.PB_today?.last_update;
     }
 </script>
+
+
+
+<svelte:head>
+    <title>
+        {site.name}
+    </title>
+</svelte:head>
 
 
 

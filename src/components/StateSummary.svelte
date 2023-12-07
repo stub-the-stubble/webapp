@@ -1,6 +1,6 @@
 <script>
     import { LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart } from '$components';
-    import { state_info } from '$lib/data/state_info';
+    import { states } from '$lib/data/site_info.js';
     import { fires_data } from '../stores/fires_data.js';
     import { IntersectionObserver } from '$lib/utils';
 
@@ -20,8 +20,8 @@
 <div>
     <div class="my-12 xs:my-16">
         <h2 class="mb-6 text-5xl text-brown font-bold uppercase">
-            <a href="{state_info[state_code].url}" class="hover:underline">
-                {state_info[state_code].name}
+            <a href="{states[state_code].url}" class="hover:underline">
+                {states[state_code].name}
             </a>
         </h2>
         <CumulativeDataTable data={historical_data?.total.dates} last_updated={todays_data?.last_update} {layout} />

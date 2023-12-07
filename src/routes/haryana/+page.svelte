@@ -1,6 +1,15 @@
 <script>
     import { Header, Footer, StateSummary } from '$components';
+    import { site } from '$lib/data/site_info.js';
 </script>
+
+
+
+<svelte:head>
+    <title>
+        Haryana - {site.name}
+    </title>
+</svelte:head>
 
 
 
