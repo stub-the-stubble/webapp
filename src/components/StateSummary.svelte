@@ -8,10 +8,14 @@
 
     export let state_code, todays_data, districts_data, historical_data, layout;
 
-    $: if ($fires_data) {
-        todays_data = $fires_data[state_code + '_' + 'today'];
-        districts_data = Object.entries(todays_data.districts);
-        historical_data = $fires_data[state_code + '_' + 'historical'];
+    $: {
+        layout = layout ?? 'default';
+
+        if ($fires_data) {
+            todays_data = $fires_data[state_code + '_' + 'today'];
+            districts_data = Object.entries(todays_data.districts);
+            historical_data = $fires_data[state_code + '_' + 'historical'];
+        }
     }
 </script>
 
@@ -26,7 +30,7 @@
         </h2>
         <CumulativeDataTable data={historical_data?.total.dates} last_updated={todays_data?.last_update} {layout} />
     </div>
-    <div class="flex flex-col {layout === 'narrow' ? '' : 'md:flex-row'} md:items-center gap-x-16">
+    <div class="flex flex-col {layout === 'narrow' ? '' : 'md:flex-row'} md:items-center md:gap-16">
         <IntersectionObserver>
             <div class="mb-8 aspect-w-1 aspect-h-1">
                 <StateMap district_counts={todays_data?.districts} state_code={state_code} />
@@ -50,6 +54,6 @@
         </IntersectionObserver>
     </div>
     <IntersectionObserver>
-        <LeafletMap locations_data={todays_data?.locations} />
+        <!-- <LeafletMap locations_data={todays_data?.locations} /> -->
     </IntersectionObserver>
 </div>

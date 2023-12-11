@@ -4,16 +4,17 @@
     import { max, extent } from 'd3-array';
     import { timeMonday } from 'd3-time';
     import { timeFormat } from 'd3-time-format';
+    import { format } from 'd3-format';
     import { select } from 'd3-selection';
 
 
 
-    export let data;
+    export let data, height = 300;
 
     let svg;
-    const dimensions = {
+    let dimensions = {
         width: 600,
-        height: 300,
+        height: height,
         marginLeft: 40,
         marginRight: 40,
         marginTop: 10,
@@ -31,8 +32,10 @@
         let xScale = scaleTime()
             .domain(extent(data_filtered, (d) => new Date(d[0])))
             .range([dimensions.marginLeft, dimensions.width - dimensions.marginRight]);
+        let yMax = max(data_filtered, (d) => d[1]);
+        // Prevent 0 tick to show up in the middle of y axis and add two extra ticks if all values are zero
         let yScale = scaleLinear()
-            .domain([0, max(data_filtered, (d) => d[1])]).nice()
+            .domain([0, yMax + Math.max(Math.ceil(0.4 * yMax), 2)]).nice()
             .range([dimensions.height - dimensions.marginBottom, dimensions.marginTop]);
 
         // Add the x-axis and labels
@@ -42,10 +45,10 @@
         // Add the y-axis and labels
         svgSelection.append('g')
             .attr('transform', `translate(${dimensions.width - dimensions.marginRight}, 0)`)
-            .call(axisRight(yScale).tickSizeOuter(0));
-        svgSelection.append('g')
-            .attr('transform', `translate(${dimensions.marginLeft}, 0)`)
-            .call(axisLeft(yScale).tickSizeOuter(0));
+            .call(axisRight(yScale).tickSizeOuter(0).ticks(5).tickFormat(format('.0f')))
+            .selectAll('.tick')
+            .filter((d) => !Number.isInteger(d))
+            .attr('class', 'hidden');
 
         svgSelection.selectAll('circle')
             .data(data_filtered)

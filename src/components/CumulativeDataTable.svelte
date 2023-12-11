@@ -4,7 +4,7 @@
     import { fade } from 'svelte/transition';
 
     // Get data as a prop
-    export let data, last_updated, layout;
+    export let data, last_updated, layout, style;
 
     let fc_today = 0,
         fc_yesterday = 0,
@@ -17,37 +17,42 @@
     const this_month = getMonth(today);
     const this_year = getYear(today);
 
-    $: if (data) {
-        // Calculate fire counts for this week, this month and for all season
-        fc_this_week = 0;
-        fc_this_month = 0;
-        fc_all = 0;
-        for (const [date, count] of Object.entries(data)) {
-            const parsed_date = parse(date, 'yyyy-MM-dd', today);
-            const month = getMonth(parsed_date);
-            const year = getYear(parsed_date);
-            const week = getWeek(parsed_date, { weekStartsOn: 1 });
+    $: {
+        layout = layout ?? 'default';
+        style = style ?? 'default';
 
-            if (isToday(parsed_date)) {
-                fc_today = count;
-            } else if (isYesterday(parsed_date)) {
-                fc_yesterday = count;
-            }
-            if (month == this_month && year == this_year) {
-                fc_this_month += count;
-            }
-            if (week == this_week && year == this_year) {
-                fc_this_week += count;
-            }
-            if (isAfter(parsed_date, new Date(2023, 8, 15))) {
-                fc_all += count;
+        if (data) {
+            // Calculate fire counts for this week, this month and for all season
+            fc_this_week = 0;
+            fc_this_month = 0;
+            fc_all = 0;
+            for (const [date, count] of Object.entries(data)) {
+                const parsed_date = parse(date, 'yyyy-MM-dd', today);
+                const month = getMonth(parsed_date);
+                const year = getYear(parsed_date);
+                const week = getWeek(parsed_date, { weekStartsOn: 1 });
+
+                if (isToday(parsed_date)) {
+                    fc_today = count;
+                } else if (isYesterday(parsed_date)) {
+                    fc_yesterday = count;
+                }
+                if (month == this_month && year == this_year) {
+                    fc_this_month += count;
+                }
+                if (week == this_week && year == this_year) {
+                    fc_this_week += count;
+                }
+                if (isAfter(parsed_date, new Date(2023, 8, 15))) {
+                    fc_all += count;
+                }
             }
         }
     }
 </script>
 
 <table class="w-full border-separate text-center">
-    <thead>
+    <thead class={style === 'minimal' ? 'md:sr-only' : ''}>
         <tr class="h-12 text-sm xs:text-base">
             <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">Today</th>
             <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">Yesterday</th>
