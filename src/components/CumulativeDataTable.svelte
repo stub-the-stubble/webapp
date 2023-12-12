@@ -2,9 +2,37 @@
     import { parse, getWeek, getMonth, isAfter, getYear, isToday, isYesterday } from 'date-fns';
     import { getDateIST } from '$lib/utils';
     import { fade } from 'svelte/transition';
+    import { th } from 'date-fns/locale';
 
     // Get data as a prop
     export let data, last_updated, layout, style;
+    export const periods = [
+        'Today',
+        'Yesterday',
+        'This week',
+        'This month',
+        'This season',
+    ];
+    export const styleClasses = {
+        default: {
+            table: 'w-full border-separate text-center',
+            thead: '',
+            thead_tr: 'h-12 text-sm xs:text-base',
+            thead_th: 'bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize',
+            tbody: '',
+            tbody_tr: 'h-12',
+            tbody_td: 'bg-light-grey px-2',
+        },
+        minimal: {
+            table: 'w-full h-full border-separate text-center table-fixed',
+            thead: 'md:sr-only',
+            thead_tr: 'h-12 text-sm xs:text-base',
+            thead_th: '',
+            tbody: 'h-full',
+            tbody_tr: 'md:flex h-full',
+            tbody_td: 'basis-1/5 flex-none md:flex md:justify-center md:items-center h-full px-1 text-center capitalize border-l last:border-r border-dashed border-lightish-grey',
+        },
+    };
 
     let fc_today = 0,
         fc_yesterday = 0,
@@ -51,39 +79,39 @@
     }
 </script>
 
-<table class="w-full border-separate text-center">
-    <thead class={style === 'minimal' ? 'md:sr-only' : ''}>
-        <tr class="h-12 text-sm xs:text-base">
-            <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">Today</th>
-            <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">Yesterday</th>
-            <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">This week</th>
-            <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">This month</th>
-            <th class="bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize">Season till date</th>
+<table class={styleClasses[style].table}>
+    <thead class={styleClasses[style].thead}>
+        <tr class={styleClasses[style].thead_tr}>
+            {#each periods as period}
+                <th class={styleClasses[style].thead_th}>
+                    {period}
+                </th>
+            {/each}
         </tr>
     </thead>
-    <tbody>
-        <tr class="h-12">
-            <td class="bg-light-grey px-2">
+    <tbody class={styleClasses[style].tbody}>
+        <tr class={styleClasses[style].tbody_tr}>
+            <td class={styleClasses[style].tbody_td}>
                 {#if data}
                     <span in:fade>{fc_today}</span>
                 {/if}
             </td>
-            <td class="bg-light-grey px-2">
+            <td class={styleClasses[style].tbody_td}>
                 {#if data}
                     <span in:fade>{fc_yesterday}</span>
                 {/if}
             </td>
-            <td class="bg-light-grey px-2">
+            <td class={styleClasses[style].tbody_td}>
                 {#if data}
                     <span in:fade>{fc_this_week}</span>
                 {/if}
             </td>
-            <td class="bg-light-grey px-2">
+            <td class={styleClasses[style].tbody_td}>
                 {#if data}
                     <span in:fade>{fc_this_month}</span>
                 {/if}
             </td>
-            <td class="bg-light-grey px-2">
+            <td class={styleClasses[style].tbody_td}>
                 {#if data}
                     <span in:fade>{fc_all}</span>
                 {/if}

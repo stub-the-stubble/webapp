@@ -1,6 +1,6 @@
 <script>
     import { scaleLinear, scaleTime } from 'd3-scale';
-    import { axisLeft, axisRight, axisBottom } from 'd3-axis';
+    import { axisRight, axisBottom } from 'd3-axis';
     import { max, extent } from 'd3-array';
     import { timeMonday } from 'd3-time';
     import { timeFormat } from 'd3-time-format';
@@ -15,8 +15,8 @@
     let dimensions = {
         width: 600,
         height: height,
-        marginLeft: 40,
-        marginRight: 40,
+        marginLeft: 20,
+        marginRight: 60,
         marginTop: 10,
         marginBottom: 30,
     };

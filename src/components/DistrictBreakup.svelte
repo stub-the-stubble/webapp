@@ -10,7 +10,7 @@
         'Yesterday',
         'This week',
         'This month',
-        'Season till date',
+        'This season',
     ];
 
     $: if ($fires_data) {
@@ -26,26 +26,37 @@
 </h2>
 <div class="mb-12 last:mb-0">
     {#if $fires_data }
-        <div class="flex justify-between items-center gap-16">
+        <div class="flex justify-between items-center gap-4 border-b border-dashed border-lightish-grey">
             <div class="basis-1/6 flex-none"></div>
-            <div class="basis-5/12 flex-none flex">
-                {#each periods as period}
-                    <div class="basis-1/5 flex-none px-1 text-center capitalize">
-                        {period}
-                    </div>
-                {/each}
-            </div>
-            <div class="basis-5/12 flex-none"></div>
+            <table class="hidden md:table basis-2/5 flex-none border-separate table-fixed">
+                <thead>
+                    <tr class="flex">
+                        {#each periods as period}
+                            <th class="basis-1/5 w-1/5 flex-none flex justify-center items-center px-2 py-4 text-center capitalize border-l last:border-r border-dashed border-lightish-grey">
+                                <span class="font-normal break-words">
+                                    {period}
+                                </span>
+                            </th>
+                        {/each}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="basis-2/5 flex-none"></div>
         </div>
         {#each districts_data as district }
-            <div class="mb-8 last:mb-0 flex flex-col md:flex-row md:justify-between md:items-center md:gap-16">
+            <div class="flex flex-col md:flex-row md:justify-between md:gap-4 border-b last:border-none border-dashed border-lightish-grey">
                 <h4 class="md:basis-1/6 md:flex-none">
                     {district[0]}
                 </h4>
-                <div class="md:basis-5/12 md:flex-none">
+                <div class="md:basis-2/5 md:flex-none">
                     <CumulativeDataTable data={historical_data?.districts[district[0]].dates} style="minimal" />
                 </div>
-                <div class="md:basis-5/12">
+                <div class="md:basis-2/5 md:flex-none pt-4 pb-2">
                     <FireCountChart data={district[1].dates} height=200 />
                 </div>
             </div>
