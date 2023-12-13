@@ -24,13 +24,13 @@
             tbody_td: 'bg-light-grey px-2',
         },
         minimal: {
-            table: 'w-full h-full text-center table-fixed',
+            table: 'w-full md:h-full text-center table-fixed',
             thead: 'md:sr-only',
             thead_tr: 'h-12 text-sm xs:text-base',
             thead_th: 'w-1/5 font-normal border border-dashed border-lightish-grey capitalize',
-            tbody: 'h-full',
-            tbody_tr: 'md:flex h-12 md:h-full',
-            tbody_td: 'basis-1/5 flex-none md:flex md:justify-center md:items-center h-full px-1 md:py-0 text-center capitalize border-l last:border-r border-b md:border-b-0 border-dashed border-lightish-grey',
+            tbody: 'md:h-full',
+            tbody_tr: 'md:flex',
+            tbody_td: 'md:basis-1/5 md:flex-none md:flex md:justify-center md:items-center h-12 md:h-full px-1 md:py-2 text-center capitalize border-l last:border-r border-b md:border-b-0 border-dashed border-lightish-grey',
         },
     };
 
