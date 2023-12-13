@@ -16,7 +16,7 @@
         width: 600,
         height: height,
         marginLeft: 20,
-        marginRight: 60,
+        marginRight: 36,
         marginTop: 10,
         marginBottom: 30,
     };

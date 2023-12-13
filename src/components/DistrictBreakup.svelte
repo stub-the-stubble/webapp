@@ -26,9 +26,9 @@
 </h2>
 <div class="mb-12 last:mb-0">
     {#if $fires_data }
-        <div class="flex justify-between items-center gap-4 border-b border-dashed border-lightish-grey">
+        <div class="hidden md:flex md:justify-between md:items-center md:gap-4 md:sticky md:top-0 md:border-b md:border-dashed md:border-lightish-grey bg-lightest-grey/90 backdrop-blur-sm">
             <div class="basis-1/6 flex-none"></div>
-            <table class="hidden md:table basis-2/5 flex-none border-separate table-fixed">
+            <table class="table basis-2/5 flex-none table-fixed">
                 <thead>
                     <tr class="flex">
                         {#each periods as period}
@@ -49,9 +49,11 @@
             <div class="basis-2/5 flex-none"></div>
         </div>
         {#each districts_data as district }
-            <div class="flex flex-col md:flex-row md:justify-between md:gap-4 border-b last:border-none border-dashed border-lightish-grey">
-                <h4 class="md:basis-1/6 md:flex-none">
-                    {district[0]}
+            <div class="flex flex-col md:flex-row md:justify-between md:gap-4 mb-8 md:mb-0 last:mb-0 md:border-b md:last:border-none md:border-dashed md:border-lightish-grey">
+                <h4 class="md:basis-1/6 md:flex-none md:flex md:items-center mb-2 md:mb-0">
+                    <span class="md:ml-4 text-lg md:text-base font-semibold break-all">
+                        {district[0]}
+                    </span>
                 </h4>
                 <div class="md:basis-2/5 md:flex-none">
                     <CumulativeDataTable data={historical_data?.districts[district[0]].dates} style="minimal" />
