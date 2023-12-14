@@ -4,7 +4,7 @@ Release notes for the Stub the Stubble website.
 
 
 
-## Unreleased
+## 1.3.0 - 2023-12-14
 
 ### Added
 - Add separate pages for Punjab and Haryana data.
