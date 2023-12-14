@@ -54,6 +54,6 @@
         </IntersectionObserver>
     </div>
     <IntersectionObserver>
-        <!-- <LeafletMap locations_data={todays_data?.locations} /> -->
+        <LeafletMap locations_data={todays_data?.locations} />
     </IntersectionObserver>
 </div>
