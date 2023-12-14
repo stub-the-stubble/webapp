@@ -4,10 +4,15 @@ Release notes for the Stub the Stubble website.
 
 
 
-## Unreleased
+## 1.3.0 - 2023-12-14
 
 ### Added
 - Add separate pages for Punjab and Haryana data.
+- Added basic SEO information to pages.
+- Added charts to show district-wise breakup of fires for Punjab and Haryana.
+
+### Changed
+- Improved logic to pass fires data to all pages.
 
 
 
