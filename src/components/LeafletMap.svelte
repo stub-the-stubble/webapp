@@ -24,7 +24,7 @@
         }).addTo(l_map);
 
         fire_icon = L.icon({
-            iconUrl: 'fire_dot2.png',
+            iconUrl: 'fire_pin.png',
             iconSize: [20, 20], // size of the icon
             iconAnchor: [7.5, 7.5], // point of the icon which will correspond to marker's location
             popupAnchor: [0, -7.5], // point from which the popup should open relative to the iconAnchor
