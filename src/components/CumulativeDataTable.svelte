@@ -15,22 +15,18 @@
     ];
     export const styleClasses = {
         default: {
-            table: 'w-full border-separate text-center',
-            thead: '',
-            thead_tr: 'h-12 text-sm xs:text-base',
-            thead_th: 'bg-light-grey px-1 py-1 font-semibold w-1/5 capitalize',
-            tbody: '',
-            tbody_tr: 'h-12',
-            tbody_td: 'bg-light-grey px-2',
+            table: 'w-full text-sm xs:text-base text-center',
+            thead: 'flex h-12 border-b-2 border-lightest-grey',
+            thead_th: 'w-1/5 flex-none flex justify-center items-center px-1 py-1 bg-light-grey font-semibold capitalize border-r-2 last:border-r-0 border-lightest-grey',
+            tbody: 'flex h-12',
+            tbody_td: 'w-1/5 flex-none flex justify-center items-center px-1 py-1 bg-light-grey font-semibold capitalize border-r-2 last:border-r-0 border-lightest-grey',
         },
         minimal: {
-            table: 'w-full md:h-full text-center table-fixed',
-            thead: 'md:sr-only',
-            thead_tr: 'h-12 text-sm xs:text-base',
-            thead_th: 'w-1/5 font-normal border border-dashed border-lightish-grey capitalize',
-            tbody: 'md:h-full',
-            tbody_tr: 'md:flex',
-            tbody_td: 'md:basis-1/5 md:flex-none md:flex md:justify-center md:items-center h-12 md:h-full px-1 md:py-2 text-center capitalize border-l last:border-r border-b md:border-b-0 border-dashed border-lightish-grey',
+            table: 'w-full md:h-full text-sm xs:text-base text-center',
+            thead: 'md:sr-only flex h-12',
+            thead_th: 'w-1/5 flex justify-center items-center font-normal border border-dashed border-lightish-grey capitalize',
+            tbody: 'flex h-10 md:h-full',
+            tbody_td: 'w-1/5 md:flex-none flex justify-center items-center md:h-full px-1 md:py-2 text-center capitalize border-l last:border-r border-b md:border-b-0 border-dashed border-lightish-grey',
         },
     };
 
@@ -79,46 +75,44 @@
     }
 </script>
 
-<table class={styleClasses[style].table}>
-    <thead class={styleClasses[style].thead}>
-        <tr class={styleClasses[style].thead_tr}>
+
+
+<div class={styleClasses[style].table}>
+    <div class={styleClasses[style].thead}>
             {#each periods as period}
-                <th class={styleClasses[style].thead_th}>
+                <div class={styleClasses[style].thead_th}>
                     {period}
-                </th>
+                </div>
             {/each}
-        </tr>
-    </thead>
-    <tbody class={styleClasses[style].tbody}>
-        <tr class={styleClasses[style].tbody_tr}>
-            <td class={styleClasses[style].tbody_td}>
+    </div>
+    <div class={styleClasses[style].tbody}>
+            <div class={styleClasses[style].tbody_td}>
                 {#if data}
                     <span in:fade>{fc_today}</span>
                 {/if}
-            </td>
-            <td class={styleClasses[style].tbody_td}>
+            </div>
+            <div class={styleClasses[style].tbody_td}>
                 {#if data}
                     <span in:fade>{fc_yesterday}</span>
                 {/if}
-            </td>
-            <td class={styleClasses[style].tbody_td}>
+            </div>
+            <div class={styleClasses[style].tbody_td}>
                 {#if data}
                     <span in:fade>{fc_this_week}</span>
                 {/if}
-            </td>
-            <td class={styleClasses[style].tbody_td}>
+            </div>
+            <div class={styleClasses[style].tbody_td}>
                 {#if data}
                     <span in:fade>{fc_this_month}</span>
                 {/if}
-            </td>
-            <td class={styleClasses[style].tbody_td}>
+            </div>
+            <div class={styleClasses[style].tbody_td}>
                 {#if data}
                     <span in:fade>{fc_all}</span>
                 {/if}
-            </td>
-        </tr>
-    </tbody>
-</table>
+            </div>
+    </div>
+</div>
 {#if layout != 'narrow' && last_updated}
     <p class="mt-2 italic text-xs text-left xs:text-right text-grey">
         * The current Kharif season started on 15th September 2023. New data is added to the system as soon as it is available to us. Last updated at {#if last_updated}
