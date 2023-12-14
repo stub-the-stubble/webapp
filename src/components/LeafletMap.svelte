@@ -3,7 +3,8 @@
     import 'leaflet/dist/leaflet.css';
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-    import redDot from '$lib/assets/icons/red_dot.png';
+
+
 
     export let locations_data;
 
@@ -24,7 +25,7 @@
         }).addTo(l_map);
 
         fire_icon = L.icon({
-            iconUrl: 'fire_pin.png',
+            iconUrl: 'assets/icons/fire_map_pin.png',
             iconSize: [20, 20], // size of the icon
             iconAnchor: [7.5, 7.5], // point of the icon which will correspond to marker's location
             popupAnchor: [0, -7.5], // point from which the popup should open relative to the iconAnchor
@@ -49,5 +50,7 @@
         l_map.addLayer(markers);
     }
 </script>
+
+
 
 <div id="map" class="w-full aspect-square sm:aspect-video mx-auto" bind:this={mapElement} />
