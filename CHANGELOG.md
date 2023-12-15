@@ -7,7 +7,8 @@ Release notes for the Stub the Stubble website.
 ## Unreleased
 
 ### Changed
-- Changed the map markers to bright fire icons (GitHub [#11](https://github.com/stub-the-stubble/webapp/pull/11)). Thanks [@Arya-GITh](https://github.com/Arya-GITh).
+- Changed Leaflet map markers to bright fire icons (GitHub [#11](https://github.com/stub-the-stubble/webapp/pull/11)). Thanks [@Arya-GITh](https://github.com/Arya-GITh).
+- Adjust Leaflet map zoom level based on its parent's layout.
 
 
 
