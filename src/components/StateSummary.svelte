@@ -54,6 +54,6 @@
         </IntersectionObserver>
     </div>
     <IntersectionObserver>
-        <LeafletMap locations_data={todays_data?.locations} center={states[state_code].coordinates} />
+        <LeafletMap locations_data={todays_data?.locations} {state_code} center={states[state_code].coordinates} {layout} />
     </IntersectionObserver>
 </div>
