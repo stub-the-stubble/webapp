@@ -4,6 +4,13 @@ Release notes for the Stub the Stubble website.
 
 
 
+## Unreleased
+
+### Changed
+- Changed the map markers to bright fire icons (GitHub [#11](https://github.com/stub-the-stubble/webapp/pull/11)). Thanks [@Arya-GITh](https://github.com/Arya-GITh).
+
+
+
 ## 1.3.0 - 2023-12-14
 
 ### Added
