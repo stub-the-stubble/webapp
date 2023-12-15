@@ -30,7 +30,7 @@
         </h2>
         <CumulativeDataTable data={historical_data?.total.dates} last_updated={todays_data?.last_update} {layout} />
     </div>
-    <div class="flex flex-col {layout === 'narrow' ? '' : 'md:flex-row'} md:items-center md:gap-16">
+    <div class="flex flex-col {layout === 'narrow' ? '' : 'md:flex-row'} md:items-center md:gap-16 mb-12 last:mb-0">
         <IntersectionObserver>
             <div class="mb-8 aspect-w-1 aspect-h-1">
                 <StateMap district_counts={todays_data?.districts} state_code={state_code} />
@@ -54,6 +54,6 @@
         </IntersectionObserver>
     </div>
     <IntersectionObserver>
-        <!-- <LeafletMap locations_data={todays_data?.locations} /> -->
+        <LeafletMap locations_data={todays_data?.locations} />
     </IntersectionObserver>
 </div>

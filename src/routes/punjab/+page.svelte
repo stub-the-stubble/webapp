@@ -16,7 +16,7 @@
 <Header />
 <div class="container my-12">
     <div class="w-full xl:w-5/6 mx-auto">
-        <div class="mb-16">
+        <div class="mb-24">
             <StateSummary state_code="PB" />
         </div>
         <DistrictBreakup state_code="PB" />

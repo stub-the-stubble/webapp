@@ -3,6 +3,7 @@
     import 'leaflet/dist/leaflet.css';
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+    import map_marker from '$lib/assets/icons/fire_map_marker.png';
 
 
 
@@ -25,8 +26,8 @@
         }).addTo(l_map);
 
         fire_icon = L.icon({
-            iconUrl: 'assets/icons/fire_map_pin.png',
-            iconSize: [20, 20], // size of the icon
+            iconUrl: map_marker,
+            iconSize: [30, 30], // size of the icon
             iconAnchor: [7.5, 7.5], // point of the icon which will correspond to marker's location
             popupAnchor: [0, -7.5], // point from which the popup should open relative to the iconAnchor
         });
@@ -44,7 +45,6 @@
                 marker_html,
                 { closeButton: false },
             );
-
             markers.addLayer(marker);
         });
         l_map.addLayer(markers);
@@ -53,4 +53,4 @@
 
 
 
-<div id="map" class="w-full aspect-square sm:aspect-video mx-auto" bind:this={mapElement} />
+<div id="map" class="w-full aspect-w-16 aspect-h-9 mx-auto" bind:this={mapElement} />
