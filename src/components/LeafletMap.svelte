@@ -3,7 +3,7 @@
     import 'leaflet/dist/leaflet.css';
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-    import fire_map_pin from '$lib/assets/icons/fire_map_pin.png';
+    import map_marker from '$lib/assets/icons/fire_map_marker.png';
 
 
 
@@ -26,7 +26,7 @@
         }).addTo(l_map);
 
         fire_icon = L.icon({
-            iconUrl: fire_map_pin,
+            iconUrl: map_marker,
             iconSize: [30, 30], // size of the icon
             iconAnchor: [7.5, 7.5], // point of the icon which will correspond to marker's location
             popupAnchor: [0, -7.5], // point from which the popup should open relative to the iconAnchor
