@@ -7,7 +7,7 @@
 
 
 
-    export let locations_data;
+    export let locations_data, center;
 
     let mapElement, L, L_M, l_map, fire_icon, markers;
 
@@ -15,7 +15,7 @@
         L = await import('leaflet');
         L_M = await import('leaflet.markercluster/dist/leaflet.markercluster.js');
 
-        l_map = L.map(mapElement, { preferCanvas: true }).setView([31.0, 76.5], 8);
+        l_map = L.map(mapElement, { preferCanvas: true }).setView(center, 8);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
