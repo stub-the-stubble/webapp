@@ -1,18 +1,20 @@
 const site = {
-    'name': 'Stub the Stubble',
+    name: 'Stub the Stubble',
 };
 
 
 
 const states = {
-    'PB': {
+    PB: {
         name: 'Punjab',
         url: '/punjab',
     },
-    'HR': {
+    HR: {
         name: 'Haryana',
         url: '/haryana',
     },
+    haryana: 'HR',
+    punjab: 'PB',
 };
 
 
