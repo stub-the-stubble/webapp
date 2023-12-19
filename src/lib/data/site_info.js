@@ -5,15 +5,17 @@ const site = {
 
 
 const states = {
-    'PB': {
+    'punjab': {
         name: 'Punjab',
-        url: '/punjab',
-        coordinates: [31.0, 76.5],
+        code: 'PB',
+        url: '/states/punjab',
+        center: [31.0, 76.5],
     },
-    'HR': {
+    'haryana': {
         name: 'Haryana',
-        url: '/haryana',
-        coordinates: [29.25, 76.5],
+        code: 'HR',
+        url: '/states/haryana',
+        center: [29.25, 76.5],
     },
 };
 

@@ -6,7 +6,9 @@
 
 
 
-    export let state_code, todays_data, districts_data, historical_data, layout;
+    export let state, state_code, todays_data, districts_data, historical_data, layout;
+
+    state_code = states[state].code;
 
     $: {
         layout = layout ?? 'default';
@@ -24,8 +26,8 @@
 <div>
     <div class="my-12 xs:my-16">
         <h2 class="mb-6 text-5xl text-brown font-bold uppercase">
-            <a href="{states[state_code].url}" class="hover:underline">
-                {states[state_code].name}
+            <a href={states[state].url} class="hover:underline">
+                {states[state].name}
             </a>
         </h2>
         <CumulativeDataTable data={historical_data?.total.dates} last_updated={todays_data?.last_update} {layout} />
@@ -54,6 +56,6 @@
         </IntersectionObserver>
     </div>
     <IntersectionObserver>
-        <LeafletMap locations_data={todays_data?.locations} {state_code} center={states[state_code].coordinates} {layout} />
+        <LeafletMap locations_data={todays_data?.locations} {state_code} center={states[state].center} {layout} />
     </IntersectionObserver>
 </div>

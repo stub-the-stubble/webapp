@@ -1,13 +1,18 @@
 <script>
     import { Header, Footer, StateSummary, DistrictBreakup } from '$components';
-    import { site } from '$lib/data/site_info.js';
+    import { page } from '$app/stores';
+    import { site, states } from '$lib/data/site_info.js';
+
+
+
+    export let state = $page.params.state;
 </script>
 
 
 
 <svelte:head>
     <title>
-        Punjab - {site.name}
+        {states[state].name} - {site.name}
     </title>
 </svelte:head>
 
@@ -17,9 +22,9 @@
 <div class="container my-12">
     <div class="w-full xl:w-5/6 mx-auto">
         <div class="mb-24">
-            <StateSummary state_code="PB" />
+            <StateSummary {state} />
         </div>
-        <DistrictBreakup state_code="PB" />
+        <DistrictBreakup {state} />
     </div>
 </div>
 <Footer />

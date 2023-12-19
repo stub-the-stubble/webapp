@@ -1,10 +1,11 @@
 <script>
     import { CumulativeDataTable, FireCountChart } from '$components';
+    import { states } from '$lib/data/site_info.js';
     import { fires_data } from '../stores/fires_data.js';
 
 
 
-    export let state_code, historical_data, districts_data;
+    export let state, state_code, historical_data, districts_data;
     export const periods = [
         'Today',
         'Yesterday',
@@ -12,6 +13,8 @@
         'This month',
         'This season',
     ];
+
+    state_code = states[state].code;
 
     $: if ($fires_data) {
         historical_data = $fires_data[state_code + '_' + 'historical'];

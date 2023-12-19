@@ -4,10 +4,10 @@
         url: '/',
     },{
         text: 'Punjab',
-        url: '/punjab',
+        url: '/states/punjab',
     },{
         text: 'Haryana',
-        url: '/haryana',
+        url: '/states/haryana',
     }];
     let secondaryNavItems = [{
         text: 'Insights',
