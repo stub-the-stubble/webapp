@@ -60,6 +60,12 @@
         </IntersectionObserver>
     </div>
     <IntersectionObserver>
+        <svelte:element this={subheadingLevel} class="mb-2 text-xl font-semibold capitalize">
+            Today's fire locations
+        </svelte:element>
+        <p class="mb-6 italic text-xs text-grey">
+            * An empty map will be shown if today's fire count is zero.
+        </p>
         <LeafletMap locations_data={todays_data?.locations} {state_code} center={states[state].center} {layout} />
     </IntersectionObserver>
 </div>
