@@ -1,5 +1,5 @@
 <script>
-    import { fires_data } from '../stores/fires_data.js';
+    import { fires_data } from '../stores.js';
     import { browser } from '$app/environment';
     import '../app.css';
 

@@ -1,6 +1,6 @@
 <script>
     import { Header, Footer, StateSummary } from '$components';
-    import { fires_data } from '../stores/fires_data.js';
+    import { fires_data } from '../stores.js';
     import { fade } from 'svelte/transition';
     import { site } from '$lib/data/site_info.js';
     import logoIcon from '$lib/assets/logo/stub_the_stubble_icon.svg';

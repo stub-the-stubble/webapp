@@ -1,7 +1,7 @@
 <script>
     import { CumulativeDataTable, FireCountChart } from '$components';
     import { states } from '$lib/data/site_info.js';
-    import { fires_data } from '../stores/fires_data.js';
+    import { fires_data } from '../stores.js';
 
 
 
