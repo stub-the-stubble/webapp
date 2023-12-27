@@ -30,7 +30,7 @@
 <div>
     <div class="my-12 xs:my-16">
         <svelte:element this={headingLevel} class="mb-6 text-5xl text-brown font-bold uppercase">
-            <a href={states[state].url} class="hover:underline">
+            <a href={states[state].url} class="hover:underline" data-sveltekit-reload>
                 {states[state].name}
             </a>
         </svelte:element>

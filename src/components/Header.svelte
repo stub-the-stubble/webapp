@@ -27,7 +27,7 @@
                 <ul class="flex">
                     {#each primaryNavItems as item}
                         <li class="flex-none mr-4 last:mr-0 hidden sm:block first:block">
-                            <a href="{item.url}" class="hover:text-brown">
+                            <a href="{item.url}" class="hover:text-brown" data-sveltekit-reload>
                                 {item.text}
                             </a>
                         </li>
@@ -38,7 +38,7 @@
                 <ul class="flex">
                     {#each secondaryNavItems as item}
                         <li class="flex-none mr-4 last:mr-0">
-                            <a href="{item.url}" class="hover:text-brown">
+                            <a href="{item.url}" class="hover:text-brown" rel="external">
                                 {item.text}
                             </a>
                         </li>
