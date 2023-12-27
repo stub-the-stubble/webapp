@@ -58,10 +58,6 @@
                 $highlightedDate = data_filtered[highlightedBarIndex][0];
             }
         }
-        function handleMouseOut(e) {
-            // Highlight today's count on mouse out
-            $highlightedDate = data_filtered[data_filtered.length - 1][0];
-        }
 
         // Prevent extra axes from getting added every time the reactive block runs
         if (svg?.querySelectorAll('[data-part="axis"]').length < 2) {
