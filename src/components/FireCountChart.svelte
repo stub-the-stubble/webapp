@@ -92,6 +92,10 @@
                 }
             );
 
+        // Highlight circle on bar corresponding to highlighted date
+        svgSelection.selectAll('circle')
+            .attr('r', (d) => d[0] === $highlightedDate ? 6 : 4);
+
         svgSelection.selectAll('.stem')
             .data(data_filtered)
             .join(
