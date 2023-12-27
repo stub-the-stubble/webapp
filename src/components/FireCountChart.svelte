@@ -114,9 +114,9 @@
 
 
 <div class="relative">
-    <div class="absolute top-0 left-3">
+    <div class="md:absolute top-0 left-3">
         <h4 class="text-xs text-grey">
-            {timeFormat('%d %b')($highlightedDate)}
+            {timeFormat('%d %B %G')($highlightedDate)}
         </h4>
         <h5 class="text-xl text-red font-semibold">
             {highlightedCount}
