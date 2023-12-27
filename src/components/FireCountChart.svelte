@@ -16,7 +16,7 @@
     let dimensions = {
         width: 600,
         height: height,
-        marginLeft: 20,
+        marginLeft: 10,
         marginRight: 36,
         marginTop: 10,
         marginBottom: 30,
@@ -118,7 +118,7 @@
 
 
 <div class="relative">
-    <div class="md:absolute top-0 left-3">
+    <div class="md:absolute top-0 left-0">
         <h4 class="text-xs text-grey">
             {timeFormat('%d %B %G')($highlightedDate)}
         </h4>
