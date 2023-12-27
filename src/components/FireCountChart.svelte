@@ -27,8 +27,10 @@
         let data_filtered = data_tuple.slice(data_tuple.length - 30).map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
         let data_filtered_object = Object.fromEntries(data_filtered);
 
-        // Set default highlighted date
-        $highlightedDate = data_filtered[data_filtered.length - 1][0];
+        // Set default highlighted date when page loads for the first time
+        if (isNaN($highlightedDate)) {
+            $highlightedDate = data_filtered[data_filtered.length - 1][0];
+        }
         // Calculate count when highlighted date changes
         highlightedCount = data_filtered_object[$highlightedDate]
 
