@@ -110,8 +110,7 @@
         svgSelection.selectAll('*').attr('pointer-events', 'none');
         svgSelection
             .on('mousemove', handleMouseMove)
-            .on('touchmove', (e) => handleMouseMove(e.touches[0]))
-            .on('mouseout touchend', handleMouseOut);
+            .on('touchmove', (e) => handleMouseMove(e.touches[0]));
     }
 </script>
 
