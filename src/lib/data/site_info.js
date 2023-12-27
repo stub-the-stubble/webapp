@@ -1,20 +1,20 @@
 const site = {
-    'name': 'Stub the Stubble',
+    name: 'Stub the Stubble',
 };
 
 
 
 const states = {
-    'punjab': {
+    punjab: {
         name: 'Punjab',
         code: 'PB',
-        url: '/states/punjab',
+        url: '/punjab',
         center: [31.0, 76.5],
     },
-    'haryana': {
+    haryana: {
         name: 'Haryana',
         code: 'HR',
-        url: '/states/haryana',
+        url: '/haryana',
         center: [29.25, 76.5],
     },
 };
