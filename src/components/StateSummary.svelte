@@ -39,7 +39,7 @@
     <div class="flex flex-col {layout === 'narrow' ? '' : 'md:flex-row'} md:items-center md:gap-16 mb-12 last:mb-0">
         <IntersectionObserver>
             <div class="mb-8 aspect-w-1 aspect-h-1">
-                <StateMap district_counts={todays_data?.districts} state_code={state_code} />
+                <StateMap {state} {todays_data} district_breakup={todays_data?.districts} />
             </div>
         </IntersectionObserver>
         <IntersectionObserver>
