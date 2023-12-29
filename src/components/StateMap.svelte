@@ -43,7 +43,7 @@
             </h5>
         </div>
     {/if}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-mouse-events-have-key-events -->
     <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full stroke-black" viewBox={bbox} on:mouseout={handleMouseOut} role="presentation">
         {#if district_breakup}
             <g>
