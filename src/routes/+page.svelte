@@ -1,6 +1,6 @@
 <script>
     import { Header, Footer, StateSummary } from '$components';
-    import { fires_data } from '../stores/fires_data.js';
+    import { fires_data } from '../stores.js';
     import { fade } from 'svelte/transition';
     import { site } from '$lib/data/site_info.js';
     import logoIcon from '$lib/assets/logo/stub_the_stubble_icon.svg';
@@ -51,8 +51,8 @@
             </p>
         {/if}
         <div class="md:grid md:grid-cols-2 md:gap-20">
-            <StateSummary state_code="PB" layout="narrow" />
-            <StateSummary state_code="HR" layout="narrow" />
+            <StateSummary state="punjab" layout="narrow" />
+            <StateSummary state="haryana" layout="narrow" />
         </div>
     </div>
 </div>

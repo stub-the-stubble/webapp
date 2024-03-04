@@ -1,19 +1,21 @@
 const site = {
-    'name': 'Stub the Stubble',
+    name: 'Stub the Stubble',
 };
 
 
 
 const states = {
-    'PB': {
+    punjab: {
         name: 'Punjab',
+        code: 'PB',
         url: '/punjab',
-        coordinates: [31.0, 76.5],
+        center: [31.0, 76.5],
     },
-    'HR': {
+    haryana: {
         name: 'Haryana',
+        code: 'HR',
         url: '/haryana',
-        coordinates: [29.25, 76.5],
+        center: [29.25, 76.5],
     },
 };
 
