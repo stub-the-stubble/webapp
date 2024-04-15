@@ -7,30 +7,31 @@
 
 
 
-    export let state, state_code, todays_data, districts_data, historical_data, layout, isStatePage, headingLevel, subheadingLevel;
+    export let state,
+        layout = 'default';
 
-    state_code = states[state].code;
-    isStatePage = $page.params.state === state;
-    headingLevel = isStatePage ? 'h1' : 'h2';
-    subheadingLevel = isStatePage ? 'h2' : 'h3';
+    let state_code, todays_data, districts_data, historical_data, isStatePage, headingLevel, subheadingLevel;
 
     $: {
-        layout = layout ?? 'default';
+        state_code = states[state].code;
+        isStatePage = $page.params.state === state;
+        headingLevel = isStatePage ? 'h1' : 'h2';
+        subheadingLevel = isStatePage ? 'h2' : 'h3';
+    }
 
-        if ($fires_data) {
-            todays_data = $fires_data[state_code + '_' + 'today'];
-            districts_data = Object.entries(todays_data.districts);
-            historical_data = $fires_data[state_code + '_' + 'historical'];
-        }
+    $: if ($fires_data) {
+        todays_data = $fires_data[state_code + '_' + 'today'];
+        districts_data = Object.entries(todays_data.districts);
+        historical_data = $fires_data[state_code + '_' + 'historical'];
     }
 </script>
 
 
-
+{#key state}
 <div>
     <div class="my-12 xs:my-16">
         <svelte:element this={headingLevel} class="mb-6 text-5xl text-brown font-bold uppercase">
-            <a href={states[state].url} class="hover:underline" data-sveltekit-reload>
+            <a href={states[state].url} class="hover:underline">
                 {states[state].name}
             </a>
         </svelte:element>
@@ -69,3 +70,4 @@
         <LeafletMap locations_data={todays_data?.locations} {state_code} center={states[state].center} {layout} />
     </IntersectionObserver>
 </div>
+{/key}

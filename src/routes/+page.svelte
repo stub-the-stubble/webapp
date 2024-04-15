@@ -7,7 +7,7 @@
 
 
 
-    export let last_updated;
+    let last_updated;
 
     $: if ($fires_data) {
         last_updated = $fires_data.PB_today?.last_update;

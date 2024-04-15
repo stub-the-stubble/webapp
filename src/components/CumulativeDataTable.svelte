@@ -2,10 +2,9 @@
     import { parse, getWeek, getMonth, isAfter, getYear, isToday, isYesterday } from 'date-fns';
     import { getDateIST } from '$lib/utils';
     import { fade } from 'svelte/transition';
-    import { th } from 'date-fns/locale';
 
     // Get data as a prop
-    export let data, last_updated, layout, style;
+    export let data, last_updated = undefined, layout, style;
     export const periods = [
         'Today',
         'Yesterday',

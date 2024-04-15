@@ -14,7 +14,7 @@
         'This season',
     ];
 
-    state_code = states[state].code;
+    $: state_code = states[state].code;
 
     $: if ($fires_data) {
         historical_data = $fires_data[state_code + '_' + 'historical'];

@@ -52,7 +52,7 @@
                         on:mousemove={handleMouseMove}
                         class="hover:fill-brown transition-colors duration-150"
                         fill={color_scale(count)}
-                        transition:draw|global={{ duration: 1000, delay: 800 }}
+                        in:draw|global={{ duration: 1000, delay: 800 }}
                         d={paths[district]}
                         role="presentation"
                         data-district={district}
