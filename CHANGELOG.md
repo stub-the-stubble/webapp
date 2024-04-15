@@ -8,19 +8,19 @@ Release notes for the Stub the Stubble website.
 
 ### Changed
 - Changed Leaflet map markers to bright fire icons (GitHub [#11](https://github.com/stub-the-stubble/webapp/pull/11)). Thanks [@Arya-GITh](https://github.com/Arya-GITh).
-- Adjust Leaflet map zoom level based on its parent's layout.
-- Update Svelte from v4.2.2 to v4.2.14.
-- Update Sveltekit from v1.27.3 to v2.5.6.
-- Update Vite from v4.5.0 to v5.2.8.
-- Update Adapter Auto from v2.1.1 to v3.2.0.
-- Update Adapter Static from v2.0.3 to v3.0.1.
+- Adjusted Leaflet map zoom level based on its parent's layout.
+- Updated Svelte from v4.2.2 to v4.2.14.
+- Updated Sveltekit from v1.27.3 to v2.5.6.
+- Updated Vite from v4.5.0 to v5.2.8.
+- Updated Adapter Auto from v2.1.1 to v3.2.0.
+- Updated Adapter Static from v2.0.3 to v3.0.1.
 
 
 
 ## 1.3.0 - 2023-12-14
 
 ### Added
-- Add separate pages for Punjab and Haryana data.
+- Added separate pages for Punjab and Haryana data.
 - Added basic SEO information to pages.
 - Added charts to show district-wise breakup of fires for Punjab and Haryana.
 
