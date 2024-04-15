@@ -15,6 +15,9 @@ Release notes for the Stub the Stubble website.
 - Updated Adapter Auto from v2.1.1 to v3.2.0.
 - Updated Adapter Static from v2.0.3 to v3.0.1.
 
+### Fixed
+- Fixed a spacing issue below interactive state maps.
+
 
 
 ## 1.3.0 - 2023-12-14

@@ -34,7 +34,7 @@
 
 <div class="w-full h-full">
     {#if !isNaN(district_count)}
-        <div class="md:absolute top-0 left-0">
+        <div class="absolute top-0 left-0">
             <h4 class="text-xs text-grey">
                 {district_name}
             </h4>
