@@ -9,10 +9,10 @@ Release notes for the Stub the Stubble website.
 ### Changed
 - Changed Leaflet map markers to bright fire icons (GitHub [#11](https://github.com/stub-the-stubble/webapp/pull/11)). Thanks [@Arya-GITh](https://github.com/Arya-GITh).
 - Adjust Leaflet map zoom level based on its parent's layout.
-- Update Svelte from v4.2.2 to v4.2.8.
-- Update Sveltekit from v1.27.3 to v2.3.2.
-- Update Vite from v4.5.0 to v5.0.11.
-- Update Adapter Auto from v2.1.1 to v3.1.0.
+- Update Svelte from v4.2.2 to v4.2.14.
+- Update Sveltekit from v1.27.3 to v2.5.6.
+- Update Vite from v4.5.0 to v5.2.8.
+- Update Adapter Auto from v2.1.1 to v3.2.0.
 - Update Adapter Static from v2.0.3 to v3.0.1.
 
 
