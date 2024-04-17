@@ -1,4 +1,5 @@
 <script>
+    import { onMount } from 'svelte';
     import { scaleLinear, scaleTime } from 'd3-scale';
     import { axisRight, axisBottom } from 'd3-axis';
     import { max, extent, bisector } from 'd3-array';
@@ -10,9 +11,9 @@
 
 
 
-    export let data, height = 300, highlightedCount;
+    export let data, height = 300;
 
-    let svg;
+    let svg, highlightedCount, initialHighlightedDate;
     let dimensions = {
         width: 600,
         height: height,
@@ -22,12 +23,20 @@
         marginBottom: 30,
     };
 
+    onMount(() => {
+        // Store initial highlighted date, which can be reverted to on mouseout
+        if (!isNaN($highlightedDate)) {
+            initialHighlightedDate = $highlightedDate;
+        }
+    });
+
     $: if (data) {
         let data_tuple = Object.entries(data);
         let data_filtered = data_tuple.slice(data_tuple.length - 30).map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
         let data_filtered_object = Object.fromEntries(data_filtered);
 
-        // Set default highlighted date when page loads for the first time
+        // Set default highlighted date if not already set
+        // Don't assume that the latest date will be today's date eg. in case API fails
         if (isNaN($highlightedDate)) {
             $highlightedDate = data_filtered[data_filtered.length - 1][0];
         }
@@ -56,6 +65,11 @@
                 const barDateRight = data_filtered[barIndex][0];
                 let highlightedBarIndex = (barDateRight - barDate) > (barDate - barDateLeft) ? barIndex - 1 : barIndex;
                 $highlightedDate = data_filtered[highlightedBarIndex][0];
+            }
+        }
+        function handleMouseOut(e) {
+            if (!isNaN(initialHighlightedDate)) {
+                $highlightedDate = initialHighlightedDate;
             }
         }
 
@@ -110,7 +124,9 @@
         svgSelection.selectAll('*').attr('pointer-events', 'none');
         svgSelection
             .on('mousemove', handleMouseMove)
-            .on('touchmove', (e) => handleMouseMove(e.touches[0]));
+            .on('touchmove', (e) => handleMouseMove(e.touches[0]))
+            .on('mouseout', handleMouseOut)
+            .on('touchend', handleMouseOut);
     }
 </script>
 
