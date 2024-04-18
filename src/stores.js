@@ -7,3 +7,6 @@ export const fires_data = writable(null);
 
 // Highlighted date
 export const highlightedDate = writable(null);
+
+export const startDate = writable(null);
+export const endDate = writable(null);
