@@ -13,7 +13,7 @@
     export let state, layout = 'default';
 
 
-    let state_code, todays_data, districts_data_raw, historical_data, isStatePage, headingLevel, subheadingLevel;
+    let state_code, todays_data, historical_data, isStatePage, headingLevel, subheadingLevel;
 
     // Variables for state map
     // TODO: Audit all variables for this component
@@ -37,7 +37,6 @@
 
     $: if ($fires_data) {
         todays_data = $fires_data[state_code + '_' + 'today'];
-        districts_data_raw = Object.entries(todays_data.districts);
         historical_data = $fires_data[state_code + '_' + 'historical'];
     }
 </script>
@@ -66,14 +65,12 @@
                 </div>
             </IntersectionObserver>
             <IntersectionObserver>
-                {#if todays_data && todays_data.total}
-                    <div class="mb-12 last:mb-0">
-                        <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
-                            Districts with the most stubble fires
-                        </svelte:element>
-                        <DistrictBarchart total_count={todays_data.total} districts_data={districts_data_raw} />
-                    </div>
-                {/if}
+                <div class="mb-12 last:mb-0">
+                    <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
+                        Districts with most stubble fires
+                    </svelte:element>
+                    <DistrictBarchart totals_list={total_count_list} {district_breakups_list} />
+                </div>
                 <div class="mb-12 last:mb-0">
                     <svelte:element this={subheadingLevel} class="mb-4 text-xl font-semibold capitalize">
                         Last 30 days' fire count

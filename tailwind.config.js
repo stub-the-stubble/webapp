@@ -14,6 +14,7 @@ export default {
             'lightish-grey': colors.stone['300'],
             'light-grey': colors.stone['200'],
             'lightest-grey': colors.stone['50'],
+            'dark-grey': colors.stone['500'],
             brown: 'rgb(154,103,55)',
             red: colors.red['500'],
         },
