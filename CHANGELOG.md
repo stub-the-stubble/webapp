@@ -6,9 +6,16 @@ Release notes for the Stub the Stubble website.
 
 ## Unreleased
 
+### Added
+- Added the ability see past data on hovering over the fire count bar chart.
+- Added the ability to see district count when hovering on a district in the state map.
+
 ### Changed
 - Changed Leaflet map markers to bright fire icons (GitHub [#11](https://github.com/stub-the-stubble/webapp/pull/11)). Thanks [@Arya-GITh](https://github.com/Arya-GITh).
 - Adjusted Leaflet map zoom level based on its parent's layout.
+- Improved the logic to render state pages.
+- Improved the markup in the _State Summary_ section.
+- Improved the logic to store application state.
 - Updated Svelte from v4.2.2 to v4.2.14.
 - Updated Sveltekit from v1.27.3 to v2.5.6.
 - Updated Vite from v4.5.0 to v5.2.8.
@@ -17,6 +24,8 @@ Release notes for the Stub the Stubble website.
 
 ### Fixed
 - Fixed a spacing issue below interactive state maps.
+- Fixed an issue where the district breakup data was going under the main navigation.
+- Fixed an issue where pages were hard reloading instead of updating components reactively.
 
 
 
