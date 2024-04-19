@@ -8,6 +8,7 @@ Release notes for the Stub the Stubble website.
 
 ### Added
 - State map count is now updated while a past date is highlighted in the fire count chart.
+- Districts with max. count chart is now updated while a past date is highlighted in the fire count chart.
 
 
 
