@@ -59,7 +59,7 @@
 <div class="w-full h-full">
     {#if !isNaN(district_count)}
         <div class="absolute top-0 left-0">
-            <h4 class="text-xs text-grey">
+            <h4 class="text-sm text-grey">
                 {district_name}
             </h4>
             <h5 class="text-xl text-red font-semibold">

@@ -1,6 +1,8 @@
 <script>
     import { LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart } from '$components';
     import { page } from '$app/stores';
+    import { timeFormat } from 'd3-time-format';
+    import { isToday } from 'date-fns';
     import { states } from '$lib/data/site_info.js';
     import { fires_data, highlightedDate } from '../stores.js';
     import { IntersectionObserver } from '$lib/utils';
@@ -53,6 +55,12 @@
         </div>
         <div class="flex flex-col {layout === 'narrow' ? '' : 'md:flex-row'} md:items-center md:gap-16 mb-12 last:mb-0">
             <IntersectionObserver>
+                <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
+                    Total and District-wise Fires Count
+                    <span class="{isToday($highlightedDate) ? '' : 'text-grey font-normal'}">
+                        ({isToday($highlightedDate) ? 'Today' : timeFormat('%d %B %G')($highlightedDate)})
+                    </span>
+                </svelte:element>
                 <div class="mb-8 aspect-w-1 aspect-h-1">
                     <StateMap {state} totals_list={total_count_list} district_breakup={district_count_breakup} />
                 </div>
