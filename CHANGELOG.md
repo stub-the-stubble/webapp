@@ -4,7 +4,7 @@ Release notes for the Stub the Stubble website.
 
 
 
-## Unreleased
+## 1.4.0 - 2024-04-19
 
 ### Added
 - Added the ability see past data on hovering over the fire count bar chart.
