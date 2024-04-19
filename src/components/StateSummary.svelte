@@ -56,7 +56,7 @@
             <IntersectionObserver>
                 <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
                     State and District Fire Counts
-                    <span class="{isToday($highlightedDate) ? '' : 'text-grey font-normal'}">
+                    <span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
                         ({isToday($highlightedDate) ? 'Today' : timeFormat('%d %B %G')($highlightedDate)})
                     </span>
                 </svelte:element>
@@ -68,6 +68,9 @@
                 <div class="mb-12 last:mb-0">
                     <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
                         Districts with most stubble fires
+                        <span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
+                            ({isToday($highlightedDate) ? 'Today' : timeFormat('%d %B %G')($highlightedDate)})
+                        </span>
                     </svelte:element>
                     <DistrictBarchart totals_list={total_count_list} {district_breakups_list} />
                 </div>
