@@ -4,6 +4,13 @@ Release notes for the Stub the Stubble website.
 
 
 
+## Unreleased
+
+### Added
+- State map count is now updated while a past date is highlighted in the fire count chart.
+
+
+
 ## 1.4.0 - 2024-04-19
 
 ### Added
