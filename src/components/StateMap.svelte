@@ -1,13 +1,18 @@
 <script>
+    import { browser } from '$app/environment';
+    import { onMount } from 'svelte';
     import { draw } from 'svelte/transition';
     import { scaleSequential } from 'd3-scale';
     import { interpolateReds } from 'd3-scale-chromatic';
     import { map_paths } from '$lib/data/map_paths';
     import { states } from '$lib/data/site_info.js';
+    import { highlightedDate } from '../stores';
 
 
 
-    export let state, todays_data, district_breakup, district_name, district_count;
+    export let state,  totals_list, district_breakup;
+
+    let state_map, total, district_name, district_count, initialHighlightedDate, initialCount;
 
     const state_code = states[state].code;
     const { paths, bbox } = map_paths[state_code];
@@ -20,13 +25,32 @@
     }
     function handleMouseOut(e) {
         district_name = states[state].name.toUpperCase();
-        district_count = todays_data.total;
+        district_count = total;
     }
 
-    $: if (todays_data) {
-        district_count = district_count ?? todays_data.total;
+    onMount(() => {
+        // Store initial highlighted data
+        if (!isNaN($highlightedDate)) {
+            initialHighlightedDate = $highlightedDate;
+            initialCount = totals_list[initialHighlightedDate];
+        }
+    });
+
+    $: if (totals_list && district_breakup) {
+        total = totals_list[$highlightedDate];
+        district_count = district_count ?? total;
         district_name = district_name ?? states[state].name.toUpperCase();
-        district_breakup = todays_data.districts;
+
+        // Show total for highlighted date when mouse hovered over the past fire count chart
+        if (browser) {
+            if (state_map && !state_map.matches(':hover')) {
+                if (initialHighlightedDate !== $highlightedDate) {
+                    district_count = total;
+                } else {
+                    district_count = initialCount;
+                }
+            }
+        }
     }
 </script>
 
@@ -44,7 +68,7 @@
         </div>
     {/if}
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full stroke-black" viewBox={bbox} on:mouseout={handleMouseOut} role="presentation">
+    <svg xmlns="http://www.w3.org/2000/svg" bind:this={state_map} class="w-full h-full stroke-black" viewBox={bbox} on:mouseout={handleMouseOut} role="presentation">
         {#if district_breakup}
             <g>
                 {#each Object.entries(district_breakup) as [district, count]}

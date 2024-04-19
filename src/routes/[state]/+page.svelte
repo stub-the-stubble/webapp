@@ -4,9 +4,10 @@
     import { site, states } from '$lib/data/site_info.js';
 
 
-    let state;
-    $: state = $page.params.state ?? state;
 
+    let state;
+
+    $: state = $page.params.state ?? state;
 </script>
 
 
