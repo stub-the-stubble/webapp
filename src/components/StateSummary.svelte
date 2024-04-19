@@ -56,7 +56,7 @@
         <div class="flex flex-col {layout === 'narrow' ? '' : 'md:flex-row'} md:items-center md:gap-16 mb-12 last:mb-0">
             <IntersectionObserver>
                 <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
-                    Total and District-wise Fires Count
+                    State and District Fire Counts
                     <span class="{isToday($highlightedDate) ? '' : 'text-grey font-normal'}">
                         ({isToday($highlightedDate) ? 'Today' : timeFormat('%d %B %G')($highlightedDate)})
                     </span>
