@@ -9,7 +9,7 @@ const getFiresTotals = (data) => {
     return Object.fromEntries(totals_filtered);
 };
 
-const getFiresBreakupByDistrict = (data, date) => {
+const getFiresBreakupsByDistrict = (data) => {
     let dates = Object.keys(data[Object.keys(data)[0]].dates);
     let dates_filtered = dates.slice(dates.length - 30);
 
@@ -24,11 +24,10 @@ const getFiresBreakupByDistrict = (data, date) => {
             }))
         ]
     });
-    let district_breakup = Object.fromEntries(district_breakup_tuple);
 
-    return district_breakup[date];
+    return Object.fromEntries(district_breakup_tuple);
 };
 
 
 
-export { getFiresTotals, getFiresBreakupByDistrict };
+export { getFiresTotals, getFiresBreakupsByDistrict };

@@ -10,9 +10,9 @@
 
 
 
-    export let state,  totals_list, district_breakup;
+    export let state, totals_list, district_breakups_list;
 
-    let state_map, total, district_name, district_count, initialHighlightedDate, initialCount;
+    let state_map, total, district_breakup, district_name, district_count, initialHighlightedDate, initialCount;
 
     const state_code = states[state].code;
     const { paths, bbox } = map_paths[state_code];
@@ -33,6 +33,7 @@
         if (!isNaN($highlightedDate)) {
             initialHighlightedDate = $highlightedDate;
             initialCount = totals_list[initialHighlightedDate];
+            district_breakup = district_breakups_list[initialHighlightedDate];
         }
     });
 

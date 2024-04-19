@@ -6,7 +6,7 @@
     import { states } from '$lib/data/site_info.js';
     import { fires_data, highlightedDate } from '../stores.js';
     import { IntersectionObserver } from '$lib/utils';
-    import { getFiresTotals, getFiresBreakupByDistrict } from '$lib/utils/datahelpers.js';
+    import { getFiresTotals, getFiresBreakupsByDistrict } from '$lib/utils/datahelpers.js';
 
 
 
@@ -17,7 +17,7 @@
 
     // Variables for state map
     // TODO: Audit all variables for this component
-    let totals_data, districts_data, total_count_list, district_count_breakup;
+    let totals_data, districts_data, total_count_list, district_breakups_list;
 
     $: {
         state_code = states[state].code;
@@ -31,7 +31,7 @@
             districts_data = historical_data?.districts;
 
             total_count_list = getFiresTotals(totals_data);
-            district_count_breakup = getFiresBreakupByDistrict(districts_data, $highlightedDate);
+            district_breakups_list = getFiresBreakupsByDistrict(districts_data);
         }
     }
 
@@ -62,7 +62,7 @@
                     </span>
                 </svelte:element>
                 <div class="mb-8 aspect-w-1 aspect-h-1">
-                    <StateMap {state} totals_list={total_count_list} district_breakup={district_count_breakup} />
+                    <StateMap {state} totals_list={total_count_list} {district_breakups_list} />
                 </div>
             </IntersectionObserver>
             <IntersectionObserver>
