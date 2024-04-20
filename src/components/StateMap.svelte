@@ -7,13 +7,13 @@
     import { map_paths } from '$lib/data/map_paths';
     import { states } from '$lib/data/site_info.js';
     import { highlightedDate } from '../stores';
+    import { simpleKebab } from '../lib/utils/stringHelpers.js'
 
 
 
     export let state, totals_list, district_breakups_list;
 
     let state_map, total, district_breakup, district_name, district_count, initialHighlightedDate, initialCount;
-
     const state_code = states[state].code;
     const { paths, bbox } = map_paths[state_code];
     const color_scale = scaleSequential([0, 500], interpolateReds);
@@ -26,6 +26,22 @@
     function handleMouseOut(e) {
         district_name = states[state].name.toUpperCase();
         district_count = total;
+    }
+
+    function handleClick(e) {
+        let districtEl = e.target;
+        let district_name = districtEl.dataset.district;
+        let fragmentDistrictEl = document.getElementById(simpleKebab(district_name));
+        let toggleClass = 'bg-light-orange';
+
+        if (fragmentDistrictEl) {
+            fragmentDistrictEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Highlight the distrct's row momentarily
+            fragmentDistrictEl.classList.add(toggleClass);
+            setTimeout(() => {
+                fragmentDistrictEl.classList.remove(toggleClass);
+            }, 800);
+        }
     }
 
     onMount(() => {
@@ -75,6 +91,7 @@
                 {#each Object.entries(district_breakup) as [district, count]}
                     <path
                         on:mousemove={handleMouseMove}
+                        on:click={handleClick}
                         class="hover:fill-brown transition-colors duration-150"
                         fill={color_scale(count)}
                         in:draw|global={{ duration: 1000, delay: 800 }}
