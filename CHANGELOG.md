@@ -13,6 +13,9 @@ Release notes for the Stub the Stubble website.
 ### Changed
 - Improved the styling of most affected districts charts.
 
+### Fixed
+- Fixed an issue where the headings of some components in the _State Summary_ section were not aligning properly with each other.
+
 
 
 ## 1.4.0 - 2024-04-19
