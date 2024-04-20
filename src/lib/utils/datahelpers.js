@@ -28,6 +28,28 @@ const getFiresBreakupsByDistrict = (data) => {
     return Object.fromEntries(district_breakup_tuple);
 };
 
+function get_filtered_data(data_tuple, rangeMode, endDate, startDate, selectedDate) {
+    let data_filtered;
+    if (rangeMode) {
+    // Use start date and end date difference here for slicing
+    data_filtered = data_tuple
+        .slice(data_tuple.length - 30)
+        .map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
+} else if (selectedDate) {
+    //Use logic here to figure out which dates to select, -15/+15 days
+    // only applicable for this and district chart because its data doesn't change on highlightedDate
+    data_filtered = data_tuple
+        .slice(data_tuple.length - 30)
+        .map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
+} else {
+    //Default case where no date is selected and we default to today's date, 
+    // selectedDate in this case should be null because it should only be set on user input
+    data_filtered = data_tuple
+        .slice(data_tuple.length - 30)
+        .map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
+}
+    return data_filtered
+}
 
 
-export { getFiresTotals, getFiresBreakupsByDistrict };
+export { getFiresTotals, getFiresBreakupsByDistrict, get_filtered_data };

@@ -7,7 +7,7 @@
     import { timeFormat } from 'd3-time-format';
     import { format } from 'd3-format';
     import { select, pointer } from 'd3-selection';
-    import { highlightedDate } from '../stores.js';
+    import { highlightedDate, endDate, startDate, rangeMode, selectedDate } from '../stores.js';
 
 
 
@@ -32,6 +32,9 @@
 
     $: if (data) {
         let data_tuple = Object.entries(data);
+
+        //data_filtered = get_filtered_data(data_tuple,$rangeMode, $endDate, $startDate, $selectedDate)
+
         let data_filtered = data_tuple.slice(data_tuple.length - 30).map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
         let data_filtered_object = Object.fromEntries(data_filtered);
 
