@@ -1,8 +1,4 @@
 <script>
-    import Datepicker from '$components/Datepicker/Datepicker.svelte';
-
-
-
     let primaryNavItems = [{
         text: 'Home (All Data)',
         url: '/',
@@ -50,6 +46,5 @@
                 </ul>
             {/if}
         </nav>
-        <Datepicker/>
     </div>
 </div>
