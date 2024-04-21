@@ -37,30 +37,45 @@
         if (!isNaN($highlightedDate)) {
             initialHighlightedDate = $highlightedDate;
         }
+
+        // svg dom element is only available after mount
         svgSelection = select(svg);
         addEventListeners();
+
+        // we already have data, show it
         updateGraph(data_filtered);
     });
 
-    $: if (data) {
-        //console.log('reactive data block');
-        let data_tuple = Object.entries(data);
+    $: {
+        //This data block will run whenever any of the variables present here change (like startdate, end date, rangemode etc)
 
-        //data_filtered = get_filtered_data(data_tuple,$rangeMode, $endDate, $startDate, $selectedDate)
+        if (data) {
+            //console.log('reactive data block');
+            let data_tuple = Object.entries(data);
 
-        data_filtered = data_tuple
-            .slice(data_tuple.length - 30)
-            .map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
-        data_filtered_object = Object.fromEntries(data_filtered);
+            //data_filtered = get_filtered_data(data_tuple,$rangeMode, $endDate, $startDate, $selectedDate)
+
+            data_filtered = data_tuple
+                .slice(data_tuple.length - 30)
+                .map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
+            data_filtered_object = Object.fromEntries(data_filtered);
+        }
     }
 
-    $: if (data_filtered) {
-        updateGraph(data_filtered);
-        //console.log('data_filtered changed', data_filtered);
+    $: {
+        // when data_filtered changes, we update the graph and its axes accordingly
+        if (data_filtered) {
+            updateGraph(data_filtered);
+            //console.log('data_filtered changed', data_filtered);
+        }
     }
 
-    $: if ($highlightedDate && data_filtered) {
-        updateHighlightedDate($highlightedDate);
+    $: {
+        // this block will run whenever highlighted date or data_filtered changes
+
+        if ($highlightedDate && data_filtered) {
+            updateHighlightedDate($highlightedDate);
+        }
     }
 
     function updateHighlightedDate(highlightedDate, data_filtered) {
@@ -77,7 +92,7 @@
         // Highlight circle on bar corresponding to highlighted date
         svgSelection.selectAll('circle').attr('r', (d) => (d[0] === highlightedDate ? 6 : 4));
     }
-    
+
     function updateGraph(data_filtered) {
         if (!svgSelection) return;
         //console.log('update graph');
