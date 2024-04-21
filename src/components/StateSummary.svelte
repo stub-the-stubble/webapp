@@ -52,7 +52,7 @@
             </svelte:element>
             <CumulativeDataTable data={historical_data?.total.dates} last_updated={todays_data?.last_update} {layout} />
         </div>
-        <div class="flex flex-col {layout === 'narrow' ? '' : 'md:flex-row'} md:items-center md:gap-16 mb-12 last:mb-0">
+        <div class="flex flex-col {layout === 'narrow' ? '' : 'md:flex-row'} md:gap-16 mb-12 last:mb-0">
             <IntersectionObserver>
                 <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
                     State and District Fire Counts

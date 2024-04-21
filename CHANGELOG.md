@@ -8,10 +8,14 @@ Release notes for the Stub the Stubble website.
 
 ### Added
 - State map counts are now updated while a past date is highlighted in the fire count chart.
+- Clicking on a district in the state map now scrolls the page to the corresponding row in the district breakup table (state pages only).
 - The _most affected districts_ charts are now updated while a past date is highlighted in the fire count chart.
 
 ### Changed
 - Improved the styling of most affected districts charts.
+
+### Fixed
+- Fixed an issue where the headings of some components in the _State Summary_ section were not aligning properly with each other.
 
 
 

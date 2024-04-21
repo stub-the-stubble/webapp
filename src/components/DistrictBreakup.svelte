@@ -2,6 +2,7 @@
     import { CumulativeDataTable, FireCountChart } from '$components';
     import { states } from '$lib/data/site_info.js';
     import { fires_data } from '../stores.js';
+    import { simpleKebab } from '../lib/utils/stringHelpers.js'
 
 
 
@@ -52,7 +53,7 @@
             <div class="basis-2/5 flex-none"></div>
         </div>
         {#each districts_data as district }
-            <div class="flex flex-col md:flex-row md:justify-between md:gap-4 mb-8 md:mb-0 last:mb-0 md:border-b md:last:border-none md:border-dashed md:border-lightish-grey">
+            <div id={simpleKebab(district[0])} class="flex flex-col md:flex-row md:justify-between md:gap-4 -mt-2 md:mt-0 -mx-2 md:mx-0 mb-8 md:mb-0 last:mb-0 pt-2 md:pt-0 px-2 md:px-2 rounded md:rounded-none md:border-b md:last:border-none md:border-dashed md:border-lightish-grey transition-colors duration-300">
                 <h4 class="md:basis-1/6 md:flex-none md:flex md:items-center mb-2 md:mb-0">
                     <span class="md:ml-4 text-lg md:text-base font-semibold break-all">
                         {district[0]}
