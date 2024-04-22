@@ -1,4 +1,6 @@
 <script>
+    import { DatePicker } from '$components'
+
     let primaryNavItems = [{
         text: 'Home (All Data)',
         url: '/',
@@ -46,5 +48,6 @@
                 </ul>
             {/if}
         </nav>
+        <DatePicker/>
     </div>
 </div>
