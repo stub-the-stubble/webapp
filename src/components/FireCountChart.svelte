@@ -7,7 +7,8 @@
     import { timeFormat } from 'd3-time-format';
     import { format } from 'd3-format';
     import { select, pointer } from 'd3-selection';
-    import { highlightedDate, endDate, startDate, rangeMode, selectedDate } from '../stores.js';
+    import { highlightedDate, endDate, startDate, rangeMode } from '../stores.js';
+    import {get_filtered_data} from '$lib/utils'
 
     export let data,
         height = 300;
@@ -22,7 +23,7 @@
     let dimensions = {
         width: 600,
         height: height,
-        marginLeft: 10,
+        marginLeft: 15,
         marginRight: 36,
         marginTop: 10,
         marginBottom: 30,
@@ -46,18 +47,19 @@
         updateGraph(data_filtered);
     });
 
+    $: console.log($rangeMode)
     $: {
         //This data block will run whenever any of the variables present here change (like startdate, end date, rangemode etc)
 
         if (data) {
             //console.log('reactive data block');
             let data_tuple = Object.entries(data);
+            //console.log($startDate, $endDate)
+            data_filtered = get_filtered_data(data_tuple,$rangeMode, $endDate, $startDate)
 
-            //data_filtered = get_filtered_data(data_tuple,$rangeMode, $endDate, $startDate, $selectedDate)
-
-            data_filtered = data_tuple
-                .slice(data_tuple.length - 30)
-                .map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
+            //data_filtered = data_tuple
+            //    .slice(data_tuple.length - 30)
+             //   .map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
             data_filtered_object = Object.fromEntries(data_filtered);
         }
     }
@@ -95,7 +97,8 @@
 
     function updateGraph(data_filtered) {
         if (!svgSelection) return;
-        //console.log('update graph');
+        console.log('update graph');
+        svgSelection.selectAll("*").remove();
 
         xScale = scaleTime()
             .domain(extent(data_filtered, (d) => new Date(d[0])))

@@ -5,6 +5,7 @@
 
 
 
+
     let state;
 
     $: state = $page.params.state ?? state;
@@ -26,7 +27,7 @@
         <div class="mb-24">
             <StateSummary {state} />
         </div>
-        <DistrictBreakup {state} />
+        <!--<DistrictBreakup {state} />-->
     </div>
 </div>
 <Footer />

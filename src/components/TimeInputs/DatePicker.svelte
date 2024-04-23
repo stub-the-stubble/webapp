@@ -1,7 +1,7 @@
 <script>
     import { slide } from 'svelte/transition';
     import { ChevronDown, CalendarIcon } from 'lucide-svelte';
-    import { highlightedDate, startDate, endDate, rangeMode, selectedDate } from '../../stores.js';
+    import { highlightedDate, startDate, endDate, rangeMode } from '../../stores.js';
     import { timeFormat } from 'd3-time-format';
     import { startOfMonth, startOfToday, startOfYesterday, subDays, getTime } from 'date-fns';
     import { cn } from '$lib/utils';
@@ -61,20 +61,20 @@
 
                 break;
             case 'month':
-                sd = startOfMonth(today);
+                sd = startOfMonth(todayDate);
                 ed = todayDate;
                 showCustomRangePicker = false;
 
                 break;
             case 'thirty_days':
                 sd = subDays(todayDate, 30);
-                ed = today;
+                ed = todayDate;
                 showCustomRangePicker = false;
 
                 break;
             case 'all_time':
                 sd = new Date(2020, 8, 1);
-                ed = todayDae;
+                ed = todayDate;
                 showCustomRangePicker = false;
 
                 break;
@@ -101,7 +101,7 @@
             $highlightedDate = getTime(ed)
         } else {
             dateString = sdString;
-            $rangeMode = true;
+            $rangeMode = false;
             $startDate = getTime(sd)
             $highlightedDate = getTime(sd)
         }
