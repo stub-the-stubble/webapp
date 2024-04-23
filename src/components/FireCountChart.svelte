@@ -17,7 +17,6 @@
     let svg,
         svgSelection,
         highlightedCount,
-        initialHighlightedDate,
         data_filtered,
         data_filtered_object;
     let xScale, yMax, yScale;
@@ -33,12 +32,6 @@
     //console.log('component load');
 
     onMount(() => {
-        //console.log('on mount');
-
-        // Store initial highlighted date, which can be reverted to on mouseout
-        if (!isNaN($highlightedDate)) {
-            initialHighlightedDate = $highlightedDate;
-        }
 
         // svg dom element is only available after mount
         svgSelection = select(svg);
@@ -91,14 +84,17 @@
         highlightedCount = data_filtered_object[highlightedDate];
 
         // Highlight circle on bar corresponding to highlighted date
-        svgSelection.selectAll('circle').attr('r', (d) => (d[0] === highlightedDate ? 6 : 4));
+        const r = getRange()
+        let s = r > 360 ? 1 : r > 180 ? 2 : r > 90 ? 3 : 4
+        svgSelection.selectAll('circle').attr('r', (d) => (d[0] === highlightedDate ? 6 : s));
     }
 
     function updateGraph(data_filtered) {
         if (!svgSelection) return;
-        console.log('update graph');
         svgSelection.selectAll("*").remove();
 
+        const range = getRange()
+        const stroke  = range > 360 ? 1 : range > 180 ? 2 : range > 90 ? 3 : 6
         xScale = scaleTime()
             .domain(extent(data_filtered, (d) => new Date(d[0])))
             .range([dimensions.marginLeft, dimensions.width - dimensions.marginRight]);
@@ -117,7 +113,7 @@
                 return enter
                     .append('circle')
                     .attr('class', 'fill-red')
-                    .attr('r', 4)
+                    .attr('r', 3)
                     .attr('cx', (d) => xScale(new Date(d[0])))
                     .attr('cy', (d) => yScale(d[1]));
             });
@@ -129,37 +125,34 @@
                 return enter
                     .append('line')
                     .attr('class', 'stem stroke-red/50')
-                    .attr('stroke-width', 6)
+                    .attr('stroke-width', stroke)
                     .attr('x1', (d) => xScale(new Date(d[0])))
                     .attr('y1', (d) => yScale(d[1]))
                     .attr('x2', (d) => xScale(new Date(d[0])))
                     .attr('y2', (d) => yScale(0));
             });
 
-        // Prevent extra axes from getting added every time the reactive block runs
 
-        if (svg?.querySelectorAll('[data-part="axis"]').length < 2) {
-            // Add the x-axis and labels
-            svgSelection
-                .append('g')
-                .attr('transform', `translate(0, ${dimensions.height - dimensions.marginBottom})`)
-                .attr('data-part', 'axis')
-                .call(
-                    axisBottom(xScale)
-                        .tickSizeOuter(0)
-                        .ticks(timeMonday)
-                        .tickFormat(timeFormat('%d %b')),
-                );
-            // Add the y-axis and labels
-            svgSelection
-                .append('g')
-                .attr('transform', `translate(${dimensions.width - dimensions.marginRight}, 0)`)
-                .attr('data-part', 'axis')
-                .call(axisRight(yScale).tickSizeOuter(0).ticks(5).tickFormat(format('.0f')))
-                .selectAll('.tick')
-                .filter((d) => !Number.isInteger(d))
-                .attr('class', 'hidden');
-        }
+        // Add the x-axis and labels
+        svgSelection
+            .append('g')
+            .attr('transform', `translate(0, ${dimensions.height - dimensions.marginBottom})`)
+            .attr('data-part', 'axis')
+            .call(
+                axisBottom(xScale)
+                    .tickSizeOuter(0)
+                    .ticks(timeMonday)
+                    .tickFormat(timeFormat('%d %b')),
+            );
+        // Add the y-axis and labels
+        svgSelection
+            .append('g')
+            .attr('transform', `translate(${dimensions.width - dimensions.marginRight}, 0)`)
+            .attr('data-part', 'axis')
+            .call(axisRight(yScale).tickSizeOuter(0).ticks(5).tickFormat(format('.0f')))
+            .selectAll('.tick')
+            .filter((d) => !Number.isInteger(d))
+            .attr('class', 'hidden');
     }
 
     function addEventListeners() {
@@ -177,21 +170,23 @@
         const xMousePos = pointer(e)[0];
         const barDate = xScale.invert(xMousePos);
         if (!isNaN(barDate)) {
-            const range = differenceInDays($endDate,$startDate)
-            const barIndex = bisector((d) => d[0]).left(data_filtered, barDate, 1, Math.max(29,range));
+            const barIndex = bisector((d) => d[0]).left(data_filtered, barDate, 1, getRange());
             const barDateLeft = data_filtered[barIndex - 1][0];
             const barDateRight = data_filtered[barIndex][0];
-            let highlightedBarIndex =
+            const highlightedBarIndex =
                 barDateRight - barDate > barDate - barDateLeft ? barIndex - 1 : barIndex;
             $highlightedDate = data_filtered[highlightedBarIndex][0];
         }
     }
 
     function handleMouseOut(e) {
-        if (!isNaN(initialHighlightedDate)) {
-            $highlightedDate = initialHighlightedDate;
-        }
+            $highlightedDate = $endDate || $startDate;
     }
+
+    function getRange() {
+        return $rangeMode ? differenceInDays($endDate,$startDate) : 29
+    }
+
 </script>
 
 <div class="relative">

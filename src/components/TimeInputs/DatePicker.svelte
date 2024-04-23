@@ -105,7 +105,7 @@
             $startDate = getTime(sd)
             $highlightedDate = getTime(sd)
         }
-        //console.log(dateString, $highlightedDate)
+        //console.log(dateString, timeFormat("%Y-%m-%d")($highlightedDate))
     }
 
     function updateStores() {
@@ -166,7 +166,7 @@
                                     {formatter(value.start.toDate(tz))}
                                 {/if}
                             {:else if singleValue}
-                                {formatter(singleValue.toDate('tz'))}
+                                {formatter(singleValue.toDate(tz))}
                             {:else}
                                 Pick a date
                             {/if}
@@ -181,6 +181,7 @@
                             placeholder={value?.start}
                             minValue={new CalendarDate(2020,9,1)}
                             maxValue={today(tz)}
+                            pagedNavigation
                         />
                     </Popover.Content>
                 </Popover.Root>
