@@ -73,7 +73,7 @@
 
                 break;
             case 'all_time':
-                sd = new Date(2020, 8, 1);
+                sd = new Date(2021, 8, 3);
                 ed = todayDate;
                 showCustomRangePicker = false;
 
@@ -179,7 +179,7 @@
                             initialFocus
                             numberOfMonths={3}
                             placeholder={value?.start}
-                            minValue={new CalendarDate(2020,9,1)}
+                            minValue={new CalendarDate(2021,9,3)}
                             maxValue={today(tz)}
                             pagedNavigation
                         />
