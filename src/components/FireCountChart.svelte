@@ -9,6 +9,7 @@
     import { select, pointer } from 'd3-selection';
     import { highlightedDate, endDate, startDate, rangeMode } from '../stores.js';
     import {get_filtered_data} from '$lib/utils'
+    import { differenceInDays } from 'date-fns';
 
     export let data,
         height = 300;
@@ -178,7 +179,7 @@
         const xMousePos = pointer(e)[0];
         const barDate = xScale.invert(xMousePos);
         if (!isNaN(barDate)) {
-            const barIndex = bisector((d) => d[0]).left(data_filtered, barDate, 1, 29);
+            const barIndex = bisector((d) => d[0]).left(data_filtered, barDate, 1, differenceInDays($endDate,$startDate));
             const barDateLeft = data_filtered[barIndex - 1][0];
             const barDateRight = data_filtered[barIndex][0];
             let highlightedBarIndex =
