@@ -159,14 +159,14 @@
                             <CalendarIcon class="mr-2 h-4 w-4" />
                             {#if value && value.start}
                                 {#if value.end}
-                                    {formatter(value.start.toDate('Asia/Kolkata'))} - {formatter(
-                                        value.end.toDate('Asia/Kolkata'),
+                                    {formatter(value.start.toDate(tz))} - {formatter(
+                                        value.end.toDate(tz),
                                     )}
                                 {:else}
-                                    {formatter(value.start.toDate('Asia/Kolkata'))}
+                                    {formatter(value.start.toDate(tz))}
                                 {/if}
                             {:else if singleValue}
-                                {formatter(singleValue.toDate('Asia/Kolkata'))}
+                                {formatter(singleValue.toDate('tz'))}
                             {:else}
                                 Pick a date
                             {/if}

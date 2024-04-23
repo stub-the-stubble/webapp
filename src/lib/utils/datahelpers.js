@@ -1,5 +1,4 @@
-import { differenceInDays, startOfToday, subDays } from "date-fns";
-import { de } from "date-fns/locale";
+import { differenceInDays, startOfToday } from "date-fns";
 
 const getFiresTotals = (data) => {
     let totals_tuple, totals_filtered;
@@ -37,8 +36,6 @@ function get_filtered_data(data_tuple, rangeMode, endDate, startDate) {
     let sd_index = differenceInDays(td,startDate) + 1
     let ed_index = differenceInDays(td,endDate)
 
-    //console.log(startDate)
-    //console.log(sd_index, ed_index)
     if (rangeMode) {
         // Use start date and end date difference here for slicing
         data_filtered = data_tuple
@@ -49,17 +46,14 @@ function get_filtered_data(data_tuple, rangeMode, endDate, startDate) {
         // or till today if not too far in the past
         let delta
         if (sd_index < 15) 
-            delta = sd_index -1
+            delta = sd_index
         else 
             delta = 15
-        //console.log(delta,sd_index)
         
         data_filtered = data_tuple
             .slice(data_tuple.length - sd_index - (30 - delta), data_tuple.length - sd_index + delta)
             .map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
-        //console.log(data_filtered[0], data_filtered[data_filtered.length-1])
     }
-    //console.log(data_filtered)
     return data_filtered;
 }
 

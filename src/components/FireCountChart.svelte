@@ -46,9 +46,9 @@
 
         // we already have data, show it
         updateGraph(data_filtered);
+        updateHighlightedDate($highlightedDate)
     });
 
-    $: console.log($rangeMode)
     $: {
         //This data block will run whenever any of the variables present here change (like startdate, end date, rangemode etc)
 
@@ -75,21 +75,19 @@
 
     $: {
         // this block will run whenever highlighted date or data_filtered changes
-
         if ($highlightedDate && data_filtered) {
             updateHighlightedDate($highlightedDate);
         }
     }
 
-    function updateHighlightedDate(highlightedDate, data_filtered) {
+    function updateHighlightedDate(highlightedDate) {
         if (!svgSelection) return;
 
         // Set default highlighted date if not already set
         // Don't assume that the latest date will be today's date eg. in case API fails
-        if (isNaN(highlightedDate)) {
-            highlightedDate = data_filtered[data_filtered.length - 1][0];
-        }
-
+        //if (isNaN(highlightedDate)) {
+        //    highlightedDate = data_filtered[data_filtered.length - 1][0];
+        //}
         highlightedCount = data_filtered_object[highlightedDate];
 
         // Highlight circle on bar corresponding to highlighted date
@@ -179,7 +177,8 @@
         const xMousePos = pointer(e)[0];
         const barDate = xScale.invert(xMousePos);
         if (!isNaN(barDate)) {
-            const barIndex = bisector((d) => d[0]).left(data_filtered, barDate, 1, differenceInDays($endDate,$startDate));
+            const range = differenceInDays($endDate,$startDate)
+            const barIndex = bisector((d) => d[0]).left(data_filtered, barDate, 1, Math.max(29,range));
             const barDateLeft = data_filtered[barIndex - 1][0];
             const barDateRight = data_filtered[barIndex][0];
             let highlightedBarIndex =

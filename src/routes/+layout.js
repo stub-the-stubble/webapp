@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
-import { getDateISO } from '$lib/utils';
+import { startOfToday } from 'date-fns';
+import { timeFormat } from 'd3-time-format';
 
 
 
@@ -8,7 +9,7 @@ export const trailingSlash = 'always';
 
 export async function load({ fetch }) {
     //Get date string YYYY-MM-DD format in IST
-    const currentDateStr = getDateISO();
+    const currentDateStr = timeFormat("%Y-%m-%d")(startOfToday());
 
     if (browser) {
         return {
