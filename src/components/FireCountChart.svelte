@@ -9,7 +9,7 @@
     import { select, pointer } from 'd3-selection';
     import { highlightedDate, endDate, startDate, rangeMode } from '../stores.js';
     import {get_filtered_data} from '$lib/utils'
-    import { differenceInDays } from 'date-fns';
+    import { addDays, differenceInDays, isBefore, startOfDay, startOfToday } from 'date-fns';
 
     export let data,
         height = 300;
@@ -48,12 +48,7 @@
         if (data) {
             //console.log('reactive data block');
             let data_tuple = Object.entries(data);
-            //console.log($startDate, $endDate)
             data_filtered = get_filtered_data(data_tuple,$rangeMode, $endDate, $startDate)
-
-            //data_filtered = data_tuple
-            //    .slice(data_tuple.length - 30)
-             //   .map((data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]);
             data_filtered_object = Object.fromEntries(data_filtered);
         }
     }
@@ -72,6 +67,23 @@
             updateHighlightedDate($highlightedDate);
         }
     }
+
+    /*function findMissingDates(a) {
+
+        const sd = startOfDay(new Date(2021,8,3))
+        let c = 0
+        for(let nd =sd; isBefore(nd,startOfToday()); ) {
+            nd = addDays(nd,1)
+            let s = timeFormat("%Y-%m-%d")(nd)
+
+            if(isNaN(data[s])) {
+                console.log(s)
+                c++;
+            }
+            
+        }
+        console.log(c)
+    }*/
 
     function updateHighlightedDate(highlightedDate) {
         if (!svgSelection) return;
@@ -141,8 +153,7 @@
             .call(
                 axisBottom(xScale)
                     .tickSizeOuter(0)
-                    .ticks(timeMonday)
-                    .tickFormat(timeFormat('%d %b')),
+                    .ticks(5)
             );
         // Add the y-axis and labels
         svgSelection

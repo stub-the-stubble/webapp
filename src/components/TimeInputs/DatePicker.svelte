@@ -41,7 +41,6 @@
             ed = null;
         }
         updateDateString();
-        updateStores();
        
     }
   
@@ -85,8 +84,6 @@
                 sd = todayDate;
         }
         updateDateString();
-        updateStores();
-
     }
 
     function updateDateString() {
@@ -108,9 +105,6 @@
         //console.log(dateString, timeFormat("%Y-%m-%d")($highlightedDate))
     }
 
-    function updateStores() {
-        
-    }
     function openDatePicker() {
         showDatePicker = !showDatePicker;
     }
