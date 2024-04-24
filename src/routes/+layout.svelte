@@ -1,5 +1,6 @@
 <script>
     import { fires_data, highlightedDate } from '../stores.js';
+    import { Header, Footer } from '$components';
     import { browser } from '$app/environment';
     import '../app.css';
 
@@ -20,5 +21,7 @@
 </script>
 
 
-
+<Header />
 <slot />
+<Footer />
+
