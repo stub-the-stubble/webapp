@@ -16,7 +16,7 @@
     let state_map, total, district_breakup, district_name, district_count, initialHighlightedDate, initialCount;
     const state_code = states[state].code;
     const { paths, bbox } = map_paths[state_code];
-    const color_scale = scaleSequential([0, 500], interpolateReds);
+    const color_scale = scaleSequential([0, 100], interpolateReds);
 
     function handleMouseMove(e) {
         let districtEl = e.target;
@@ -44,14 +44,13 @@
         }
     }
 
-    onMount(() => {
-        // Store initial highlighted data
-        if (!isNaN($highlightedDate)) {
-            initialHighlightedDate = $highlightedDate;
-            initialCount = totals_list[initialHighlightedDate];
-            district_breakup = district_breakups_list[initialHighlightedDate];
+
+    $: {
+        //console.log(district_breakups_list)
+        if (!isNaN($highlightedDate) && district_breakups_list) {
+            district_breakup = district_breakups_list[$highlightedDate];
         }
-    });
+    }
 
     $: if (totals_list && district_breakup) {
         total = totals_list[$highlightedDate];
