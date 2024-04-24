@@ -16,7 +16,7 @@
     let state_map, total, district_breakup, district_name, district_count, initialHighlightedDate, initialCount;
     const state_code = states[state].code;
     const { paths, bbox } = map_paths[state_code];
-    const color_scale = scaleSequential([0, 100], interpolateReds);
+    const color_scale = scaleSequential([0, 50], interpolateReds);
 
     function handleMouseMove(e) {
         let districtEl = e.target;
@@ -92,7 +92,7 @@
                         on:mousemove={handleMouseMove}
                         on:click={handleClick}
                         class="hover:fill-brown transition-colors duration-150"
-                        fill={color_scale(count)}
+                        fill={color_scale(Math.pow(count, 0.65))}
                         in:draw|global={{ duration: 1000, delay: 800 }}
                         d={paths[district]}
                         role="presentation"
