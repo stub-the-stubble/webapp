@@ -54,7 +54,6 @@
         // when data_filtered changes, we update the graph and its axes accordingly
         if (data_filtered) {
             updateGraph(data_filtered);
-            //console.log('data_filtered changed', data_filtered);
         }
     }
 

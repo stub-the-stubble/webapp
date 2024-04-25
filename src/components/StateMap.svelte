@@ -1,6 +1,4 @@
 <script>
-    import { browser } from '$app/environment';
-    import { onMount } from 'svelte';
     import { draw } from 'svelte/transition';
     import { scaleSequential } from 'd3-scale';
     import { interpolateReds } from 'd3-scale-chromatic';
@@ -16,26 +14,31 @@
     let state_map, total, district_breakup, district_name, district_count;
     const state_code = states[state].code;
     const { paths, bbox } = map_paths[state_code];
-    const color_scale = scaleSequential([0, 50], interpolateReds);
+    const color_scale = scaleSequential([0, 15], interpolateReds);
 
     $: {
         if(district_breakups_list && totals_list) {
-            if($hoverOut) {
-                updateMap()
-            }
-            else if ($highlightedDate) {
-                getSingleDateData();
-            }
+            updateMap()
         }
-       //console.log(state,$hoverOut)
+    }
+
+    $: if($hoverOut === false && $highlightedDate){
+        updateMap()
+    }
+
+    $: if($hoverOut === true) {
+        updateMap()
     }
 
     function updateMap() {
-        //console.log("getting data", $highlightedDate, $rangeMode)
-        if($rangeMode) {
-            getRangeData()
+        if($hoverOut) {
+            if($rangeMode) {
+                getRangeData()
+            } else {
+                getSingleDateData()
+            }
         } else {
-          getSingleDateData()
+            getSingleDateData()
         }
     }
 
@@ -44,23 +47,21 @@
         let ks = Object.keys(district_breakups_list)
         ks.forEach((k) => {
             let ds = Object.keys(district_breakups_list[k])
-
-
             ds.forEach(d => {
-                //console.log(combined[d] === undefined)
-                //console.log(combined[d])
                 if ( combined[d] !== undefined)
                     combined[d] += district_breakups_list[k][d]
                 else 
                     combined[d] = 0
-                //console.log(combined[d])
             })
         })
         district_breakup = combined
         total = Object.values(totals_list).reduce((acc, value) => acc + value, 0);
-
+        updateDistrictNameAndCount()
     }
+
     function getSingleDateData() {
+        if(!district_breakups_list && !totals_list) return
+
         district_breakup = district_breakups_list[$highlightedDate];
         total = totals_list[$highlightedDate]
         updateDistrictNameAndCount()
@@ -96,10 +97,6 @@
             }, 800);
         }
     }
-
-    function changeHoverState() {
-
-    }
 </script>
 
 
@@ -124,7 +121,7 @@
                         on:mouseenter={handleMouseMove}
                         on:click={handleClick}
                         class="hover:fill-brown transition-colors duration-150"
-                        fill={color_scale(Math.pow(count, 0.65))}
+                        fill={color_scale(Math.log2(count))}
                         in:draw|global={{ duration: 1000, delay: 800 }}
                         d={paths[district]}
                         role="presentation"

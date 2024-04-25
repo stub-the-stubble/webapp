@@ -92,15 +92,15 @@
         if (sd && ed) {
             const edString = formatter(ed);
             dateString = sdString + ' – ' + edString;
-            $rangeMode = true;
             $startDate = getTime(sd)
             $endDate = getTime(ed)
             $highlightedDate = getTime(ed)
+            $rangeMode = true;
         } else {
             dateString = sdString;
-            $rangeMode = false;
             $startDate = getTime(sd)
             $highlightedDate = getTime(sd)
+            $rangeMode = false;
         }
         //console.log(dateString, timeFormat("%Y-%m-%d")($highlightedDate))
     }

@@ -11,13 +11,10 @@
     $: if (data) {
         if (browser) {
             $fires_data = data;
-            //$highlightedDate = $fires_data.PB_today ? (new Date($fires_data.PB_today.last_update).setHours(0, 0, 0, 0)) : null;
         } else {
             $fires_data = null;
         }
     }
-
-    //$: console.log($highlightedDate)
 </script>
 
 

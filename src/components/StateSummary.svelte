@@ -26,7 +26,7 @@
     }
 
     function updateDataForComponents(fires_data, state_code, rangeMode, endDate, startDate) {
-
+        console.log("updating data for components", timeFormat("%Y-%m-%d")(startDate), timeFormat("%Y-%m-%d")(endDate))
         todays_data = fires_data[state_code + '_' + 'today'];
         historical_data = fires_data[state_code + '_' + 'historical'];
 
@@ -34,7 +34,6 @@
         districts_data = historical_data?.districts;
         total_count_list = getFiresTotals(totals_data, rangeMode, endDate, startDate);
         district_breakups_list = getFiresBreakupsByDistrict(districts_data, rangeMode, endDate, startDate);
-
     }
 
     function updateStatePageDetails(state) {
@@ -76,7 +75,7 @@
                             ({isToday($highlightedDate) ? 'Today' : timeFormat('%d %B %G')($highlightedDate)})
                         </span>-->
                     </svelte:element>
-                    <!--<DistrictBarchart totals_list={total_count_list} {district_breakups_list} />-->
+                    <DistrictBarchart totals_list={total_count_list} {district_breakups_list} />
                 </div>
                 <div class="mb-12 last:mb-0">
                     <svelte:element this={subheadingLevel} class="mb-4 text-xl font-semibold capitalize">
