@@ -114,7 +114,7 @@
 <div class="py-2 bg-lightest-grey">
     <div class="flex items-center gap-8">
         <div class="">
-            Showing data for {dateString}
+            <span class="text-5xl font-bold text-brown">{dateString}</span>
         </div>
         <button
             class="inline-flex items-center justify-center hover:text-brown"

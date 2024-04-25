@@ -3,13 +3,13 @@
     import { scaleLinear, scaleTime } from 'd3-scale';
     import { axisRight, axisBottom } from 'd3-axis';
     import { max, extent, bisector } from 'd3-array';
-    import { timeMonday } from 'd3-time';
     import { timeFormat } from 'd3-time-format';
     import { format } from 'd3-format';
     import { select, pointer } from 'd3-selection';
-    import { highlightedDate, endDate, startDate, rangeMode } from '../stores.js';
-    import {get_filtered_data} from '$lib/utils'
-    import { addDays, differenceInDays, isBefore, startOfDay, startOfToday } from 'date-fns';
+    import { highlightedDate, endDate, startDate, rangeMode, hoverOut } from '../stores.js';
+    import { get_filtered_data } from '$lib/utils'
+    import { differenceInDays } from 'date-fns';
+
 
     export let data,
         height = 300;
@@ -29,8 +29,6 @@
         marginBottom: 30,
     };
 
-    //console.log('component load');
-
     onMount(() => {
 
         // svg dom element is only available after mount
@@ -44,7 +42,6 @@
 
     $: {
         //This data block will run whenever any of the variables present here change (like startdate, end date, rangemode etc)
-
         if (data) {
             //console.log('reactive data block');
             let data_tuple = Object.entries(data);
@@ -68,37 +65,15 @@
         }
     }
 
-    /*function findMissingDates(a) {
-
-        const sd = startOfDay(new Date(2021,8,3))
-        let c = 0
-        for(let nd =sd; isBefore(nd,startOfToday()); ) {
-            nd = addDays(nd,1)
-            let s = timeFormat("%Y-%m-%d")(nd)
-
-            if(isNaN(data[s])) {
-                console.log(s)
-                c++;
-            }
-            
-        }
-        console.log(c)
-    }*/
-
     function updateHighlightedDate(highlightedDate) {
         if (!svgSelection) return;
 
-        // Set default highlighted date if not already set
-        // Don't assume that the latest date will be today's date eg. in case API fails
-        //if (isNaN(highlightedDate)) {
-        //    highlightedDate = data_filtered[data_filtered.length - 1][0];
-        //}
         highlightedCount = data_filtered_object[highlightedDate];
 
         // Highlight circle on bar corresponding to highlighted date
         const r = getRange()
         let s = r > 360 ? 1 : r > 180 ? 2 : r > 90 ? 3 : 4
-        svgSelection.selectAll('circle').attr('r', (d) => (d[0] === highlightedDate ? 6 : s));
+        svgSelection.selectAll('circle').attr('r', (d) => (d[0] === highlightedDate ? 10 : s));
     }
 
     function updateGraph(data_filtered) {
@@ -166,14 +141,20 @@
             .attr('class', 'hidden');
     }
 
+    function changeHoverState() {
+        if($hoverOut === true) $hoverOut = false;
+    }
+
     function addEventListeners() {
         //console.log('added events');
         //console.log(svgSelection);
         svgSelection
             .on('mousemove', handleMouseMove)
             .on('touchmove', (e) => handleMouseMove(e.touches[0]))
-            .on('mouseout', handleMouseOut)
-            .on('touchend', handleMouseOut);
+            .on('mouseleave', handleMouseOut)
+            .on('touchend', handleMouseOut)
+            .on('mouseenter', changeHoverState);
+
     }
 
     // Mouse event handlers
@@ -191,7 +172,8 @@
     }
 
     function handleMouseOut(e) {
-            $highlightedDate = $endDate || $startDate;
+        $highlightedDate = $rangeMode? $endDate : $startDate;
+        if ($hoverOut === false) $hoverOut = true;
     }
 
     function getRange() {

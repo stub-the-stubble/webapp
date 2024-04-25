@@ -6,17 +6,70 @@
     import { interpolateReds } from 'd3-scale-chromatic';
     import { map_paths } from '$lib/data/map_paths';
     import { states } from '$lib/data/site_info.js';
-    import { highlightedDate } from '../stores';
+    import { highlightedDate, rangeMode, hoverOut } from '../stores';
     import { simpleKebab } from '../lib/utils/stringHelpers.js'
 
 
 
     export let state, totals_list, district_breakups_list;
 
-    let state_map, total, district_breakup, district_name, district_count, initialHighlightedDate, initialCount;
+    let state_map, total, district_breakup, district_name, district_count;
     const state_code = states[state].code;
     const { paths, bbox } = map_paths[state_code];
     const color_scale = scaleSequential([0, 50], interpolateReds);
+
+    $: {
+        if(district_breakups_list && totals_list) {
+            if($hoverOut) {
+                updateMap()
+            }
+            else if ($highlightedDate) {
+                getSingleDateData();
+            }
+        }
+       //console.log(state,$hoverOut)
+    }
+
+    function updateMap() {
+        //console.log("getting data", $highlightedDate, $rangeMode)
+        if($rangeMode) {
+            getRangeData()
+        } else {
+          getSingleDateData()
+        }
+    }
+
+    function getRangeData() {
+        let combined = {}
+        let ks = Object.keys(district_breakups_list)
+        ks.forEach((k) => {
+            let ds = Object.keys(district_breakups_list[k])
+
+
+            ds.forEach(d => {
+                //console.log(combined[d] === undefined)
+                //console.log(combined[d])
+                if ( combined[d] !== undefined)
+                    combined[d] += district_breakups_list[k][d]
+                else 
+                    combined[d] = 0
+                //console.log(combined[d])
+            })
+        })
+        district_breakup = combined
+        total = Object.values(totals_list).reduce((acc, value) => acc + value, 0);
+
+    }
+    function getSingleDateData() {
+        district_breakup = district_breakups_list[$highlightedDate];
+        total = totals_list[$highlightedDate]
+        updateDistrictNameAndCount()
+    }
+
+    function updateDistrictNameAndCount() {
+        district_count = total;
+        district_name = states[state].name.toUpperCase();
+    }
 
     function handleMouseMove(e) {
         let districtEl = e.target;
@@ -44,29 +97,8 @@
         }
     }
 
+    function changeHoverState() {
 
-    $: {
-        //console.log(district_breakups_list)
-        if (!isNaN($highlightedDate) && district_breakups_list) {
-            district_breakup = district_breakups_list[$highlightedDate];
-        }
-    }
-
-    $: if (totals_list && district_breakup) {
-        total = totals_list[$highlightedDate];
-        district_count = district_count ?? total;
-        district_name = district_name ?? states[state].name.toUpperCase();
-
-        // Show total for highlighted date when mouse hovered over the past fire count chart
-        if (browser) {
-            if (state_map && !state_map.matches(':hover')) {
-                if (initialHighlightedDate !== $highlightedDate) {
-                    district_count = total;
-                } else {
-                    district_count = initialCount;
-                }
-            }
-        }
     }
 </script>
 
@@ -89,7 +121,7 @@
             <g>
                 {#each Object.entries(district_breakup) as [district, count]}
                     <path
-                        on:mousemove={handleMouseMove}
+                        on:mouseenter={handleMouseMove}
                         on:click={handleClick}
                         class="hover:fill-brown transition-colors duration-150"
                         fill={color_scale(Math.pow(count, 0.65))}

@@ -60,9 +60,9 @@
             <IntersectionObserver>
                 <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
                     State and District Fire Counts
-                    <span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
+                    <!--<span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
                         ({isToday($highlightedDate) ? 'Today' : timeFormat('%d %B %G')($highlightedDate)})
-                    </span>
+                    </span>-->
                 </svelte:element>
                 <div class="mb-8 aspect-w-1 aspect-h-1">
                     <StateMap {state} totals_list={total_count_list} {district_breakups_list} />
@@ -72,15 +72,15 @@
                 <div class="mb-12 last:mb-0">
                     <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
                         Districts with most stubble fires
-                        <span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
+                        <!--<span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
                             ({isToday($highlightedDate) ? 'Today' : timeFormat('%d %B %G')($highlightedDate)})
-                        </span>
+                        </span>-->
                     </svelte:element>
                     <!--<DistrictBarchart totals_list={total_count_list} {district_breakups_list} />-->
                 </div>
                 <div class="mb-12 last:mb-0">
                     <svelte:element this={subheadingLevel} class="mb-4 text-xl font-semibold capitalize">
-                        Last 30 days' fire count
+                        Fire counts
                     </svelte:element>
                     <FireCountChart data={historical_data?.total.dates} />
                 </div>
