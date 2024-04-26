@@ -7,4 +7,4 @@ export { default as StateMap } from './StateMap.svelte';
 export { default as FireCountChart } from './FireCountChart.svelte';
 export { default as DistrictBarchart } from './DistrictBarchart.svelte';
 export { default as Footer } from './Footer.svelte';
-export { default as DatePicker } from './TimeInputs/DatePicker.svelte';
+export { default as DatePicker } from './DatePicker.svelte';
