@@ -1,6 +1,6 @@
 <script>
     import { fade, slide } from 'svelte/transition';
-    import { CalendarIcon } from 'lucide-svelte';
+    import { CalendarIcon, ChevronDown } from 'lucide-svelte';
     import { highlightedDate, startDate, endDate, rangeMode } from '../stores.js';
     import { timeFormat } from 'd3-time-format';
     import { startOfMonth, startOfToday, startOfYesterday, subDays, getTime } from 'date-fns';
@@ -15,7 +15,7 @@
     let showDatePicker = true,
         showCustomRangePicker = false;
     let preset = 'today';
-    const formatter = timeFormat('%d %B %G');
+    const formatter = timeFormat('%d %b %G');
     const tz = 'Asia/Kolkata';
     const todayDate = startOfToday();
 
@@ -100,13 +100,13 @@
 
         if (sd && ed) {
             const edString = formatter(ed);
-            dateString = sdString + ' – ' + edString;
+            dateString = sdString + ' – ' + edString +' ';
             $startDate = getTime(sd);
             $endDate = getTime(ed);
             $highlightedDate = getTime(ed);
             $rangeMode = true;
         } else {
-            dateString = sdString;
+            dateString = sdString + ' ';
             $startDate = getTime(sd);
             $highlightedDate = getTime(sd);
             $rangeMode = false;
@@ -121,16 +121,16 @@
 
 <div class="flex flex-col gap-4 py-4 bg-lightest-grey border-b border-light-grey">
 
-    <div class="flex gap-4 items-center flex-row-reverse justify-end">
+    <div class="flex gap-4 items-start md:items-center flex-row justify-between">
         <div class="">
             {#key dateString}
-            <span class="text-5xl font-bold text-brown" in:fade>{dateString}</span>
+            <span class="text-lg md:text-2xl font-bold text-brown" in:fade>Showing data for {dateString}</span><span class="text-grey"> ({presets[preset]}) </span>
             {/key}
         </div>
        
         <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild let:builder>
-                <Button variant="outline" builders={[builder]}>{presets[preset]}</Button>
+                <Button variant="outline" builders={[builder]} class="h-8">Edit<ChevronDown class="h-4 w-4"/></Button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content class="w-56">
                 <DropdownMenu.RadioGroup bind:value={preset}>
@@ -147,7 +147,7 @@
     </div>
 
     {#if showCustomRangePicker}
-        <div class="" transition:slide={{axis:'y'}}>
+        <div class="self-start md:self-end" transition:slide={{axis:'y'}}>
             <Popover.Root openFocus>
                 <Popover.Trigger asChild let:builder>
                     <Button

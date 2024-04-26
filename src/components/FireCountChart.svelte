@@ -152,7 +152,8 @@
             .on('touchmove', (e) => handleMouseMove(e.touches[0]))
             .on('mouseleave', handleMouseOut)
             .on('touchend', handleMouseOut)
-            .on('mouseenter', changeHoverState);
+            .on('mouseenter', changeHoverState)
+            .on('touchstart', changeHoverState);
 
     }
 

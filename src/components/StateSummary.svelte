@@ -26,7 +26,6 @@
     }
 
     function updateDataForComponents(fires_data, state_code, rangeMode, endDate, startDate) {
-        console.log("updating data for components", timeFormat("%Y-%m-%d")(startDate), timeFormat("%Y-%m-%d")(endDate))
         todays_data = fires_data[state_code + '_' + 'today'];
         historical_data = fires_data[state_code + '_' + 'historical'];
 
