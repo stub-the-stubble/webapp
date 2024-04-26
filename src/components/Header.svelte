@@ -22,7 +22,7 @@
 
 
 
-<div class="container py-4 sticky top-0 bg-lightest-grey z-50">
+<div class="container pt-4 sticky top-0 bg-lightest-grey z-50">
     <div class="w-full xl:w-5/6 mx-auto">
         <nav class="flex justify-between pb-2 border-b border-light-grey">
             {#if primaryNavItems.length}
