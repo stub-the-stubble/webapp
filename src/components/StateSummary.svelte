@@ -4,7 +4,7 @@
     import { timeFormat } from 'd3-time-format';
     import { isToday } from 'date-fns';
     import { states } from '$lib/data/site_info.js';
-    import { fires_data, highlightedDate } from '../stores.js';
+    import { endDate, fires_data, highlightedDate, rangeMode, startDate } from '../stores.js';
     import { IntersectionObserver } from '$lib/utils';
     import { getFiresTotals, getFiresBreakupsByDistrict } from '$lib/utils/datahelpers.js';
 
@@ -19,25 +19,27 @@
     // TODO: Audit all variables for this component
     let totals_data, districts_data, total_count_list, district_breakups_list;
 
-    $: {
+    $: updateStatePageDetails(state)
+
+    $: if ($fires_data) {
+        updateDataForComponents($fires_data, state_code, $rangeMode, $endDate, $startDate)
+    }
+
+    function updateDataForComponents(fires_data, state_code, rangeMode, endDate, startDate) {
+        todays_data = fires_data[state_code + '_' + 'today'];
+        historical_data = fires_data[state_code + '_' + 'historical'];
+
+        totals_data = historical_data?.total.dates;
+        districts_data = historical_data?.districts;
+        total_count_list = getFiresTotals(totals_data, rangeMode, endDate, startDate);
+        district_breakups_list = getFiresBreakupsByDistrict(districts_data, rangeMode, endDate, startDate);
+    }
+
+    function updateStatePageDetails(state) {
         state_code = states[state].code;
         isStatePage = $page.params.state === state;
         headingLevel = isStatePage ? 'h1' : 'h2';
         subheadingLevel = isStatePage ? 'h2' : 'h3';
-
-        if ($fires_data) {
-            historical_data = $fires_data[state_code + '_historical'];
-            totals_data = historical_data?.total.dates;
-            districts_data = historical_data?.districts;
-
-            total_count_list = getFiresTotals(totals_data);
-            district_breakups_list = getFiresBreakupsByDistrict(districts_data);
-        }
-    }
-
-    $: if ($fires_data) {
-        todays_data = $fires_data[state_code + '_' + 'today'];
-        historical_data = $fires_data[state_code + '_' + 'historical'];
     }
 </script>
 
@@ -56,9 +58,9 @@
             <IntersectionObserver>
                 <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
                     State and District Fire Counts
-                    <span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
+                    <!--<span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
                         ({isToday($highlightedDate) ? 'Today' : timeFormat('%d %B %G')($highlightedDate)})
-                    </span>
+                    </span>-->
                 </svelte:element>
                 <div class="mb-8 aspect-w-1 aspect-h-1">
                     <StateMap {state} totals_list={total_count_list} {district_breakups_list} />
@@ -68,15 +70,15 @@
                 <div class="mb-12 last:mb-0">
                     <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
                         Districts with most stubble fires
-                        <span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
+                        <!--<span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
                             ({isToday($highlightedDate) ? 'Today' : timeFormat('%d %B %G')($highlightedDate)})
-                        </span>
+                        </span>-->
                     </svelte:element>
                     <DistrictBarchart totals_list={total_count_list} {district_breakups_list} />
                 </div>
                 <div class="mb-12 last:mb-0">
                     <svelte:element this={subheadingLevel} class="mb-4 text-xl font-semibold capitalize">
-                        Last 30 days' fire count
+                        Fire counts
                     </svelte:element>
                     <FireCountChart data={historical_data?.total.dates} />
                 </div>

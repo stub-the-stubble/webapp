@@ -5,6 +5,7 @@
 
 
 
+
     let state;
 
     $: state = $page.params.state ?? state;
@@ -20,7 +21,6 @@
 
 
 
-<Header />
 <div class="container my-12">
     <div class="w-full xl:w-5/6 mx-auto">
         <div class="mb-24">
@@ -29,4 +29,3 @@
         <DistrictBreakup {state} />
     </div>
 </div>
-<Footer />

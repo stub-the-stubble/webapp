@@ -45,10 +45,13 @@
             l_map.setView(center, 7);
         }
 
+        markers.eachLayer(function(layer){
+            markers.removeLayer(layer)
+        });
+
         locations_data.forEach((element) => {
             const marker_html = `District : ${element.district} <br>
-                           Time : ${element.acqtime} <br>
-                           FRP : ${element.radiative_} <br>`;
+                           Time : ${element.acqtime} <br>`;
             const marker = L.marker([element.lat, element.lon], { icon: fire_icon }).bindPopup(
                 marker_html,
                 { closeButton: false },
