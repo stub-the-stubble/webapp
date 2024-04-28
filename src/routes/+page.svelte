@@ -1,5 +1,5 @@
 <script>
-    import { Header, Footer, StateSummary } from '$components';
+    import { StateSummary } from '$components';
     import { fires_data } from '../stores.js';
     import { fade } from 'svelte/transition';
     import { site } from '$lib/data/site_info.js';
@@ -24,7 +24,6 @@
 
 
 
-<Header />
 <div class="container my-12">
     <div class="w-full xl:w-5/6 mx-auto">
         <div class="mb-4">
@@ -57,4 +56,3 @@
         </div>
     </div>
 </div>
-<Footer />
