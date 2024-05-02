@@ -1,5 +1,5 @@
 <script>
-    import { parse, getWeek, getMonth, isAfter, getYear, isToday, isYesterday } from 'date-fns';
+    import { parse, getWeek, getMonth, isAfter, isBefore, getYear, isToday, isYesterday } from 'date-fns';
     import { getDateIST } from '$lib/utils';
     import { fade } from 'svelte/transition';
 
@@ -66,7 +66,7 @@
                 if (week == this_week && year == this_year) {
                     fc_this_week += count;
                 }
-                if (isAfter(parsed_date, new Date(2023, 8, 15))) {
+                if (isAfter(parsed_date, new Date(2024, 3, 15)) && isBefore(parsed_date, new Date(2024, 4, 30))) {
                     fc_all += count;
                 }
             }
@@ -114,7 +114,7 @@
 </div>
 {#if layout != 'narrow' && last_updated}
     <p class="mt-2 italic text-xs text-left xs:text-right text-grey">
-        * The current Kharif season started on 15th September 2023. New data is added to the system as soon as it is available to us. Last updated at {#if last_updated}
+        * The current Rabi season started on 15th April 2024. New data is added to the system as soon as it is available to us. Last updated at {#if last_updated}
             <span in:fade>{last_updated}</span>.
         {/if}
     </p>
