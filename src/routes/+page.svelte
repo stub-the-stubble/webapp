@@ -44,7 +44,7 @@
         </div>
         {#if last_updated}
             <p class="italic text-sm text-grey">
-                * The current Kharif season started on 15th September 2023. New data is added to the system as soon as it is available to us. Last updated at
+                * The current Rabi season started on 15th April 2024. New data is added to the system as soon as it is available to us. Last updated at
                 {#if last_updated}
                     <span in:fade>{last_updated}</span>.
                 {/if}
