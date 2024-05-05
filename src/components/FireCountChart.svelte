@@ -169,7 +169,7 @@
     }
 
     function handleMouseOut(e) {
-        $highlightedDate = $rangeMode? $endDate : $startDate;
+        $highlightedDate = $rangeMode ? $endDate : $startDate;
         if ($hoverOut === false) $hoverOut = true;
     }
 
