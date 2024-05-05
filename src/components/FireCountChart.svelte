@@ -43,7 +43,6 @@
     $: {
         //This data block will run whenever any of the variables present here change (like startdate, end date, rangemode etc)
         if (data) {
-            //console.log('reactive data block');
             let data_tuple = Object.entries(data);
             data_filtered = get_filtered_data(data_tuple,$rangeMode, $endDate, $startDate)
             data_filtered_object = Object.fromEntries(data_filtered);
@@ -145,8 +144,6 @@
     }
 
     function addEventListeners() {
-        //console.log('added events');
-        //console.log(svgSelection);
         svgSelection
             .on('mousemove', handleMouseMove)
             .on('touchmove', (e) => handleMouseMove(e.touches[0]))

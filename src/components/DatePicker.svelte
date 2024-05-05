@@ -111,7 +111,6 @@
             $highlightedDate = getTime(sd);
             $rangeMode = false;
         }
-        //console.log(dateString, timeFormat("%Y-%m-%d")($highlightedDate))
     }
 
     function openDatePicker() {
@@ -127,7 +126,7 @@
             <span class="text-lg md:text-2xl font-bold text-brown" in:fade>Showing data for {dateString}</span><span class="text-grey"> ({presets[preset]}) </span>
             {/key}
         </div>
-       
+
         <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild let:builder>
                 <Button variant="outline" builders={[builder]} class="h-8">Edit<ChevronDown class="h-4 w-4"/></Button>
