@@ -5,6 +5,7 @@
     import { endDate, fires_data, isRangeMode, startDate } from '../stores.js';
     import { IntersectionObserver } from '$lib/utils';
     import { getFiresTotals, getFiresBreakupsByDistrict } from '$lib/utils/datahelpers.js';
+    import arrowRight from '$lib/assets/icons/arrow_right.svg?raw';
 
 
 
@@ -45,8 +46,15 @@
     <div>
         <div class="my-12 xs:my-16">
             <svelte:element this={headingLevel} class="mb-6 text-5xl text-brown font-bold uppercase">
-                <a href={states[state].url} class="hover:underline">
-                    {states[state].name}
+                <a href={states[state].url} class="group flex">
+                    <span class="mr-2 border-b-4 border-transparent hover:border-brown transition-colors">
+                        {states[state].name}
+                    </span>
+                    {#if !isStatePage}
+                        <span class="icon-h-12 group-hover:translate-x-2 transition-transform">
+                            {@html arrowRight}
+                        </span>
+                    {/if}
                 </a>
             </svelte:element>
             <CumulativeDataTable data={historical_data?.total.dates} last_updated={todays_data?.last_update} {layout} />
