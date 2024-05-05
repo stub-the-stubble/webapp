@@ -19,10 +19,10 @@
     // TODO: Audit all variables for this component
     let totals_data, districts_data, total_count_list, district_breakups_list;
 
-    $: updateStatePageDetails(state)
+    $: updateStatePageDetails(state);
 
     $: if ($fires_data) {
-        updateDataForComponents($fires_data, state_code, $rangeMode, $endDate, $startDate)
+        updateDataForComponents($fires_data, state_code, $rangeMode, $endDate, $startDate);
     }
 
     function updateDataForComponents(fires_data, state_code, rangeMode, endDate, startDate) {
