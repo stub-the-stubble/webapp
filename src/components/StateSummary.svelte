@@ -1,17 +1,14 @@
 <script>
     import { LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart } from '$components';
     import { page } from '$app/stores';
-    import { timeFormat } from 'd3-time-format';
-    import { isToday } from 'date-fns';
     import { states } from '$lib/data/site_info.js';
-    import { endDate, fires_data, highlightedDate, isRangeMode, startDate } from '../stores.js';
+    import { endDate, fires_data, isRangeMode, startDate } from '../stores.js';
     import { IntersectionObserver } from '$lib/utils';
     import { getFiresTotals, getFiresBreakupsByDistrict } from '$lib/utils/datahelpers.js';
 
 
 
     export let state, layout = 'default';
-
 
     let state_code, todays_data, historical_data, isStatePage, headingLevel, subheadingLevel;
 
@@ -58,9 +55,6 @@
             <IntersectionObserver>
                 <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
                     State and District Fire Counts
-                    <!--<span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
-                        ({isToday($highlightedDate) ? 'Today' : timeFormat('%d %B %G')($highlightedDate)})
-                    </span>-->
                 </svelte:element>
                 <div class="mb-8 aspect-w-1 aspect-h-1">
                     <StateMap {state} totals_list={total_count_list} {district_breakups_list} />
@@ -70,9 +64,6 @@
                 <div class="mb-12 last:mb-0">
                     <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
                         Districts with most stubble fires
-                        <!--<span class="{isToday($highlightedDate) ? '' : 'block sm:inline text-grey font-normal'}">
-                            ({isToday($highlightedDate) ? 'Today' : timeFormat('%d %B %G')($highlightedDate)})
-                        </span>-->
                     </svelte:element>
                     <DistrictBarchart totals_list={total_count_list} {district_breakups_list} />
                 </div>
