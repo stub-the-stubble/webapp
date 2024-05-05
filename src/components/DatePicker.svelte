@@ -1,7 +1,7 @@
 <script>
     import { fade, slide } from 'svelte/transition';
     import { CalendarIcon, ChevronDown } from 'lucide-svelte';
-    import { highlightedDate, startDate, endDate, rangeMode } from '../stores.js';
+    import { highlightedDate, startDate, endDate, isRangeMode } from '../stores.js';
     import { timeFormat } from 'd3-time-format';
     import { startOfMonth, startOfToday, startOfYesterday, subDays, getTime } from 'date-fns';
     import { cn } from '$lib/utils';
@@ -104,12 +104,12 @@
             $startDate = getTime(sd);
             $endDate = getTime(ed);
             $highlightedDate = getTime(ed);
-            $rangeMode = true;
+            $isRangeMode = true;
         } else {
             dateString = sdString + ' ';
             $startDate = getTime(sd);
             $highlightedDate = getTime(sd);
-            $rangeMode = false;
+            $isRangeMode = false;
         }
     }
 

@@ -4,7 +4,7 @@
     import { timeFormat } from 'd3-time-format';
     import { isToday } from 'date-fns';
     import { states } from '$lib/data/site_info.js';
-    import { endDate, fires_data, highlightedDate, rangeMode, startDate } from '../stores.js';
+    import { endDate, fires_data, highlightedDate, isRangeMode, startDate } from '../stores.js';
     import { IntersectionObserver } from '$lib/utils';
     import { getFiresTotals, getFiresBreakupsByDistrict } from '$lib/utils/datahelpers.js';
 
@@ -22,17 +22,17 @@
     $: updateStatePageDetails(state);
 
     $: if ($fires_data) {
-        updateDataForComponents($fires_data, state_code, $rangeMode, $endDate, $startDate);
+        updateDataForComponents($fires_data, state_code, $isRangeMode, $endDate, $startDate);
     }
 
-    function updateDataForComponents(fires_data, state_code, rangeMode, endDate, startDate) {
+    function updateDataForComponents(fires_data, state_code, isRangeMode, endDate, startDate) {
         todays_data = fires_data[state_code + '_' + 'today'];
         historical_data = fires_data[state_code + '_' + 'historical'];
 
         totals_data = historical_data?.total.dates;
         districts_data = historical_data?.districts;
-        total_count_list = getFiresTotals(totals_data, rangeMode, endDate, startDate);
-        district_breakups_list = getFiresBreakupsByDistrict(districts_data, rangeMode, endDate, startDate);
+        total_count_list = getFiresTotals(totals_data, isRangeMode, endDate, startDate);
+        district_breakups_list = getFiresBreakupsByDistrict(districts_data, isRangeMode, endDate, startDate);
     }
 
     function updateStatePageDetails(state) {

@@ -4,7 +4,7 @@
     import { interpolateReds } from 'd3-scale-chromatic';
     import { map_paths } from '$lib/data/map_paths';
     import { states } from '$lib/data/site_info.js';
-    import { highlightedDate, rangeMode, hoverOut } from '../stores';
+    import { highlightedDate, isRangeMode, hoverOut } from '../stores';
     import { simpleKebab } from '../lib/utils/stringHelpers.js'
 
 
@@ -32,7 +32,7 @@
 
     function updateMap() {
         if($hoverOut) {
-            if($rangeMode) {
+            if($isRangeMode) {
                 getRangeData()
             } else {
                 getSingleDateData()
@@ -50,7 +50,7 @@
             ds.forEach(d => {
                 if ( combined[d] !== undefined)
                     combined[d] += district_breakups_list[k][d]
-                else 
+                else
                     combined[d] = 0
             })
         })

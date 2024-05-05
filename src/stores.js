@@ -10,4 +10,4 @@ export const startDate = writable(null);
 export const endDate = writable(null);
 
 //Data mode
-export const rangeMode = writable(false);
+export const isRangeMode = writable(false);
