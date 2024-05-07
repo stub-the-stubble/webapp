@@ -118,19 +118,27 @@
     }
 </script>
 
-<div class="pt-4 pb-5 border-b-2 border-light-grey">
-    <div class="mb-4 md:mb-2">
+<div class="pt-2 md:pt-4 pb-3 md:pb-5 border-b-2 border-light-grey">
+    <div class="mb-2">
         {#key dateString}
-            <span class="text-lg md:text-2xl font-bold text-brown" in:fade>Showing data for {dateString}</span><span class="text-grey"> ({presets[preset]}) </span>
+            <div class="text-sm md:text-base mb-0.5 text-grey" in:fade>
+                Showing Data For
+            </div>
+            <span class="text-xl md:text-2xl text-brown font-bold">
+                {dateString}
+            </span>
+            <span class="align-text-bottom md:text-lg text-light-brown">
+                ({presets[preset]})
+            </span>
         {/key}
     </div>
 
     <div class="flex flex-col md:flex-row gap-2 md:gap-4">
         <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild let:builder>
-                <Button variant="outline" builders={[builder]} class="group max-w-[10rem] h-10">
+                <Button variant="outline" builders={[builder]} class="group max-w-[8rem] md:max-w-[10rem] text-sm text-dark-grey border-light-brown hover:bg-light-orange">
                     Change Dates
-                    <ChevronDown class="ml-1 h-5 w-5 group-data-[state=open]:rotate-180 transition-transform duration-150"/>
+                    <ChevronDown class="ml-1 py-0 h-5 w-5 group-data-[state=open]:rotate-180 transition-transform duration-150"/>
                 </Button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content class="w-56" align="start">
