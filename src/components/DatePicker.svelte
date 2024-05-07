@@ -1,5 +1,5 @@
 <script>
-    import { fade, slide } from 'svelte/transition';
+    import { fade } from 'svelte/transition';
     import { CalendarIcon, ChevronDown } from 'lucide-svelte';
     import { highlightedDate, startDate, endDate, isRangeMode } from '../stores.js';
     import { timeFormat } from 'd3-time-format';
@@ -118,23 +118,22 @@
     }
 </script>
 
-<div class="flex flex-col gap-4 py-4 bg-lightest-grey border-b border-light-grey">
-
-    <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-        <div class="">
-            {#key dateString}
+<div class="pt-4 pb-5 bg-lightest-grey border-b border-light-grey">
+    <div class="mb-4 md:mb-2">
+        {#key dateString}
             <span class="text-lg md:text-2xl font-bold text-brown" in:fade>Showing data for {dateString}</span><span class="text-grey"> ({presets[preset]}) </span>
-            {/key}
-        </div>
+        {/key}
+    </div>
 
+    <div class="flex flex-col md:flex-row gap-2 md:gap-4">
         <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild let:builder>
-                <Button variant="outline" builders={[builder]} class="group h-8">
+                <Button variant="outline" builders={[builder]} class="group max-w-[10rem] h-10">
                     Change Dates
                     <ChevronDown class="ml-1 h-5 w-5 group-data-[state=open]:rotate-180 transition-transform duration-150"/>
                 </Button>
             </DropdownMenu.Trigger>
-            <DropdownMenu.Content class="w-56" align="end">
+            <DropdownMenu.Content class="w-56" align="start">
                 <DropdownMenu.RadioGroup bind:value={preset}>
                     <DropdownMenu.RadioItem value="today">Today</DropdownMenu.RadioItem>
                     <DropdownMenu.RadioItem value="yesterday">Yesterday</DropdownMenu.RadioItem>
@@ -146,49 +145,55 @@
                 </DropdownMenu.RadioGroup>
             </DropdownMenu.Content>
         </DropdownMenu.Root>
-    </div>
 
-    {#if showCustomRangePicker}
-        <div class="self-start md:self-end" transition:slide={{axis:'y'}}>
-            <Popover.Root openFocus>
-                <Popover.Trigger asChild let:builder>
-                    <Button
-                        variant="outline"
-                        class={cn(
-                            'w-[300px] justify-start text-left font-normal',
-                            !value && 'text-muted-foreground',
-                        )}
-                        builders={[builder]}
-                    >
-                        <CalendarIcon class="mr-2 h-4 w-4" />
-                        {#if value && value.start}
-                            {#if value.end}
-                                {formatter(value.start.toDate(tz))} - {formatter(
-                                    value.end.toDate(tz),
-                                )}
-                            {:else}
-                                {formatter(value.start.toDate(tz))}
-                            {/if}
-                        {:else if singleValue}
-                            {formatter(singleValue.toDate(tz))}
-                        {:else}
-                            Pick a date
-                        {/if}
-                    </Button>
-                </Popover.Trigger>
-                <Popover.Content class="w-auto p-0" align="start">
-                    <RangeCalendar
-                        bind:value
-                        bind:startValue={singleValue}
-                        initialFocus
-                        numberOfMonths={3}
-                        placeholder={value?.start}
-                        minValue={new CalendarDate(2021, 9, 3)}
-                        maxValue={today(tz)}
-                        pagedNavigation
-                    />
-                </Popover.Content>
-            </Popover.Root>
-        </div>
-    {/if}
+        {#if showCustomRangePicker}
+            <div class="flex flex-wrap" in:fade>
+                <Popover.Root openFocus>
+                    <Popover.Trigger asChild let:builder>
+                        <Button
+                            variant="outline"
+                            class={cn(
+                                'max-w-[18rem] justify-start text-left font-normal',
+                                !value && 'text-muted-foreground',
+                            )}
+                            builders={[builder]}
+                        >
+
+                            <CalendarIcon class="mr-2 h-4 w-4" />
+                            <div class="yaya">
+                                {#if value && value.start}
+                                    {#if value.end}
+                                        {formatter(value.start.toDate(tz))} - {formatter(
+                                            value.end.toDate(tz),
+                                        )}
+                                    {:else}
+                                        {formatter(value.start.toDate(tz))}
+                                    {/if}
+                                {:else if singleValue}
+                                    {formatter(singleValue.toDate(tz))}
+                                {:else}
+                                    Select a single date or a date range
+                                {/if}
+                            </div>
+                        </Button>
+                    </Popover.Trigger>
+                    <Popover.Content class="w-auto p-0" align="start">
+                        <RangeCalendar
+                            bind:value
+                            bind:startValue={singleValue}
+                            initialFocus
+                            numberOfMonths={1}
+                            placeholder={value?.start}
+                            minValue={new CalendarDate(2021, 9, 3)}
+                            maxValue={today(tz)}
+                            pagedNavigation
+                        />
+                    </Popover.Content>
+                </Popover.Root>
+                <p class="flex items-center mt-1 pl-1 md:pl-2 text-sm text-dark-grey">
+                    Select one date after another to set a range
+                </p>
+            </div>
+        {/if}
+    </div>
 </div>

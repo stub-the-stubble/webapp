@@ -14,7 +14,7 @@ export default {
             'lightish-grey': colors.stone['300'],
             'light-grey': colors.stone['200'],
             'lightest-grey': colors.stone['50'],
-            'dark-grey': colors.stone['500'],
+            'dark-grey': colors.stone['600'],
             brown: 'rgb(154,103,55)',
             'light-orange': colors.orange['100'],
             red: colors.red['500'],
@@ -30,7 +30,7 @@ export default {
             lg: '1280px',
             xl: '1536px',
         },
-         
+
         extend: {
             colors: {
                 border: "hsl(var(--border) / <alpha-value>)",
