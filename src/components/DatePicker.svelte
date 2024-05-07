@@ -120,7 +120,7 @@
 
 <div class="flex flex-col gap-4 py-4 bg-lightest-grey border-b border-light-grey">
 
-    <div class="flex gap-4 items-start md:items-center flex-row justify-between">
+    <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
         <div class="">
             {#key dateString}
             <span class="text-lg md:text-2xl font-bold text-brown" in:fade>Showing data for {dateString}</span><span class="text-grey"> ({presets[preset]}) </span>
@@ -129,9 +129,12 @@
 
         <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild let:builder>
-                <Button variant="outline" builders={[builder]} class="h-8">Edit<ChevronDown class="h-4 w-4"/></Button>
+                <Button variant="outline" builders={[builder]} class="group h-8">
+                    Change Dates
+                    <ChevronDown class="ml-1 h-5 w-5 group-data-[state=open]:rotate-180 transition-transform duration-150"/>
+                </Button>
             </DropdownMenu.Trigger>
-            <DropdownMenu.Content class="w-56">
+            <DropdownMenu.Content class="w-56" align="end">
                 <DropdownMenu.RadioGroup bind:value={preset}>
                     <DropdownMenu.RadioItem value="today">Today</DropdownMenu.RadioItem>
                     <DropdownMenu.RadioItem value="yesterday">Yesterday</DropdownMenu.RadioItem>
