@@ -25,8 +25,8 @@
 
     function updateDataForComponents(fires_data, state_code, isRangeMode, endDate, startDate) {
         todays_data = fires_data[state_code + '_' + 'today'];
-        historical_data = fires_data[state_code + '_' + 'historical'];
 
+        historical_data = fires_data[state_code + '_' + 'historical'];
         totals_data = historical_data?.total.dates;
         districts_data = historical_data?.districts;
         total_count_list = getFiresTotals(totals_data, isRangeMode, endDate, startDate);
