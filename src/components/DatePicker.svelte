@@ -127,9 +127,11 @@
             <span class="text-xl md:text-2xl text-brown font-bold">
                 {dateString}
             </span>
-            <span class="align-text-bottom md:text-lg text-light-brown">
-                ({presets[preset]})
-            </span>
+            {#if preset !== 'custom'}
+                <span class="align-text-bottom md:text-lg text-light-brown whitespace-nowrap">
+                    ({presets[preset]})
+                </span>
+            {/if}
         {/key}
     </div>
 
