@@ -1,6 +1,7 @@
 <script>
-    import { LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart } from '$components';
+    import { startOfToday, getTime } from 'date-fns';
     import { page } from '$app/stores';
+    import { LeafletMap, StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart } from '$components';
     import { states } from '$lib/data/site_info.js';
     import { endDate, fires_data, isRangeMode, startDate } from '../stores.js';
     import { IntersectionObserver } from '$lib/utils';
@@ -11,7 +12,7 @@
 
     export let state, layout = 'default';
 
-    let state_code, todays_data, historical_data, isStatePage, headingLevel, subheadingLevel;
+    let state_code, todays_data, historical_data, isStatePage, headingLevel, subheadingLevel, isToday;
 
     // Variables for state map
     // TODO: Audit all variables for this component
@@ -21,6 +22,7 @@
 
     $: if ($fires_data) {
         updateDataForComponents($fires_data, state_code, $isRangeMode, $endDate, $startDate);
+        isToday = $startDate === getTime(startOfToday());
     }
 
     function updateDataForComponents(fires_data, state_code, isRangeMode, endDate, startDate) {
@@ -83,14 +85,16 @@
                 </div>
             </IntersectionObserver>
         </div>
-        <IntersectionObserver>
-            <svelte:element this={subheadingLevel} class="mb-2 text-xl font-semibold capitalize">
-                Today's fire locations
-            </svelte:element>
-            <p class="mb-6 italic text-xs text-grey">
-                * An empty map will be shown if today's fire count is zero.
-            </p>
-            <LeafletMap locations_data={todays_data?.locations} {state_code} center={states[state].center} {layout} />
-        </IntersectionObserver>
+        {#if isToday}
+            <IntersectionObserver>
+                <svelte:element this={subheadingLevel} class="mb-2 text-xl font-semibold capitalize">
+                    Today's fire locations
+                </svelte:element>
+                <p class="mb-6 italic text-xs text-grey">
+                    * An empty map will be shown if today's fire count is zero.
+                </p>
+                <LeafletMap locations_data={todays_data?.locations} {state_code} center={states[state].center} {layout} />
+            </IntersectionObserver>
+        {/if}
     </div>
 {/key}
