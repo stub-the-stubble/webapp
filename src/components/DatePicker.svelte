@@ -118,7 +118,7 @@
     }
 </script>
 
-<div class="pt-4 pb-5 bg-lightest-grey border-b border-light-grey">
+<div class="pt-4 pb-5 border-b-2 border-light-grey">
     <div class="mb-4 md:mb-2">
         {#key dateString}
             <span class="text-lg md:text-2xl font-bold text-brown" in:fade>Showing data for {dateString}</span><span class="text-grey"> ({presets[preset]}) </span>
