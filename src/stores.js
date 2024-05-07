@@ -1,4 +1,4 @@
-import { writable, derived } from 'svelte/store';
+import { writable } from 'svelte/store';
 
 // All fires data
 export const fires_data = writable(null);
