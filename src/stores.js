@@ -11,3 +11,6 @@ export const endDate = writable(null);
 
 //Data mode
 export const isRangeMode = writable(false);
+
+// UI options
+export const isMenuMinimised = writable(false);

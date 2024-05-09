@@ -7,7 +7,7 @@
 
 <LabelPrimitive.Root
 	class={cn(
-		"text-sm md:text-base peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+		"text-sm md:text-base/tight peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
 		className
 	)}
 	{...$$restProps}

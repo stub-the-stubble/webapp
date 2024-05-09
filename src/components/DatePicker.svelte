@@ -1,7 +1,7 @@
 <script>
-    import { fade } from 'svelte/transition';
+    import { fade, slide } from 'svelte/transition';
     import { CalendarIcon, ChevronDown } from 'lucide-svelte';
-    import { highlightedDate, startDate, endDate, isRangeMode } from '../stores.js';
+    import { highlightedDate, startDate, endDate, isRangeMode, isMenuMinimised } from '../stores.js';
     import { timeFormat } from 'd3-time-format';
     import { startOfMonth, startOfToday, startOfYesterday, subDays, getTime } from 'date-fns';
     import { cn } from '$lib/utils';
@@ -120,16 +120,16 @@
     }
 </script>
 
-<div class="pt-2 md:pt-4 pb-3 md:pb-5 border-b-2 border-light-grey">
+<div class="border-b-2 border-light-grey {$isMenuMinimised ? 'pt-0 pb-0' : 'pt-2 md:pt-4 pb-3 md:pb-5'}" transition:fade>
     <div class="mb-2">
         {#key dateString}
-            <div class="flex justify-between text-sm md:text-base mb-0.5 text-grey" in:fade>
+            <div class="flex justify-between items-center text-sm md:text-base mb-0.5 text-grey" in:fade>
                 <div class="">Showing Data For</div>
-                <div class="flex">
+                <div class="flex gap-2 px-1.5 py-1 bg-white md:bg-transparent rounded-sm border md:border-none border-light-grey">
                     <Label for="minimise-menus">
-                        Minimise
+                        Hide controls
                     </Label>
-                    <Switch id="minimise-menus" class="ml-2" />
+                    <Switch id="minimise-menus" />
                 </div>
             </div>
             <span class="text-xl md:text-2xl text-brown font-bold">
@@ -143,75 +143,77 @@
         {/key}
     </div>
 
-    <div class="flex flex-col md:flex-row gap-2 md:gap-4">
-        <DropdownMenu.Root>
-            <DropdownMenu.Trigger asChild let:builder>
-                <Button variant="outline" builders={[builder]} class="group max-w-[8rem] md:max-w-[10rem] text-sm text-dark-grey border-light-brown hover:bg-light-orange">
-                    Change Dates
-                    <ChevronDown class="ml-1 py-0 h-5 w-5 group-data-[state=open]:rotate-180 transition-transform duration-150"/>
-                </Button>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content class="w-56" align="start">
-                <DropdownMenu.RadioGroup bind:value={preset}>
-                    <DropdownMenu.RadioItem value="today">Today</DropdownMenu.RadioItem>
-                    <DropdownMenu.RadioItem value="yesterday">Yesterday</DropdownMenu.RadioItem>
-                    <DropdownMenu.RadioItem value="month">This month</DropdownMenu.RadioItem>
-                    <DropdownMenu.RadioItem value="thirty_days">Last 30 days</DropdownMenu.RadioItem
-                    >
-                    <DropdownMenu.RadioItem value="all_time">All time</DropdownMenu.RadioItem>
-                    <DropdownMenu.RadioItem value="custom">Custom</DropdownMenu.RadioItem>
-                </DropdownMenu.RadioGroup>
-            </DropdownMenu.Content>
-        </DropdownMenu.Root>
-
-        {#if showCustomRangePicker}
-            <div class="flex flex-wrap" in:fade>
-                <Popover.Root openFocus>
-                    <Popover.Trigger asChild let:builder>
-                        <Button
-                            variant="outline"
-                            class={cn(
-                                'max-w-[18rem] justify-start text-left font-normal',
-                                !value && 'text-muted-foreground',
-                            )}
-                            builders={[builder]}
+    {#if !$isMenuMinimised}
+        <div class="flex flex-col md:flex-row gap-2 md:gap-4" transition:slide>
+            <DropdownMenu.Root>
+                <DropdownMenu.Trigger asChild let:builder>
+                    <Button variant="outline" builders={[builder]} class="group max-w-[8rem] md:max-w-[10rem] text-sm text-dark-grey border-light-brown hover:bg-light-orange">
+                        Change Dates
+                        <ChevronDown class="ml-1 py-0 h-5 w-5 group-data-[state=open]:rotate-180 transition-transform duration-150"/>
+                    </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content class="w-56" align="start">
+                    <DropdownMenu.RadioGroup bind:value={preset}>
+                        <DropdownMenu.RadioItem value="today">Today</DropdownMenu.RadioItem>
+                        <DropdownMenu.RadioItem value="yesterday">Yesterday</DropdownMenu.RadioItem>
+                        <DropdownMenu.RadioItem value="month">This month</DropdownMenu.RadioItem>
+                        <DropdownMenu.RadioItem value="thirty_days">Last 30 days</DropdownMenu.RadioItem
                         >
+                        <DropdownMenu.RadioItem value="all_time">All time</DropdownMenu.RadioItem>
+                        <DropdownMenu.RadioItem value="custom">Custom</DropdownMenu.RadioItem>
+                    </DropdownMenu.RadioGroup>
+                </DropdownMenu.Content>
+            </DropdownMenu.Root>
 
-                            <CalendarIcon class="mr-2 h-4 w-4" />
-                            <div class="yaya">
-                                {#if value && value.start}
-                                    {#if value.end}
-                                        {formatter(value.start.toDate(tz))} - {formatter(
-                                            value.end.toDate(tz),
-                                        )}
+            {#if showCustomRangePicker}
+                <div class="flex flex-wrap" in:fade>
+                    <Popover.Root openFocus>
+                        <Popover.Trigger asChild let:builder>
+                            <Button
+                                variant="outline"
+                                class={cn(
+                                    'max-w-[18rem] justify-start text-left font-normal',
+                                    !value && 'text-muted-foreground',
+                                )}
+                                builders={[builder]}
+                            >
+
+                                <CalendarIcon class="mr-2 h-4 w-4" />
+                                <div class="yaya">
+                                    {#if value && value.start}
+                                        {#if value.end}
+                                            {formatter(value.start.toDate(tz))} - {formatter(
+                                                value.end.toDate(tz),
+                                            )}
+                                        {:else}
+                                            {formatter(value.start.toDate(tz))}
+                                        {/if}
+                                    {:else if singleValue}
+                                        {formatter(singleValue.toDate(tz))}
                                     {:else}
-                                        {formatter(value.start.toDate(tz))}
+                                        Select a single date or a date range
                                     {/if}
-                                {:else if singleValue}
-                                    {formatter(singleValue.toDate(tz))}
-                                {:else}
-                                    Select a single date or a date range
-                                {/if}
-                            </div>
-                        </Button>
-                    </Popover.Trigger>
-                    <Popover.Content class="w-auto p-0" align="start">
-                        <RangeCalendar
-                            bind:value
-                            bind:startValue={singleValue}
-                            initialFocus
-                            numberOfMonths={1}
-                            placeholder={value?.start}
-                            minValue={new CalendarDate(2021, 9, 3)}
-                            maxValue={today(tz)}
-                            pagedNavigation
-                        />
-                    </Popover.Content>
-                </Popover.Root>
-                <p class="flex items-center mt-1 pl-1 md:pl-2 text-sm text-dark-grey">
-                    Select one date after another to set a range
-                </p>
-            </div>
-        {/if}
-    </div>
+                                </div>
+                            </Button>
+                        </Popover.Trigger>
+                        <Popover.Content class="w-auto p-0" align="start">
+                            <RangeCalendar
+                                bind:value
+                                bind:startValue={singleValue}
+                                initialFocus
+                                numberOfMonths={1}
+                                placeholder={value?.start}
+                                minValue={new CalendarDate(2021, 9, 3)}
+                                maxValue={today(tz)}
+                                pagedNavigation
+                            />
+                        </Popover.Content>
+                    </Popover.Root>
+                    <p class="flex items-center mt-1 pl-1 md:pl-2 text-sm text-dark-grey">
+                        Select one date after another to set a range
+                    </p>
+                </div>
+            {/if}
+        </div>
+    {/if}
 </div>
