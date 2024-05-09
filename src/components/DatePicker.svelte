@@ -7,6 +7,8 @@
     import { cn } from '$lib/utils';
     import { Button } from '$lib/components/ui/button';
     import { RangeCalendar } from '$lib/components/ui/range-calendar';
+    import { Label } from '$lib/components/ui/label';
+    import { Switch } from '$lib/components/ui/switch';
     import { today, CalendarDate } from '@internationalized/date';
 
     import * as Popover from '$lib/components/ui/popover';
@@ -121,8 +123,14 @@
 <div class="pt-2 md:pt-4 pb-3 md:pb-5 border-b-2 border-light-grey">
     <div class="mb-2">
         {#key dateString}
-            <div class="text-sm md:text-base mb-0.5 text-grey" in:fade>
-                Showing Data For
+            <div class="flex justify-between text-sm md:text-base mb-0.5 text-grey" in:fade>
+                <div class="">Showing Data For</div>
+                <div class="flex">
+                    <Label for="minimise-menus">
+                        Minimise
+                    </Label>
+                    <Switch id="minimise-menus" class="ml-2" />
+                </div>
             </div>
             <span class="text-xl md:text-2xl text-brown font-bold">
                 {dateString}
