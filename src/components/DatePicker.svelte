@@ -1,14 +1,14 @@
 <script>
     import { fade, slide } from 'svelte/transition';
     import { CalendarIcon, ChevronDown } from 'lucide-svelte';
+    import CrossIcon from '$lib/assets/icons/cross.svg?raw';
     import { highlightedDate, startDate, endDate, isRangeMode, isMenuMinimised } from '../stores.js';
     import { timeFormat } from 'd3-time-format';
     import { startOfMonth, startOfToday, startOfYesterday, subDays, getTime } from 'date-fns';
     import { cn } from '$lib/utils';
     import { Button } from '$lib/components/ui/button';
     import { RangeCalendar } from '$lib/components/ui/range-calendar';
-    import { Label } from '$lib/components/ui/label';
-    import { Switch } from '$lib/components/ui/switch';
+    import { Toggle } from '$lib/components/ui/toggle';
     import { today, CalendarDate } from '@internationalized/date';
 
     import * as Popover from '$lib/components/ui/popover';
@@ -123,14 +123,11 @@
 <div class="border-b-2 border-light-grey {$isMenuMinimised ? 'pt-0 pb-0' : 'pt-2 md:pt-4 pb-3 md:pb-5'}" transition:fade>
     <div class="mb-2">
         {#key dateString}
-            <div class="flex justify-between items-center text-sm md:text-base mb-0.5 text-grey" in:fade>
-                <div class="">Showing Data For</div>
-                <div class="flex gap-2 px-1.5 py-1 bg-white md:bg-transparent rounded-sm border md:border-none border-light-grey">
-                    <Label for="minimise-menus">
-                        Hide controls
-                    </Label>
-                    <Switch id="minimise-menus" />
-                </div>
+            <div class="flex justify-between items-center md:text-lg text-grey" in:fade>
+                Showing Data For
+                <Toggle class="text-light-brown icon-h-5 md:icon-toggle-6 rounded-full transition duration-300 {$isMenuMinimised ? 'rotate-[135deg]' : 'rotate-0'}" aria-label="Toggle menu and date controls" title="{$isMenuMinimised ? 'Show navigation and date controls' : 'Hide navigation and date controls'}">
+                    {@html CrossIcon}
+                </Toggle>
             </div>
             <span class="text-xl md:text-2xl text-brown font-bold">
                 {dateString}

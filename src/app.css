@@ -71,6 +71,14 @@
 
 
 @layer utilities {
+    .icon-h-5 svg {
+        height: 1.25rem;
+        width: auto;
+    }
+    .icon-h-6 svg {
+        height: 1.5rem;
+        width: auto;
+    }
     .icon-h-12 svg {
         height: 3rem;
         width: auto;
