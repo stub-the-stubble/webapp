@@ -1,3 +1,7 @@
+// Documentation: https://www.bits-ui.com/docs/components/dropdown-menu
+
+
+
 import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
 import Item from "./dropdown-menu-item.svelte";
 import Label from "./dropdown-menu-label.svelte";

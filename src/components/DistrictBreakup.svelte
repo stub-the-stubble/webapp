@@ -10,7 +10,6 @@
     export const periods = [
         'Today',
         'Yesterday',
-        'This week',
         'This month',
         'This season',
     ];
@@ -30,26 +29,17 @@
 </h2>
 <div class="mb-12 last:mb-0">
     {#if $fires_data }
-        <div class="hidden md:flex md:justify-between md:items-center md:gap-4 md:top-0 md:border-b md:border-dashed md:border-lightish-grey bg-lightest-grey/90 backdrop-blur-sm z-10">
+        <div class="hidden md:flex md:justify-between md:items-center md:gap-4 px-2 md:border-b md:border-dashed md:border-lightish-grey bg-lightest-grey/90 backdrop-blur-sm z-10">
             <div class="basis-1/6 flex-none"></div>
-            <table class="table basis-2/5 flex-none table-fixed">
-                <thead>
-                    <tr class="flex">
-                        {#each periods as period}
-                            <th class="basis-1/5 w-1/5 flex-none flex justify-center items-center px-2 py-4 text-center capitalize border-l last:border-r border-dashed border-lightish-grey">
-                                <span class="font-normal break-words">
-                                    {period}
-                                </span>
-                            </th>
-                        {/each}
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="md:basis-2/5 md:flex-none flex">
+                {#each periods as period}
+                    <div class="basis-1/4 w-1/4 flex-none flex justify-center items-center px-1 py-4 text-center capitalize border-l last:border-r border-dashed border-lightish-grey">
+                        <span class="font-normal break-words">
+                            {period}
+                        </span>
+                    </div>
+                {/each}
+            </div>
             <div class="basis-2/5 flex-none"></div>
         </div>
         {#each districts_data as district }

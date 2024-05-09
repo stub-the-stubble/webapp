@@ -1,6 +1,6 @@
 <script>
     import { scaleBand, scaleLinear } from 'd3-scale';
-    import { highlightedDate, hoverOut, rangeMode } from '../stores';
+    import { highlightedDate, hoverOut, isRangeMode } from '../stores';
     import { timeFormat} from 'd3-time-format'
 
 
@@ -10,7 +10,7 @@
     let xDomain, xScale, yScale, total_count, districts_data, districts_data_tuple, districts_data_filtered;
     const dimns = { width: 800, height: 300, label_x: 220, gap_x: 10 };
 
- 
+
     $: {
         if(district_breakups_list && totals_list) {
             updateGraphData()
@@ -24,10 +24,10 @@
     $: if($hoverOut === true) {
         updateGraphData()
     }
-    
+
     function updateGraphData() {
         if($hoverOut) {
-            if($rangeMode) {
+            if($isRangeMode) {
                 getRangeData()
             } else {
                 getSingleDateData()
@@ -38,7 +38,7 @@
 
         updateGraph()
     }
-    
+
     function getRangeData() {
         let combined = {}
         let ks = Object.keys(district_breakups_list)
@@ -47,7 +47,7 @@
             ds.forEach(d => {
                 if ( combined[d] !== undefined)
                     combined[d] += district_breakups_list[k][d]
-                else 
+                else
                     combined[d] = 0
             })
         })
@@ -57,7 +57,7 @@
         total_count = Object.values(totals_list).reduce((acc, value) => acc + value, 0);
     }
 
-    function getSingleDateData() {   
+    function getSingleDateData() {
 
         if(!district_breakups_list && !totals_list) return
 

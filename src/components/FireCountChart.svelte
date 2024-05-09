@@ -6,7 +6,7 @@
     import { timeFormat } from 'd3-time-format';
     import { format } from 'd3-format';
     import { select, pointer } from 'd3-selection';
-    import { highlightedDate, endDate, startDate, rangeMode, hoverOut } from '../stores.js';
+    import { highlightedDate, endDate, startDate, isRangeMode, hoverOut } from '../stores.js';
     import { get_filtered_data } from '$lib/utils'
     import { differenceInDays } from 'date-fns';
 
@@ -41,11 +41,10 @@
     });
 
     $: {
-        //This data block will run whenever any of the variables present here change (like startdate, end date, rangemode etc)
+        //This data block will run whenever any of the variables present here change (like startdate, end date, isRangeMode etc)
         if (data) {
-            //console.log('reactive data block');
             let data_tuple = Object.entries(data);
-            data_filtered = get_filtered_data(data_tuple,$rangeMode, $endDate, $startDate)
+            data_filtered = get_filtered_data(data_tuple,$isRangeMode, $endDate, $startDate)
             data_filtered_object = Object.fromEntries(data_filtered);
         }
     }
@@ -145,8 +144,6 @@
     }
 
     function addEventListeners() {
-        //console.log('added events');
-        //console.log(svgSelection);
         svgSelection
             .on('mousemove', handleMouseMove)
             .on('touchmove', (e) => handleMouseMove(e.touches[0]))
@@ -172,12 +169,12 @@
     }
 
     function handleMouseOut(e) {
-        $highlightedDate = $rangeMode? $endDate : $startDate;
+        $highlightedDate = $isRangeMode ? $endDate : $startDate;
         if ($hoverOut === false) $hoverOut = true;
     }
 
     function getRange() {
-        return $rangeMode ? differenceInDays($endDate,$startDate) : 29
+        return $isRangeMode ? differenceInDays($endDate,$startDate) : 29
     }
 
 </script>

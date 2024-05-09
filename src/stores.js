@@ -1,4 +1,4 @@
-import { writable, derived } from 'svelte/store';
+import { writable } from 'svelte/store';
 
 // All fires data
 export const fires_data = writable(null);
@@ -10,4 +10,7 @@ export const startDate = writable(null);
 export const endDate = writable(null);
 
 //Data mode
-export const rangeMode = writable(false);
+export const isRangeMode = writable(false);
+
+// UI options
+export const isMenuMinimised = writable(false);

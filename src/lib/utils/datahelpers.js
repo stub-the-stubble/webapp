@@ -1,12 +1,13 @@
 import { differenceInDays, startOfToday } from 'date-fns';
-import { timeFormat } from 'd3';
 
-const getFiresTotals = (data, rangeMode, endDate, startDate) => {
+
+
+const getFiresTotals = (data, isRangeMode, endDate, startDate) => {
     let totals_tuple, totals_filtered, totals_sliced;
 
     totals_tuple = Object.entries(data);
-    totals_sliced = slice_data(totals_tuple, rangeMode, endDate, startDate)
-    
+    totals_sliced = slice_data(totals_tuple, isRangeMode, endDate, startDate)
+
     totals_filtered = totals_sliced.map(
         (data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]
     );
@@ -14,10 +15,10 @@ const getFiresTotals = (data, rangeMode, endDate, startDate) => {
     return Object.fromEntries(totals_filtered);
 };
 
-const getFiresBreakupsByDistrict = (data, rangeMode, endDate, startDate) => {
+const getFiresBreakupsByDistrict = (data, isRangeMode, endDate, startDate) => {
 
     let dates = Object.keys(data[Object.keys(data)[0]].dates);
-    let dates_sliced = slice_data(dates, rangeMode, endDate, startDate)
+    let dates_sliced = slice_data(dates, isRangeMode, endDate, startDate)
 
     let district_breakup_tuple = dates_sliced.map((filtered_date) => {
         return [
@@ -34,31 +35,30 @@ const getFiresBreakupsByDistrict = (data, rangeMode, endDate, startDate) => {
     return Object.fromEntries(district_breakup_tuple);
 };
 
-function get_filtered_data(data_tuple, rangeMode, endDate, startDate) {
+function get_filtered_data(data_tuple, isRangeMode, endDate, startDate) {
     let data_filtered;
-    //console.log(timeFormat("%Y-%m-%d")(startDate), timeFormat("%Y-%m-%d")(endDate),sd_index, ed_index)
-    let data_sliced = slice_data(data_tuple, rangeMode, endDate, startDate)
+    let data_sliced = slice_data(data_tuple, isRangeMode, endDate, startDate)
     data_filtered = data_sliced.map((data) => {
         return [new Date(data[0]).setHours(0, 0, 0, 0), data[1]];
     });
     return data_filtered;
 }
 
-function slice_data(data_tuple, rangeMode, endDate, startDate) {
+function slice_data(data_tuple, isRangeMode, endDate, startDate) {
     let data_sliced;
 
     const td = startOfToday();
     let sd_index = differenceInDays(td, startDate) + 1;
     let ed_index = differenceInDays(td, endDate);
 
-    if (rangeMode) {
+    if (isRangeMode) {
         // Use start date and end date difference here for slicing
         data_sliced = data_tuple.slice(
             data_tuple.length - sd_index,
             data_tuple.length - ed_index,
         );
 
-       
+
     } else if (startDate) {
         //Use logic here to figure out which dates to select, -15/+15 days
         // or till today if not too far in the past

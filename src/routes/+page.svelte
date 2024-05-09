@@ -1,7 +1,6 @@
 <script>
     import { StateSummary } from '$components';
     import { fires_data } from '../stores.js';
-    import { fade } from 'svelte/transition';
     import { site } from '$lib/data/site_info.js';
     import logoIcon from '$lib/assets/logo/stub_the_stubble_icon.svg';
 
@@ -42,14 +41,12 @@
                 stubble burning in India.
             </h2>
         </div>
-        {#if last_updated}
-            <p class="italic text-sm text-grey">
-                * The current Kharif season started on 15th September 2023. New data is added to the system as soon as it is available to us. Last updated at
-                {#if last_updated}
-                    <span in:fade>{last_updated}</span>.
-                {/if}
-            </p>
-        {/if}
+        <p class="italic text-sm transition-colors duration-300 {last_updated ? 'text-grey' : 'text-transparent'}">
+            * The current Rabi season started on 15th April 2024. New data is added to the system as soon as it is available to us. Last updated at
+            {#if last_updated}
+                <span>{last_updated}</span>.
+            {/if}
+        </p>
         <div class="md:grid md:grid-cols-2 md:gap-20">
             <StateSummary state="punjab" layout="narrow" />
             <StateSummary state="haryana" layout="narrow" />
