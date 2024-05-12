@@ -67,7 +67,7 @@
                     State and District Fire Counts
                 </svelte:element>
                 <div class="mb-8 aspect-w-1 aspect-h-1">
-                    <!-- <StateMap {state} totals_list={total_count_list} {district_breakups_list} /> -->
+                    <StateMap {state} totals_list={total_count_list} {district_breakups_list} />
                 </div>
             </IntersectionObserver>
             <IntersectionObserver>
