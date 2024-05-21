@@ -7,15 +7,25 @@ Release notes for the Stub the Stubble website.
 ## Unreleased
 
 ### Added
-- State map counts are now updated while a past date is highlighted in the fire count chart.
+- Past data can now be viewed for all sections of the webapp. Users can change the data duration using the date picker.
+- _State Summary_ section charts' data is now updated while a past date is highlighted in the fire count chart.
 - Clicking on a district in the state map now scrolls the page to the corresponding row in the district breakup table (state pages only).
-- The _most affected districts_ charts are now updated while a past date is highlighted in the fire count chart.
+- Added controls to reduce the size of the webapp header and increase the arae available to the main content.
 
 ### Changed
-- Improved the styling of most affected districts charts.
+- Hide stubble fire locations if the data shown is not for _today_.
+- Improved the styling of _State Summary_ section charts charts.
+- Improved the styling of _District-wise Data Breakup_ table.
+- Improved the styling of the webapp header navgiation.
+- Improved the UX of state page heading links.
+- Update season details to match the current _Rabi_ season.
 
 ### Fixed
 - Fixed an issue where the headings of some components in the _State Summary_ section were not aligning properly with each other.
+- Fixed an issue where there was a layout shift when data was loaded in the webapp.
+
+### Removed
+- Removed weekly calculations from the cumulative data table.
 
 
 
