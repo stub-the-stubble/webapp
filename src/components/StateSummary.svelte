@@ -75,7 +75,7 @@
                     <svelte:element this={subheadingLevel} class="mb-6 text-xl font-semibold capitalize">
                         Districts with most stubble fires
                     </svelte:element>
-                    <!-- <DistrictBarchart totals_list={total_count_list} {district_breakups_list} /> -->
+                    <DistrictBarchart totals_list={total_count_list} {district_breakups_list} />
                 </div>
                 <div class="mb-12 last:mb-0">
                     <svelte:element this={subheadingLevel} class="mb-4 text-xl font-semibold capitalize">
