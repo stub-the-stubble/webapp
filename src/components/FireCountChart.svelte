@@ -7,7 +7,7 @@
     import { format } from 'd3-format';
     import { select, pointer } from 'd3-selection';
     import { highlightedDate, endDate, startDate, isRangeMode, hoverOut } from '../stores.js';
-    import { get_filtered_data } from '$lib/utils'
+    import { get_filtered_data } from '$lib/utils';
     import { differenceInDays } from 'date-fns';
 
 
@@ -37,14 +37,14 @@
 
         // we already have data, show it
         updateGraph(data_filtered);
-        updateHighlightedDate($highlightedDate)
+        updateHighlightedDate($highlightedDate);
     });
 
     $: {
         //This data block will run whenever any of the variables present here change (like startdate, end date, isRangeMode etc)
         if (data) {
             let data_tuple = Object.entries(data);
-            data_filtered = get_filtered_data(data_tuple,$isRangeMode, $endDate, $startDate)
+            data_filtered = get_filtered_data(data_tuple, $isRangeMode, $endDate, $startDate);
             data_filtered_object = Object.fromEntries(data_filtered);
         }
     }
@@ -140,7 +140,7 @@
     }
 
     function changeHoverState() {
-        if($hoverOut === true) $hoverOut = false;
+        if ($hoverOut === true) $hoverOut = false;
     }
 
     function addEventListeners() {
@@ -151,7 +151,6 @@
             .on('touchend', handleMouseOut)
             .on('mouseenter', changeHoverState)
             .on('touchstart', changeHoverState);
-
     }
 
     // Mouse event handlers
@@ -174,7 +173,7 @@
     }
 
     function getRange() {
-        return $isRangeMode ? differenceInDays($endDate,$startDate) : 29
+        return $isRangeMode ? differenceInDays($endDate, $startDate) : 29;
     }
 
 </script>
