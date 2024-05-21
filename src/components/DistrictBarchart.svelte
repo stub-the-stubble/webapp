@@ -59,10 +59,11 @@
         total_count = totals_list[$highlightedDate];
         districts_data = district_breakups_list[$highlightedDate];
 
-        districts_data_tuple = Object.entries(districts_data);
-        districts_data_tuple.sort((a, b) => b[1] - a[1]);
-        districts_data_filtered = districts_data_tuple.slice(0, 5);
-
+        if (districts_data) {
+            districts_data_tuple = Object.entries(districts_data);
+            districts_data_tuple.sort((a, b) => b[1] - a[1]);
+            districts_data_filtered = districts_data_tuple.slice(0, 5);
+        }
     }
 
     function updateGraph() {
