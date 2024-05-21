@@ -71,7 +71,7 @@
         // Highlight circle on bar corresponding to highlighted date
         const r = getRange()
         let s = r > 360 ? 1 : r > 180 ? 2 : r > 90 ? 3 : 4
-        //svgSelection.selectAll('circle').attr('r', (d) => (d[0] === highlightedDate ? 10 : s));
+        svgSelection.selectAll('circle').attr('r', (d) => (d[0] === highlightedDate ? 10 : s));
     }
 
     function updateGraph(data_filtered) {
