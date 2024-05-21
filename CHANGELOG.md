@@ -4,7 +4,7 @@ Release notes for the Stub the Stubble website.
 
 
 
-## Unreleased
+## 1.5.0 - 2024-05-21
 
 ### Added
 - Past data can now be viewed for all sections of the webapp. Users can change the data duration using the date picker.
