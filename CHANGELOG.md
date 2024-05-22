@@ -4,6 +4,13 @@ Release notes for the Stub the Stubble website.
 
 
 
+## Unreleased
+
+### Fixed
+- Reverted a test change that accidentally got released as a part of 1.5.0.
+
+
+
 ## 1.5.0 - 2024-05-21
 
 ### Added
