@@ -1,6 +1,6 @@
 <script>
     import { RangeCalendar as RangeCalendarPrimitive } from 'bits-ui';
-    import ChevronLeft from 'lucide-svelte/icons/chevron-left';
+    import { ChevronLeft } from 'lucide-svelte';
     import { buttonVariants } from '../button';
     import { cn } from '$lib/utils';
 
@@ -15,8 +15,8 @@
 <RangeCalendarPrimitive.PrevButton
     on:click
     class={cn(
-        buttonVariants({ variant: 'outline' }),
-        'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+        buttonVariants({ variant: 'outline', size: 'icon' }),
+        'h-7 w-7 bg-transparent p-0 opacity-60 hover:opacity-100 disabled:opacity-20',
         className
     )}
     {...$$restProps}
