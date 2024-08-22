@@ -1,7 +1,6 @@
 <script>
     import { scaleBand, scaleLinear } from 'd3-scale';
     import { highlightedDate, hoverOut, isRangeMode } from '../stores';
-    import { timeFormat} from 'd3-time-format'
 
 
 
@@ -10,47 +9,44 @@
     let xDomain, xScale, yScale, total_count, districts_data, districts_data_tuple, districts_data_filtered;
     const dimns = { width: 800, height: 300, label_x: 220, gap_x: 10 };
 
-
     $: {
-        if(district_breakups_list && totals_list) {
-            updateGraphData()
+        if (district_breakups_list && totals_list) {
+            updateGraphData();
         }
     }
 
-    $: if($hoverOut === false && $highlightedDate){
-        updateGraphData()
+    $: if ($hoverOut === false && $highlightedDate) {
+        updateGraphData();
     }
 
-    $: if($hoverOut === true) {
-        updateGraphData()
+    $: if ($hoverOut === true) {
+        updateGraphData();
     }
 
     function updateGraphData() {
-        if($hoverOut) {
-            if($isRangeMode) {
-                getRangeData()
+        if ($hoverOut) {
+            if ($isRangeMode) {
+                getRangeData();
             } else {
-                getSingleDateData()
+                getSingleDateData();
             }
         } else {
-            getSingleDateData()
+            getSingleDateData();
         }
 
-        updateGraph()
+        updateGraph();
     }
 
     function getRangeData() {
-        let combined = {}
-        let ks = Object.keys(district_breakups_list)
+        let combined = {};
+        let ks = Object.keys(district_breakups_list);
         ks.forEach((k) => {
-            let ds = Object.keys(district_breakups_list[k])
-            ds.forEach(d => {
-                if ( combined[d] !== undefined)
-                    combined[d] += district_breakups_list[k][d]
-                else
-                    combined[d] = 0
-            })
-        })
+            let ds = Object.keys(district_breakups_list[k]);
+            ds.forEach((d) => {
+                if (combined[d] !== undefined) combined[d] += district_breakups_list[k][d];
+                else combined[d] = 0;
+            });
+        });
         districts_data_tuple = Object.entries(combined);
         districts_data_tuple.sort((a, b) => b[1] - a[1]);
         districts_data_filtered = districts_data_tuple.slice(0, 5);
@@ -58,21 +54,20 @@
     }
 
     function getSingleDateData() {
-
-        if(!district_breakups_list && !totals_list) return
+        if (!district_breakups_list && !totals_list) return;
 
         total_count = totals_list[$highlightedDate];
         districts_data = district_breakups_list[$highlightedDate];
 
-        districts_data_tuple = Object.entries(districts_data);
-        districts_data_tuple.sort((a, b) => b[1] - a[1]);
-        districts_data_filtered = districts_data_tuple.slice(0, 5);
-
+        if (districts_data) {
+            districts_data_tuple = Object.entries(districts_data);
+            districts_data_tuple.sort((a, b) => b[1] - a[1]);
+            districts_data_filtered = districts_data_tuple.slice(0, 5);
+        }
     }
 
     function updateGraph() {
-
-        if( total_count > 0 ) {
+        if (total_count > 0) {
             xDomain = districts_data_filtered.map((d) => d[1]);
             // Prevent domain collapsing to midpoint if all values are zero
             if (Math.max(...xDomain) == 0) {

@@ -6,8 +6,9 @@
     import { timeFormat } from 'd3-time-format';
     import { format } from 'd3-format';
     import { select, pointer } from 'd3-selection';
+    import { area, curveStep } from 'd3-shape';
     import { highlightedDate, endDate, startDate, isRangeMode, hoverOut } from '../stores.js';
-    import { get_filtered_data } from '$lib/utils'
+    import { get_filtered_data } from '$lib/utils';
     import { differenceInDays } from 'date-fns';
 
 
@@ -20,6 +21,7 @@
         data_filtered,
         data_filtered_object;
     let xScale, yMax, yScale;
+    let condenseChart = false;
     let dimensions = {
         width: 600,
         height: height,
@@ -37,14 +39,14 @@
 
         // we already have data, show it
         updateGraph(data_filtered);
-        updateHighlightedDate($highlightedDate)
+        updateHighlightedDate($highlightedDate);
     });
 
     $: {
         //This data block will run whenever any of the variables present here change (like startdate, end date, isRangeMode etc)
         if (data) {
             let data_tuple = Object.entries(data);
-            data_filtered = get_filtered_data(data_tuple,$isRangeMode, $endDate, $startDate)
+            data_filtered = get_filtered_data(data_tuple, $isRangeMode, $endDate, $startDate);
             data_filtered_object = Object.fromEntries(data_filtered);
         }
     }
@@ -69,17 +71,24 @@
         highlightedCount = data_filtered_object[highlightedDate];
 
         // Highlight circle on bar corresponding to highlighted date
-        const r = getRange()
-        let s = r > 360 ? 1 : r > 180 ? 2 : r > 90 ? 3 : 4
-        svgSelection.selectAll('circle').attr('r', (d) => (d[0] === highlightedDate ? 10 : s));
+        if (condenseChart) {
+            svgSelection
+                .select('circle')
+                .attr('class', 'fill-red')
+                .attr('cx', xScale(new Date(highlightedDate)))
+                .attr('cy', yScale(highlightedCount))
+                .attr('r', 5);
+        } else {
+            svgSelection.selectAll('circle').attr('r', (d) => (d[0] === highlightedDate ? 5 : 2));
+        }
     }
 
     function updateGraph(data_filtered) {
         if (!svgSelection) return;
-        svgSelection.selectAll("*").remove();
 
-        const range = getRange()
-        const stroke  = range > 360 ? 1 : range > 180 ? 2 : range > 90 ? 3 : 6
+        svgSelection.selectChildren().remove();
+        condenseChart = getIsCondensedChart();
+
         xScale = scaleTime()
             .domain(extent(data_filtered, (d) => new Date(d[0])))
             .range([dimensions.marginLeft, dimensions.width - dimensions.marginRight]);
@@ -91,48 +100,56 @@
             .nice()
             .range([dimensions.height - dimensions.marginBottom, dimensions.marginTop]);
 
-        svgSelection
-            .selectAll('circle')
-            .data(data_filtered)
-            .join((enter) => {
-                return enter
-                    .append('circle')
-                    .attr('class', 'fill-red')
-                    .attr('r', 3)
-                    .attr('cx', (d) => xScale(new Date(d[0])))
-                    .attr('cy', (d) => yScale(d[1]));
-            });
+        if (condenseChart) {
+            const areaGraph = area()
+                .curve(curveStep)
+                .x((d) => xScale(new Date(d[0])))
+                .y0(yScale(0))
+                .y1((d) => yScale(d[1]));
 
-        svgSelection
-            .selectAll('.stem')
-            .data(data_filtered)
-            .join((enter) => {
-                return enter
-                    .append('line')
-                    .attr('class', 'stem stroke-red/50')
-                    .attr('stroke-width', stroke)
-                    .attr('x1', (d) => xScale(new Date(d[0])))
-                    .attr('y1', (d) => yScale(d[1]))
-                    .attr('x2', (d) => xScale(new Date(d[0])))
-                    .attr('y2', (d) => yScale(0));
-            });
+            svgSelection
+                .append('path')
+                .attr('class', 'fill-red/50')
+                .attr('d', areaGraph(data_filtered));
 
+            svgSelection
+                .append('circle')
+                .attr('class', 'fill-red')
+                .attr('cx', xScale(new Date(highlightedDate)))
+                .attr('cy', yScale(highlightedCount))
+                .attr('r', 5);
+        } else {
+            svgSelection
+                .selectAll('circle')
+                .data(data_filtered)
+                .join('circle')
+                .attr('class', 'fill-red')
+                .attr('r', 2)
+                .attr('cx', (d) => xScale(new Date(d[0])))
+                .attr('cy', (d) => yScale(d[1]));
+
+            svgSelection
+                .selectAll('.stem')
+                .data(data_filtered)
+                .join('line')
+                .attr('class', 'stem stroke-red/50')
+                .attr('stroke-width', 4)
+                .attr('x1', (d) => xScale(new Date(d[0])))
+                .attr('y1', (d) => yScale(d[1]))
+                .attr('x2', (d) => xScale(new Date(d[0])))
+                .attr('y2', (d) => yScale(0));
+        }
 
         // Add the x-axis and labels
         svgSelection
             .append('g')
             .attr('transform', `translate(0, ${dimensions.height - dimensions.marginBottom})`)
-            .attr('data-part', 'axis')
-            .call(
-                axisBottom(xScale)
-                    .tickSizeOuter(0)
-                    .ticks(5)
-            );
+            .call(axisBottom(xScale).tickSizeOuter(0).ticks(6));
+
         // Add the y-axis and labels
         svgSelection
             .append('g')
             .attr('transform', `translate(${dimensions.width - dimensions.marginRight}, 0)`)
-            .attr('data-part', 'axis')
             .call(axisRight(yScale).tickSizeOuter(0).ticks(5).tickFormat(format('.0f')))
             .selectAll('.tick')
             .filter((d) => !Number.isInteger(d))
@@ -140,7 +157,7 @@
     }
 
     function changeHoverState() {
-        if($hoverOut === true) $hoverOut = false;
+        if ($hoverOut === true) $hoverOut = false;
     }
 
     function addEventListeners() {
@@ -151,7 +168,6 @@
             .on('touchend', handleMouseOut)
             .on('mouseenter', changeHoverState)
             .on('touchstart', changeHoverState);
-
     }
 
     // Mouse event handlers
@@ -174,9 +190,15 @@
     }
 
     function getRange() {
-        return $isRangeMode ? differenceInDays($endDate,$startDate) : 29
+        return $isRangeMode ? differenceInDays($endDate, $startDate) : 29;
     }
 
+    function getIsCondensedChart() {
+        const barWidth =
+            Math.max(0, dimensions.width - dimensions.marginRight - dimensions.marginLeft) /
+            (1.25 * getRange());
+        return barWidth < 4;
+    }
 </script>
 
 <div class="relative">

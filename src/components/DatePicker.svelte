@@ -6,13 +6,13 @@
     import { timeFormat } from 'd3-time-format';
     import { startOfMonth, startOfToday, startOfYesterday, subDays, getTime } from 'date-fns';
     import { cn } from '$lib/utils';
-    import { Button } from '$lib/components/ui/button';
-    import { RangeCalendar } from '$lib/components/ui/range-calendar';
-    import { Toggle } from '$lib/components/ui/toggle';
+    import { Button } from './external/button';
+    import { RangeCalendar } from './external/range-calendar';
+    import { Toggle } from './external/toggle';
     import { today, CalendarDate } from '@internationalized/date';
 
-    import * as Popover from '$lib/components/ui/popover';
-    import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+    import * as Popover from './external/popover';
+    import * as DropdownMenu from './external/dropdown-menu';
 
     let showDatePicker = true,
         showCustomRangePicker = false;
@@ -174,7 +174,6 @@
                                 )}
                                 builders={[builder]}
                             >
-
                                 <CalendarIcon class="mr-2 h-4 w-4" />
                                 <div class="yaya">
                                     {#if value && value.start}
