@@ -1,24 +1,19 @@
 <script>
-    import { fires_data, highlightedDate } from '../stores.js';
+    import { fires_data } from '../stores.js';
     import { Header, Footer } from '$components';
-    import { browser } from '$app/environment';
+    import { onMount } from 'svelte';
+    import { loadFireData } from '$lib/utils/loadFireData.js';
     import '../app.css';
 
-
-
-    export let data;
-
-    $: if (data) {
-        if (browser) {
-            $fires_data = data;
-        } else {
-            $fires_data = null;
-        }
-    }
+    onMount(() => {
+        const controller = new AbortController();
+        loadFireData(window.fetch.bind(window), controller.signal).then((data) => {
+            if (!controller.signal.aborted) $fires_data = data;
+        });
+        return () => controller.abort();
+    });
 </script>
 
-
 <Header />
-<slot />
+<main><slot /></main>
 <Footer />
-

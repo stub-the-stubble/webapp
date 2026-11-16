@@ -1,79 +1,85 @@
-import { differenceInDays, startOfToday } from 'date-fns';
+import { addDays, differenceInCalendarDays, format, parseISO, startOfDay, subDays } from 'date-fns';
+import { getDateIST } from './datetime.js';
 
+export function isCount(value) {
+    return Number.isInteger(value) && value >= 0;
+}
 
-
-const getFiresTotals = (data, isRangeMode, endDate, startDate) => {
-    let totals_tuple, totals_filtered, totals_sliced;
-
-    totals_tuple = Object.entries(data);
-    totals_sliced = slice_data(totals_tuple, isRangeMode, endDate, startDate)
-
-    totals_filtered = totals_sliced.map(
-        (data) => [new Date(data[0]).setHours(0, 0, 0, 0), data[1]]
+// Local-midnight timestamps carry the year/month/day of an IST calendar date.
+export function getFiresTotals(data = {}, isRangeMode, endDate, startDate) {
+    return Object.fromEntries(
+        get_filtered_data(Object.entries(data), isRangeMode, endDate, startDate),
     );
+}
 
-    return Object.fromEntries(totals_filtered);
-};
-
-const getFiresBreakupsByDistrict = (data, isRangeMode, endDate, startDate) => {
-
-    let dates = Object.keys(data[Object.keys(data)[0]].dates);
-    let dates_sliced = slice_data(dates, isRangeMode, endDate, startDate)
-
-    let district_breakup_tuple = dates_sliced.map((filtered_date) => {
-        return [
-            new Date(filtered_date).setHours(0, 0, 0, 0),
-            Object.fromEntries(Object.entries(data).map(([district, dates_obj]) => {
-                return [
+export function getFiresBreakupsByDistrict(data = {}, isRangeMode, endDate, startDate) {
+    const dates = [
+        ...new Set(Object.values(data).flatMap((district) => Object.keys(district.dates))),
+    ];
+    return Object.fromEntries(
+        slice_data(
+            dates.map((date) => [date]),
+            isRangeMode,
+            endDate,
+            startDate,
+        ).map(([date]) => [
+            parseISO(date).getTime(),
+            Object.fromEntries(
+                Object.entries(data).map(([district, values]) => [
                     district,
-                    dates_obj.dates[filtered_date]
-                ];
-            }))
-        ]
-    });
-
-    return Object.fromEntries(district_breakup_tuple);
-};
-
-function get_filtered_data(data_tuple, isRangeMode, endDate, startDate) {
-    let data_filtered;
-    let data_sliced = slice_data(data_tuple, isRangeMode, endDate, startDate)
-    data_filtered = data_sliced.map((data) => {
-        return [new Date(data[0]).setHours(0, 0, 0, 0), data[1]];
-    });
-    return data_filtered;
+                    values.dates[date] ?? null,
+                ]),
+            ),
+        ]),
+    );
 }
 
-function slice_data(data_tuple, isRangeMode, endDate, startDate) {
-    let data_sliced;
+export function get_filtered_data(data, isRangeMode, endDate, startDate) {
+    return slice_data(data, isRangeMode, endDate, startDate).map(([date, count]) => [
+        parseISO(date).getTime(),
+        count,
+    ]);
+}
 
-    const td = startOfToday();
-    let sd_index = differenceInDays(td, startDate) + 1;
-    let ed_index = differenceInDays(td, endDate);
+function slice_data(data, isRangeMode, endDate, startDate) {
+    if (startDate == null) return [];
+    const today = startOfDay(getDateIST());
+    const end = isRangeMode
+        ? new Date(endDate)
+        : new Date(Math.min(addDays(startDate, 14).getTime(), today.getTime()));
+    const start = isRangeMode ? new Date(startDate) : subDays(end, 29);
+    const first = format(start, 'yyyy-MM-dd');
+    const last = format(end, 'yyyy-MM-dd');
+    return data
+        .filter(([date]) => date >= first && date <= last)
+        .sort(([a], [b]) => a.localeCompare(b));
+}
 
-    if (isRangeMode) {
-        // Use start date and end date difference here for slicing
-        data_sliced = data_tuple.slice(
-            data_tuple.length - sd_index,
-            data_tuple.length - ed_index,
-        );
-
-
-    } else if (startDate) {
-        //Use logic here to figure out which dates to select, -15/+15 days
-        // or till today if not too far in the past
-        let delta;
-        if (sd_index < 15) delta = sd_index;
-        else delta = 15;
-
-        data_sliced = data_tuple
-            .slice(
-                data_tuple.length - sd_index - (30 - delta),
-                data_tuple.length - sd_index + delta,
-            )
+export function periodTotal(data, start, end = start) {
+    // A total is meaningful only when every inclusive calendar day is present.
+    // Returning null keeps missing observations distinct from a measured zero.
+    if (!data || start == null || end == null) return null;
+    const days = differenceInCalendarDays(end, start) + 1;
+    if (!Number.isFinite(days) || days < 1) return null;
+    let total = 0;
+    for (let offset = 0; offset < days; offset++) {
+        const count = data[format(addDays(start, offset), 'yyyy-MM-dd')];
+        if (!isCount(count)) return null;
+        total += count;
     }
-
-    return data_sliced
+    return total;
 }
 
-export { getFiresTotals, getFiresBreakupsByDistrict, get_filtered_data };
+export function sumDistricts(dailyCounts) {
+    const days = Object.values(dailyCounts ?? {});
+    const districts = [...new Set(days.flatMap((day) => Object.keys(day)))];
+    return Object.fromEntries(
+        districts.map((district) => {
+            const counts = days.map((day) => day[district]);
+            return [
+                district,
+                counts.every(isCount) ? counts.reduce((sum, count) => sum + count, 0) : null,
+            ];
+        }),
+    );
+}

@@ -11,15 +11,14 @@
     import { get_filtered_data } from '$lib/utils';
     import { differenceInDays } from 'date-fns';
 
-
     export let data,
         height = 300;
 
     let svg,
         svgSelection,
         highlightedCount,
-        data_filtered,
-        data_filtered_object;
+        data_filtered = [],
+        data_filtered_object = {};
     let xScale, yMax, yScale;
     let condenseChart = false;
     let dimensions = {
@@ -32,7 +31,6 @@
     };
 
     onMount(() => {
-
         // svg dom element is only available after mount
         svgSelection = select(svg);
         addEventListeners();
@@ -44,8 +42,8 @@
 
     $: {
         //This data block will run whenever any of the variables present here change (like startdate, end date, isRangeMode etc)
-        if (data) {
-            let data_tuple = Object.entries(data);
+        {
+            let data_tuple = Object.entries(data ?? {});
             data_filtered = get_filtered_data(data_tuple, $isRangeMode, $endDate, $startDate);
             data_filtered_object = Object.fromEntries(data_filtered);
         }
@@ -68,7 +66,11 @@
     function updateHighlightedDate(highlightedDate) {
         if (!svgSelection) return;
 
-        highlightedCount = data_filtered_object[highlightedDate];
+        highlightedCount = data_filtered_object[highlightedDate] ?? null;
+        if (highlightedCount === null || !data_filtered.length) {
+            svgSelection.selectAll('circle').attr('r', 0);
+            return;
+        }
 
         // Highlight circle on bar corresponding to highlighted date
         if (condenseChart) {
@@ -87,7 +89,14 @@
         if (!svgSelection) return;
 
         svgSelection.selectChildren().remove();
-        condenseChart = getIsCondensedChart();
+        if (!data_filtered?.length) {
+            highlightedCount = null;
+            return;
+        }
+        condenseChart =
+            getIsCondensedChart() &&
+            differenceInDays(data_filtered.at(-1)[0], data_filtered[0][0]) + 1 ===
+                data_filtered.length;
 
         xScale = scaleTime()
             .domain(extent(data_filtered, (d) => new Date(d[0])))
@@ -115,7 +124,7 @@
             svgSelection
                 .append('circle')
                 .attr('class', 'fill-red')
-                .attr('cx', xScale(new Date(highlightedDate)))
+                .attr('cx', xScale(new Date($highlightedDate)))
                 .attr('cy', yScale(highlightedCount))
                 .attr('r', 5);
         } else {
@@ -137,7 +146,7 @@
                 .attr('x1', (d) => xScale(new Date(d[0])))
                 .attr('y1', (d) => yScale(d[1]))
                 .attr('x2', (d) => xScale(new Date(d[0])))
-                .attr('y2', (d) => yScale(0));
+                .attr('y2', () => yScale(0));
         }
 
         // Add the x-axis and labels
@@ -172,19 +181,15 @@
 
     // Mouse event handlers
     function handleMouseMove(e) {
-        const xMousePos = pointer(e)[0];
-        const barDate = xScale.invert(xMousePos);
-        if (!isNaN(barDate)) {
-            const barIndex = bisector((d) => d[0]).left(data_filtered, barDate, 1, getRange());
-            const barDateLeft = data_filtered[barIndex - 1][0];
-            const barDateRight = data_filtered[barIndex][0];
-            const highlightedBarIndex =
-                barDateRight - barDate > barDate - barDateLeft ? barIndex - 1 : barIndex;
-            $highlightedDate = data_filtered[highlightedBarIndex][0];
-        }
+        if (!data_filtered.length || !xScale) return;
+        const barDate = xScale.invert(pointer(e)[0]);
+        const index = bisector((d) => d[0]).left(data_filtered, barDate);
+        const left = data_filtered[Math.max(0, index - 1)];
+        const right = data_filtered[Math.min(index, data_filtered.length - 1)];
+        $highlightedDate = barDate - left[0] <= right[0] - barDate ? left[0] : right[0];
     }
 
-    function handleMouseOut(e) {
+    function handleMouseOut() {
         $highlightedDate = $isRangeMode ? $endDate : $startDate;
         if ($hoverOut === false) $hoverOut = true;
     }
@@ -204,10 +209,10 @@
 <div class="relative">
     <div class="md:absolute top-0 left-0">
         <h4 class="text-xs text-grey">
-            {timeFormat('%d %B %G')($highlightedDate)}
+            {$highlightedDate ? timeFormat('%d %B %Y')($highlightedDate) : 'Select a date'}
         </h4>
         <h5 class="text-xl text-red font-semibold">
-            {highlightedCount}
+            {highlightedCount ?? 'Unavailable'}
         </h5>
     </div>
     <svg

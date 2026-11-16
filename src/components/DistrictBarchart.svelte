@@ -1,12 +1,18 @@
 <script>
+    import { sumDistricts, isCount } from '$lib/utils/datahelpers.js';
+    export let complete = true;
     import { scaleBand, scaleLinear } from 'd3-scale';
     import { highlightedDate, hoverOut, isRangeMode } from '../stores';
 
-
-
     export let totals_list, district_breakups_list;
 
-    let xDomain, xScale, yScale, total_count, districts_data, districts_data_tuple, districts_data_filtered;
+    let xDomain,
+        xScale,
+        yScale,
+        total_count,
+        districts_data,
+        districts_data_tuple,
+        districts_data_filtered;
     const dimns = { width: 800, height: 300, label_x: 220, gap_x: 10 };
 
     $: {
@@ -38,36 +44,33 @@
     }
 
     function getRangeData() {
-        let combined = {};
-        let ks = Object.keys(district_breakups_list);
-        ks.forEach((k) => {
-            let ds = Object.keys(district_breakups_list[k]);
-            ds.forEach((d) => {
-                if (combined[d] !== undefined) combined[d] += district_breakups_list[k][d];
-                else combined[d] = 0;
-            });
-        });
-        districts_data_tuple = Object.entries(combined);
+        const combined = sumDistricts(district_breakups_list);
+        districts_data_tuple = Object.entries(combined).filter(
+            ([, count]) => isCount(count) && count > 0,
+        );
         districts_data_tuple.sort((a, b) => b[1] - a[1]);
         districts_data_filtered = districts_data_tuple.slice(0, 5);
         total_count = Object.values(totals_list).reduce((acc, value) => acc + value, 0);
     }
 
     function getSingleDateData() {
-        if (!district_breakups_list && !totals_list) return;
+        if (!district_breakups_list || !totals_list) return;
 
         total_count = totals_list[$highlightedDate];
         districts_data = district_breakups_list[$highlightedDate];
 
+        districts_data_filtered = [];
         if (districts_data) {
-            districts_data_tuple = Object.entries(districts_data);
+            districts_data_tuple = Object.entries(districts_data).filter(
+                ([, count]) => isCount(count) && count > 0,
+            );
             districts_data_tuple.sort((a, b) => b[1] - a[1]);
             districts_data_filtered = districts_data_tuple.slice(0, 5);
         }
     }
 
     function updateGraph() {
-        if (total_count > 0) {
+        if (total_count > 0 && districts_data_filtered?.length) {
             xDomain = districts_data_filtered.map((d) => d[1]);
             // Prevent domain collapsing to midpoint if all values are zero
             if (Math.max(...xDomain) == 0) {
@@ -86,58 +89,58 @@
     }
 </script>
 
-
-
-    <svg class="w-full h-auto fill-black" viewBox={`0 0 ${dimns.width} ${dimns.height}`}>
-        {#if total_count > 0}
-            <g class="fill-red">
-                {#each districts_data_filtered as d}
+<svg class="w-full h-auto fill-black" viewBox={`0 0 ${dimns.width} ${dimns.height}`}>
+    {#if complete && total_count > 0 && districts_data_filtered?.length}
+        <g class="fill-red">
+            {#each districts_data_filtered as d}
+                <text
+                    text-anchor="start"
+                    class={d[1] == 0
+                        ? 'invisible'
+                        : 'text-3xl sm:text-xl fill-dark-grey stroke-none'}
+                    x="0"
+                    dy="0.32em"
+                    y={yScale(d[0]) + yScale.bandwidth() / 2}
+                >
+                    {d[0]}
+                </text>
+                <rect
+                    x={dimns.label_x + dimns.gap_x}
+                    y={yScale(d[0])}
+                    width={xScale(d[1])}
+                    height={yScale.bandwidth()}
+                    class={d[1] == 0 ? 'invisible' : ''}
+                />
+                {#if d[1] == 0}
                     <text
+                        class="invisible text-xl"
                         text-anchor="start"
-                        class={d[1] == 0 ? 'invisible' : 'text-3xl sm:text-xl fill-dark-grey stroke-none'}
-                        x="0"
+                        x={xScale(d[1]) + dimns.label_x + dimns.gap_x}
                         dy="0.32em"
                         y={yScale(d[0]) + yScale.bandwidth() / 2}
                     >
-                        {d[0]}
+                        0
                     </text>
-                    <rect
-                        x={dimns.label_x + dimns.gap_x}
-                        y={yScale(d[0])}
-                        width={xScale(d[1])}
-                        height={yScale.bandwidth()}
-                        class={d[1] == 0 ? 'invisible' : ''}
-                    />
-                    {#if d[1] == 0}
-                        <text
-                            class="invisible text-xl"
-                            text-anchor="start"
-                            x={xScale(d[1]) + dimns.label_x + dimns.gap_x}
-                            dy="0.32em"
-                            y={yScale(d[0]) + yScale.bandwidth() / 2}
-                        >
-                            0
-                        </text>
-                    {:else}
-                        <text
-                            class="fill-lightest-grey text-xl"
-                            text-anchor="end"
-                            x={dimns.label_x + dimns.gap_x + xScale(d[1]) - 8}
-                            dy="0.32em"
-                            y={yScale(d[0]) + yScale.bandwidth() / 2}
-                        >
-                            {d[1]}
-                        </text>
-                    {/if}
-                {/each}
-            </g>
-        {:else}
-            <text
-                class="fill-dark-grey stroke-none text-4xl sm:text-2xl"
-                text-anchor="start"
-                y="2ex"
-            >
-                No fires for the duration selected.
-            </text>
-        {/if}
-    </svg>
+                {:else}
+                    <text
+                        class="fill-lightest-grey text-xl"
+                        text-anchor="end"
+                        x={dimns.label_x + dimns.gap_x + xScale(d[1]) - 8}
+                        dy="0.32em"
+                        y={yScale(d[0]) + yScale.bandwidth() / 2}
+                    >
+                        {d[1]}
+                    </text>
+                {/if}
+            {/each}
+        </g>
+    {:else}
+        <text class="fill-dark-grey stroke-none text-4xl sm:text-2xl" text-anchor="start" y="2ex">
+            {complete && total_count === 0
+                ? 'No fires for the duration selected.'
+                : complete && total_count > 0
+                ? 'No district assignments available for these fires.'
+                : 'District totals unavailable for the selected dates.'}
+        </text>
+    {/if}
+</svg>

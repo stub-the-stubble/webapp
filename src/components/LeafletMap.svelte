@@ -1,11 +1,10 @@
 <script>
     import { onMount } from 'svelte';
+    import { firePopupHtml } from '$lib/utils/firePresentation.js';
     import 'leaflet/dist/leaflet.css';
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
     import map_marker from '$lib/assets/icons/fire_map_marker.png';
-
-
 
     export let locations_data, state_code, center, layout;
 
@@ -45,13 +44,12 @@
             l_map.setView(center, 7);
         }
 
-        markers.eachLayer(function(layer){
-            markers.removeLayer(layer)
+        markers.eachLayer(function (layer) {
+            markers.removeLayer(layer);
         });
 
         locations_data.forEach((element) => {
-            const marker_html = `District : ${element.district} <br>
-                           Time : ${element.acqtime} <br>`;
+            const marker_html = firePopupHtml(element);
             const marker = L.marker([element.lat, element.lon], { icon: fire_icon }).bindPopup(
                 marker_html,
                 { closeButton: false },
@@ -62,6 +60,8 @@
     }
 </script>
 
-
-
-<div id={`map-${state_code}`} class="w-full aspect-w-16 aspect-h-9 mx-auto" bind:this={mapElement} />
+<div
+    id={`map-${state_code}`}
+    class="w-full aspect-w-16 aspect-h-9 mx-auto"
+    bind:this={mapElement}
+/>
