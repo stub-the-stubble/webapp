@@ -1,7 +1,6 @@
 <script>
     import { sumDistricts, isCount } from '$lib/utils/datahelpers.js';
     export let complete = true;
-    import { draw } from 'svelte/transition';
     import { scaleSequential } from 'd3-scale';
     import { interpolateReds } from 'd3-scale-chromatic';
     import { map_paths } from '$lib/data/map_paths';
@@ -94,43 +93,44 @@
     {#if !complete}<p class="text-sm text-grey">
             Map totals unavailable for the selected dates.
         </p>{/if}
-    {#if complete && isCount(Number(district_count)) && district_count != null}
-        <div class="absolute top-0 left-0">
-            <h4 class="text-sm text-grey">
-                {district_name}
-            </h4>
-            <h5 class="text-xl text-red font-semibold">
-                {district_count}
-            </h5>
-        </div>
-    {/if}
+    <div class="absolute top-0 left-0">
+        <h4 class="text-sm text-grey">
+            {district_name ?? states[state].name.toUpperCase()}
+        </h4>
+        <h5 class="text-xl text-red font-semibold">
+            {complete && district_count != null && isCount(Number(district_count))
+                ? district_count
+                : 'Unavailable'}
+        </h5>
+    </div>
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
     <svg
         xmlns="http://www.w3.org/2000/svg"
         bind:this={state_map}
         class="w-full h-full stroke-black"
         viewBox={bbox}
+        preserveAspectRatio="xMidYMid meet"
         on:mouseout={handleMouseOut}
         role="presentation"
     >
-        {#if complete && district_breakup}
-            <g>
-                {#each Object.entries(district_breakup) as [district, count]}
-                    <path
-                        on:mouseenter={handleMouseMove}
-                        on:click={handleClick}
-                        class="hover:fill-brown transition-colors duration-150"
-                        fill={isCount(count)
-                            ? color_scale(Math.log2(Math.max(count, 1)))
-                            : '#d1d5db'}
-                        in:draw|global={{ duration: 1000, delay: 800 }}
-                        d={paths[district]}
-                        role="presentation"
-                        data-district={district}
-                        data-fire-count={count}
-                    />
-                {/each}
-            </g>
-        {/if}
+        <g>
+            <!-- Geography is independent of observations. Drawing only districts in
+                     the response leaves a tiny fragment when coverage is incomplete. -->
+            {#each Object.entries(paths) as [district, path]}
+                {@const count = complete ? district_breakup?.[district] : null}
+                <path
+                    on:mouseenter={handleMouseMove}
+                    on:click={handleClick}
+                    class="hover:fill-brown transition-colors duration-150"
+                    fill={isCount(count) ? color_scale(Math.log2(Math.max(count, 1))) : '#d1d5db'}
+                    d={path}
+                    role="presentation"
+                    data-district={district}
+                    data-fire-count={isCount(count) ? count : 'null'}
+                    ><title>{district}: {isCount(count) ? count : 'Unavailable'}</title></path
+                >
+            {/each}
+        </g>
     </svg>
+    <p class="absolute bottom-0 left-0 text-xs text-grey">Grey districts: data unavailable.</p>
 </div>
