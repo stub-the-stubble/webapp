@@ -3,9 +3,11 @@
     import { states } from '$lib/data/site_info.js';
     import { fires_data } from '../stores.js';
     import { simpleKebab } from '../lib/utils/stringHelpers.js';
+    import { getMonitoringSeason } from '$lib/utils/season.js';
+    import { getDateIST } from '$lib/utils/datetime.js';
 
     export let state, state_code, historical_data, districts_data;
-    export const periods = ['Today', 'Yesterday', 'This month', 'This season'];
+    const periods = ['Today', 'Yesterday', 'This month', getMonitoringSeason(getDateIST()).label];
 
     $: state_code = states[state].code;
 

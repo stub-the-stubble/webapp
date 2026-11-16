@@ -2,13 +2,15 @@
     import { startOfDay, startOfMonth, subDays } from 'date-fns';
     import { getDateIST, periodTotal } from '$lib/utils';
     import { fade } from 'svelte/transition';
+    import { getMonitoringSeason } from '$lib/utils/season.js';
 
     // Get data as a prop
     export let data,
         last_updated = undefined,
         layout,
         style;
-    export const periods = ['Today', 'Yesterday', 'This month', 'This season'];
+    const season = getMonitoringSeason(getDateIST());
+    const periods = ['Today', 'Yesterday', 'This month', season.label];
     export const styleClasses = {
         default: {
             table: 'w-full text-sm xs:text-base text-center',
@@ -36,8 +38,8 @@
     $: fc_today = periodTotal(data, today);
     $: fc_yesterday = periodTotal(data, subDays(today, 1));
     $: fc_this_month = periodTotal(data, startOfMonth(today), today);
-    // A current season definition has not been confirmed by the project.
-    const fc_all = null;
+    // Require every elapsed season day; missing observations must not become zero.
+    $: fc_all = periodTotal(data, season.start, season.through);
 </script>
 
 <div class={styleClasses[style].table}>
@@ -73,7 +75,8 @@
 </div>
 {#if style !== 'minimal'}
     <p class="mt-2 text-sm text-grey">
-        All dates use IST. Totals are unavailable when days are missing. Season total unavailable.
+        Summary totals use today's IST date, independently of the chart date selection.
+        {season.description} Totals are unavailable when days are missing.
     </p>
 {/if}
 {#if layout != 'narrow' && last_updated}
