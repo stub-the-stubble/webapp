@@ -1,0 +1,90 @@
+import { addDays, format, startOfDay, startOfMonth, subDays } from 'date-fns';
+import { getMonitoringSeason } from './season.js';
+import { validPayload } from './loadFireData.js';
+
+export function locationDates(period, istDate) {
+    const today = startOfDay(istDate);
+    let start = today,
+        end = today;
+    switch (period) {
+        case 'today':
+            break;
+        case 'yesterday':
+            start = end = subDays(today, 1);
+            break;
+        case 'week':
+            start = subDays(today, 6);
+            break;
+        case 'month':
+            start = startOfMonth(today);
+            break;
+        case 'thirty':
+            start = subDays(today, 29);
+            break;
+        case 'season': {
+            const season = getMonitoringSeason(today);
+            start = season.start;
+            end = season.through;
+            break;
+        }
+        default:
+            throw new RangeError('Unknown location period');
+    }
+    const dates = [];
+    for (let day = start; day <= end; day = addDays(day, 1)) dates.push(format(day, 'yyyy-MM-dd'));
+    return dates;
+}
+
+export async function loadLocations(fetcher, state, dates, signal, cache = new Map()) {
+    if (!['PB', 'HR'].includes(state)) throw new RangeError('Unknown state');
+    const results = new Array(dates.length);
+    let next = 0;
+    // Bound simultaneous downloads; season views must not burst dozens of requests.
+    async function worker() {
+        while (next < dates.length && !signal.aborted) {
+            const index = next++,
+                date = dates[index],
+                key = `${state}/${date}`;
+            if (cache.has(key)) {
+                results[index] = cache.get(key);
+                continue;
+            }
+            const controller = new AbortController();
+            const abort = () => controller.abort();
+            signal.addEventListener('abort', abort, { once: true });
+            const timeout = setTimeout(abort, 12000);
+            try {
+                const response = await fetcher(
+                    `https://stub-the-stubble.github.io/data-pipeline/v2/${key}.json`,
+                    { signal: controller.signal },
+                );
+                if (
+                    !response.ok ||
+                    !response.headers.get('content-type')?.includes('application/json')
+                )
+                    throw new Error('Unavailable');
+                const data = await response.json();
+                if (!validPayload(data, false) || data.total !== data.locations.length)
+                    throw new Error('Incomplete locations');
+                results[index] = data;
+                cache.set(key, data);
+            } catch {
+                // Failed days remain missing; a successful zero-fire file is different.
+                results[index] = null;
+            } finally {
+                clearTimeout(timeout);
+                signal.removeEventListener('abort', abort);
+            }
+        }
+    }
+    await Promise.all(Array.from({ length: Math.min(4, dates.length) }, worker));
+    if (signal.aborted) throw new DOMException('Cancelled', 'AbortError');
+    return {
+        locations: results.flatMap(
+            (data, i) =>
+                data?.locations.map((point) => ({ ...point, observation_date: dates[i] })) ?? [],
+        ),
+        missing: dates.filter((_, i) => !results[i]),
+        availableDays: results.filter(Boolean).length,
+    };
+}

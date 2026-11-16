@@ -7,61 +7,101 @@
     import map_marker from '$lib/assets/icons/fire_map_marker.png';
 
     export let locations_data, state_code, center, layout;
-
-    let mapElement, L, L_M, l_map, fire_icon, markers;
-
-    onMount(async () => {
-        L = await import('leaflet');
-        L_M = await import('leaflet.markercluster/dist/leaflet.markercluster.js');
-
-        l_map = L.map(mapElement, { preferCanvas: true });
-        l_map.setView(center, 8);
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            minZoom: 6,
-            attribution:
-                '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            preferCanvas: true,
-        }).addTo(l_map);
-
-        fire_icon = L.icon({
-            iconUrl: map_marker,
-            iconSize: [30, 30], // size of the icon
-            iconAnchor: [7.5, 7.5], // point of the icon which will correspond to marker's location
-            popupAnchor: [0, -7.5], // point from which the popup should open relative to the iconAnchor
-        });
-
-        markers = new L_M.MarkerClusterGroup({ chunkedLoading: true, showCoverageOnHover: false });
-    });
-
-    // Update map config and markers whenever L is available and we get new data
-    $: if (l_map && locations_data) {
-        layout = layout ?? 'default';
-
-        // Change zoom level on narrow layouts
-        if (layout === 'narrow') {
-            l_map.setView(center, 7);
+    let fitted = false;
+    let mapElement,
+        map,
+        markers,
+        L,
+        icon,
+        ready = false,
+        tileError = false,
+        initError = false;
+    onMount(() => {
+        let disposed = false,
+            observer;
+        async function initialize() {
+            try {
+                L = await import('leaflet');
+                const cluster = await import('leaflet.markercluster/dist/leaflet.markercluster.js');
+                if (disposed) return;
+                map = L.map(mapElement, { preferCanvas: true, minZoom: 5, maxZoom: 19 });
+                map.setView(center, layout === 'narrow' ? 7 : 8);
+                // Imagery has no baked-in place names. Keep labels in a separate pane
+                // above imagery and below markers so they cannot intercept clicks.
+                const imagery = L.tileLayer(
+                    'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                    {
+                        maxZoom: 19,
+                        attribution:
+                            'Imagery &copy; Esri, Vantor, Earthstar Geographics, GIS User Community',
+                    },
+                ).addTo(map);
+                map.createPane('englishLabels');
+                map.getPane('englishLabels').style.zIndex = 450;
+                map.getPane('englishLabels').style.pointerEvents = 'none';
+                const labels = L.tileLayer(
+                    'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+                    {
+                        pane: 'englishLabels',
+                        maxNativeZoom: 18,
+                        maxZoom: 19,
+                        attribution:
+                            'Labels &copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
+                    },
+                ).addTo(map);
+                imagery.on('tileerror', () => {
+                    tileError = true;
+                });
+                labels.on('tileerror', () => {
+                    tileError = true;
+                });
+                icon = L.icon({
+                    iconUrl: map_marker,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15],
+                    popupAnchor: [0, -15],
+                });
+                // Synchronous marker updates avoid a cancelled selection's chunked
+                // queue adding obsolete markers after the next selection has loaded.
+                markers = new cluster.MarkerClusterGroup({ showCoverageOnHover: false });
+                map.addLayer(markers);
+                observer = new ResizeObserver(() => map.invalidateSize());
+                observer.observe(mapElement);
+                ready = true;
+            } catch {
+                if (!disposed) initError = true;
+            }
         }
-
-        markers.eachLayer(function (layer) {
-            markers.removeLayer(layer);
-        });
-
-        locations_data.forEach((element) => {
-            const marker_html = firePopupHtml(element);
-            const marker = L.marker([element.lat, element.lon], { icon: fire_icon }).bindPopup(
-                marker_html,
-                { closeButton: false },
-            );
-            markers.addLayer(marker);
-        });
-        l_map.addLayer(markers);
+        initialize();
+        return () => {
+            disposed = true;
+            ready = false;
+            observer?.disconnect();
+            map?.remove();
+        };
+    });
+    $: if (ready && locations_data) {
+        markers.clearLayers();
+        markers.addLayers(
+            locations_data.map((point) =>
+                L.marker([point.lat, point.lon], { icon }).bindPopup(firePopupHtml(point)),
+            ),
+        );
+        // Start over the observed fires, not a hard-coded centre in neighbouring
+        // hills. Later filter changes preserve the user's chosen farm-level zoom.
+        if (!fitted && locations_data.length) {
+            map.fitBounds(markers.getBounds(), { padding: [30, 30], maxZoom: 12 });
+            fitted = true;
+        }
     }
 </script>
 
+{#if initError}<p role="alert">The map could not load. Please refresh to retry.</p>{/if}
+{#if tileError}<p role="status" class="text-sm text-grey">
+        Some background tiles could not load. Fire detections are shown independently.
+    </p>{/if}
 <div
     id={`map-${state_code}`}
-    class="w-full aspect-w-16 aspect-h-9 mx-auto"
+    class="w-full rounded min-h-[320px] h-[420px] md:h-[500px]"
     bind:this={mapElement}
 />

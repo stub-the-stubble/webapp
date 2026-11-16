@@ -1,13 +1,7 @@
 <script>
-    import { startOfDay, getTime, format } from 'date-fns';
+    import { format } from 'date-fns';
     import { page } from '$app/stores';
-    import {
-        LeafletMap,
-        StateMap,
-        CumulativeDataTable,
-        FireCountChart,
-        DistrictBarchart,
-    } from '$components';
+    import { StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart } from '$components';
     import { states } from '$lib/data/site_info.js';
     import { endDate, fires_data, isRangeMode, startDate } from '../stores.js';
     import { getDateIST, IntersectionObserver } from '$lib/utils';
@@ -17,17 +11,12 @@
         periodTotal,
     } from '$lib/utils/datahelpers.js';
     import arrowRight from '$lib/assets/icons/arrow_right.svg?raw';
+    import FireLocations from './FireLocations.svelte';
 
     export let state,
         layout = 'default';
 
-    let state_code,
-        todays_data,
-        historical_data,
-        isStatePage,
-        headingLevel,
-        subheadingLevel,
-        isToday;
+    let state_code, todays_data, historical_data, isStatePage, headingLevel, subheadingLevel;
 
     // Variables for state map
     // TODO: Audit all variables for this component
@@ -70,7 +59,6 @@
         $endDate,
         $startDate,
     );
-    $: isToday = !$isRangeMode && $startDate === getTime(startOfDay(getDateIST()));
 </script>
 
 {#key state}
@@ -179,24 +167,13 @@
                 </IntersectionObserver>
             </div>
         {/if}
-        {#if isToday && todays_data}
-            <IntersectionObserver>
-                <svelte:element
-                    this={subheadingLevel}
-                    class="mb-2 text-xl font-semibold capitalize"
-                >
-                    Today's fire locations
-                </svelte:element>
-                <p class="mb-6 italic text-xs text-grey">
-                    * An empty map will be shown if today's fire count is zero.
-                </p>
-                <LeafletMap
-                    locations_data={todays_data?.locations}
-                    {state_code}
-                    center={states[state].center}
-                    {layout}
-                />
-            </IntersectionObserver>
-        {/if}
+        <IntersectionObserver>
+            <FireLocations
+                headingLevel={subheadingLevel}
+                {state_code}
+                center={states[state].center}
+                {layout}
+            />
+        </IntersectionObserver>
     </div>
 {/key}
