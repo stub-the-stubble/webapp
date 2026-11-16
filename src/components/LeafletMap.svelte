@@ -8,6 +8,11 @@
 
     export let locations_data, state_code, center, layout;
     let fitted = false;
+    function showAllFires() {
+        if (!ready || !locations_data?.length) return;
+        map.fitBounds(markers.getBounds(), { padding: [30, 30], maxZoom: 12 });
+        fitted = true;
+    }
     let mapElement,
         map,
         markers,
@@ -90,12 +95,23 @@
         // Start over the observed fires, not a hard-coded centre in neighbouring
         // hills. Later filter changes preserve the user's chosen farm-level zoom.
         if (!fitted && locations_data.length) {
-            map.fitBounds(markers.getBounds(), { padding: [30, 30], maxZoom: 12 });
-            fitted = true;
+            showAllFires();
         }
     }
 </script>
 
+<div class="mb-2 flex flex-wrap items-center gap-3">
+    <button
+        type="button"
+        class="rounded border border-light-brown bg-white px-3 py-2 text-sm disabled:opacity-50"
+        disabled={!ready || !locations_data?.length}
+        aria-controls={`map-${state_code}`}
+        on:click={showAllFires}>Show all fires</button
+    >
+    <p class="text-xs text-grey">
+        Zoom is preserved when changing periods. Show all fires resets the view.
+    </p>
+</div>
 {#if initError}<p role="alert">The map could not load. Please refresh to retry.</p>{/if}
 {#if tileError}<p role="status" class="text-sm text-grey">
         Some background tiles could not load. Fire detections are shown independently.

@@ -61,6 +61,13 @@
                 <option value="season">{season.label} ({season.crop.toLowerCase()})</option>
             </select>
         </label>
+        <!-- Reload the whole dashboard so maps and historical summaries refresh
+             together, rather than updating only one panel's snapshot. -->
+        <button
+            type="button"
+            class="rounded border border-light-brown bg-white px-3 py-2 text-sm"
+            on:click={() => window.location.reload()}>Refresh dashboard</button
+        >
     </div>
     <p class="text-sm text-grey mb-2">
         {dates[0] ?? ''} – {dates.at(-1) ?? ''} (IST). This filter controls only the location map.

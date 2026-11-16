@@ -62,7 +62,8 @@ export async function loadFireData(fetcher, signal) {
             try {
                 const response = await fetcher(
                     `${baseURL}/${state}/${historical ? 'historical_data' : date}.json`,
-                    { signal: controller.signal },
+                    // Refresh dashboard must revalidate summaries as well as map files.
+                    { signal: controller.signal, cache: 'no-cache' },
                 );
                 if (!response.ok) throw new Error(response.status === 404 ? 'missing' : 'request');
                 if (

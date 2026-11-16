@@ -1,6 +1,7 @@
 import { addDays, format, startOfDay, startOfMonth, subDays } from 'date-fns';
 import { getMonitoringSeason } from './season.js';
 import { validPayload } from './loadFireData.js';
+import { getDateIST } from './datetime.js';
 
 export function locationDates(period, istDate) {
     const today = startOfDay(istDate);
@@ -38,6 +39,9 @@ export function locationDates(period, istDate) {
 export async function loadLocations(fetcher, state, dates, signal, cache = new Map()) {
     if (!['PB', 'HR'].includes(state)) throw new RangeError('Unknown state');
     const results = new Array(dates.length);
+    // Recent observations can still change. Never reuse today's or yesterday's
+    // in-memory snapshot, including when a page stays open across midnight IST.
+    const mutableFrom = format(subDays(getDateIST(), 1), 'yyyy-MM-dd');
     let next = 0;
     // Bound simultaneous downloads; season views must not burst dozens of requests.
     async function worker() {
@@ -45,7 +49,8 @@ export async function loadLocations(fetcher, state, dates, signal, cache = new M
             const index = next++,
                 date = dates[index],
                 key = `${state}/${date}`;
-            if (cache.has(key)) {
+            const mutable = date >= mutableFrom;
+            if (!mutable && cache.has(key)) {
                 results[index] = cache.get(key);
                 continue;
             }
@@ -56,7 +61,8 @@ export async function loadLocations(fetcher, state, dates, signal, cache = new M
             try {
                 const response = await fetcher(
                     `https://stub-the-stubble.github.io/data-pipeline/v2/${key}.json`,
-                    { signal: controller.signal },
+                    // Ask the browser to revalidate its HTTP cache as well.
+                    { signal: controller.signal, cache: 'no-cache' },
                 );
                 if (
                     !response.ok ||
@@ -67,7 +73,7 @@ export async function loadLocations(fetcher, state, dates, signal, cache = new M
                 if (!validPayload(data, false) || data.total !== data.locations.length)
                     throw new Error('Incomplete locations');
                 results[index] = data;
-                cache.set(key, data);
+                if (!mutable) cache.set(key, data);
             } catch {
                 // Failed days remain missing; a successful zero-fire file is different.
                 results[index] = null;

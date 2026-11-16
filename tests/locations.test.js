@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { locationDates, loadLocations } from '../src/lib/utils/fireLocations.js';
 import { firePopupHtml } from '../src/lib/utils/firePresentation.js';
+import { getDateIST } from '../src/lib/utils/datetime.js';
 
 test('location presets have inclusive IST calendar boundaries', () => {
     const today = new Date(2026, 10, 16);
@@ -57,4 +58,47 @@ test('cancelled location requests do not return obsolete results', async () => {
     );
     controller.abort();
     await assert.rejects(task, { name: 'AbortError' });
+});
+
+test('today and yesterday revalidate changed observations instead of reusing cached counts', async () => {
+    const today = getDateIST();
+    const dates = [...locationDates('yesterday', today), ...locationDates('today', today)];
+    const cache = new Map();
+    const signal = new AbortController().signal;
+    let total = 1,
+        calls = 0;
+    const fetcher = async (url, options) => {
+        calls++;
+        assert.equal(options.cache, 'no-cache');
+        return new Response(
+            JSON.stringify({
+                total,
+                districts: { A: total },
+                locations: Array.from({ length: total }, () => ({
+                    lat: 30,
+                    lon: 75,
+                    district: 'A',
+                })),
+            }),
+            { headers: { 'content-type': 'application/json' } },
+        );
+    };
+    const first = await loadLocations(fetcher, 'PB', dates, signal, cache);
+    total = 2;
+    const second = await loadLocations(fetcher, 'PB', dates, signal, cache);
+    assert.equal(first.locations.length, 2);
+    assert.equal(second.locations.length, 4);
+    assert.equal(calls, 4);
+    assert.equal(cache.size, 0);
+
+    // A failed revalidation must remain missing, never fall back to an old count.
+    const missing = await loadLocations(
+        async () => new Response('', { status: 503 }),
+        'PB',
+        dates,
+        signal,
+        cache,
+    );
+    assert.equal(missing.availableDays, 0);
+    assert.deepEqual(missing.missing, dates);
 });

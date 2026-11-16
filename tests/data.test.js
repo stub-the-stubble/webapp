@@ -67,7 +67,8 @@ test('schema rejects invalid counts, dates and malformed locations', () => {
 
 test('failed daily requests do not discard valid history or the other state', async () => {
     const requests = [];
-    const result = await loadFireData(async (url) => {
+    const result = await loadFireData(async (url, options) => {
+        assert.equal(options.cache, 'no-cache');
         requests.push(url);
         if (url.includes('/PB/') && !url.endsWith('historical_data.json'))
             return new Response('<!DOCTYPE html>', { status: 404 });
