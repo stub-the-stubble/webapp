@@ -3,7 +3,12 @@
     import { format, parseISO } from 'date-fns';
     import LeafletMap from './LeafletMap.svelte';
     import { getDateIST } from '$lib/utils/datetime.js';
-    import { locationViewDates, loadLocations } from '$lib/utils/fireLocations.js';
+    import {
+        locationViewDates,
+        selectedLocationDates,
+        loadLocations,
+    } from '$lib/utils/fireLocations.js';
+    import { startDate, endDate, isRangeMode } from '../stores.js';
     import { getMonitoringSeason } from '$lib/utils/season.js';
     export let state_code,
         center,
@@ -11,13 +16,22 @@
         latestDate,
         dataPending = false,
         headingLevel = 'h2';
-    let period = 'latest',
+    let period = 'selected',
         mounted = false,
         loading = false,
         result = null;
     let request;
     const cache = new Map();
-    $: dates = locationViewDates(period, latestDate, getDateIST());
+    let lastSelection;
+    $: selection = `${$startDate}/${$endDate}/${$isRangeMode}`;
+    $: if (selection !== lastSelection) {
+        lastSelection = selection;
+        period = 'selected';
+    }
+    $: dates =
+        period === 'selected'
+            ? selectedLocationDates($startDate, $endDate, $isRangeMode)
+            : locationViewDates(period, latestDate, getDateIST());
     $: season = getMonitoringSeason(latestDate ? parseISO(latestDate) : getDateIST());
     $: rangeLabel = dates.length
         ? dates.length === 1
@@ -31,9 +45,15 @@
         mounted = true;
     });
     onDestroy(() => request?.abort());
-    $: if (mounted && dates.length) refresh(dates, state_code);
+    $: if (mounted) refresh(dates, state_code);
     async function refresh(requestedDates, state) {
         request?.abort();
+        if (!requestedDates.length) {
+            request = null;
+            result = null;
+            loading = false;
+            return;
+        }
         const current = new AbortController();
         request = current;
         loading = true;
@@ -60,6 +80,7 @@
             bind:value={period}
             class="max-w-full rounded border border-light-brown bg-white px-3 py-2 text-sm"
         >
+            <option value="selected">Dashboard dates</option>
             <option value="latest">Latest reported</option>
             <option value="today">Today</option>
             <option value="yesterday">Yesterday</option>
@@ -77,6 +98,8 @@
             >
             · {rangeLabel}
             {#if result.missing.length} · {result.availableDays}/{dates.length} days reported{/if}
+        {:else if !dates.length && $startDate != null}Choose a period of one year or less to view
+            locations.
         {:else}No report{rangeLabel ? ` · ${rangeLabel}` : ''}{/if}
     </div>
     {#if result?.missing.length}
@@ -85,5 +108,5 @@
             <p class="mt-1">{result.missing.join(', ')}</p>
         </details>
     {/if}
-    <LeafletMap locations_data={result?.locations ?? []} {state_code} {center} {layout} {dates} />
+    <LeafletMap locations_data={result?.locations ?? []} {state_code} {center} {layout} />
 </section>

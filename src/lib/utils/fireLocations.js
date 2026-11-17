@@ -1,7 +1,26 @@
-import { addDays, format, parseISO, startOfDay, startOfMonth, subDays } from 'date-fns';
+import {
+    addDays,
+    differenceInCalendarDays,
+    format,
+    parseISO,
+    startOfDay,
+    startOfMonth,
+    subDays,
+} from 'date-fns';
 import { getMonitoringSeason } from './season.js';
 import { validPayload } from './loadFireData.js';
 import { getDateIST } from './datetime.js';
+
+export function selectedLocationDates(start, end, range) {
+    if (start == null) return [];
+    const through = range ? end : start;
+    if (through == null) return [];
+    const count = differenceInCalendarDays(through, start) + 1;
+    // The point map downloads daily files; multi-year history belongs in the
+    // aggregate charts until a tiled historical location service is available.
+    if (!Number.isFinite(count) || count < 1 || count > 366) return [];
+    return Array.from({ length: count }, (_, i) => format(addDays(start, i), 'yyyy-MM-dd'));
+}
 
 export function locationViewDates(period, latestDate, istDate) {
     if (period === 'latest') return latestDate ? [latestDate] : [];
