@@ -15,31 +15,19 @@
         districts_data_filtered;
     const dimns = { width: 800, height: 300, label_x: 220, gap_x: 10 };
 
-    $: {
-        if (district_breakups_list && totals_list) {
-            updateGraphData();
-        }
-    }
+    // Keep rankings in sync with both the dashboard period and chart hover.
+    $: updateGraphData(
+        district_breakups_list,
+        totals_list,
+        $isRangeMode,
+        $hoverOut,
+        $highlightedDate,
+    );
 
-    $: if ($hoverOut === false && $highlightedDate) {
-        updateGraphData();
-    }
-
-    $: if ($hoverOut === true) {
-        updateGraphData();
-    }
-
-    function updateGraphData() {
-        if ($hoverOut) {
-            if ($isRangeMode) {
-                getRangeData();
-            } else {
-                getSingleDateData();
-            }
-        } else {
-            getSingleDateData();
-        }
-
+    function updateGraphData(districts, totals, rangeMode, outsideChart, date) {
+        if (!districts || !totals) return;
+        if (rangeMode && outsideChart) getRangeData();
+        else getSingleDateData(date);
         updateGraph();
     }
 
@@ -53,11 +41,11 @@
         total_count = Object.values(totals_list).reduce((acc, value) => acc + value, 0);
     }
 
-    function getSingleDateData() {
+    function getSingleDateData(date) {
         if (!district_breakups_list || !totals_list) return;
 
-        total_count = totals_list[$highlightedDate];
-        districts_data = district_breakups_list[$highlightedDate];
+        total_count = totals_list[date];
+        districts_data = district_breakups_list[date];
 
         districts_data_filtered = [];
         if (districts_data) {

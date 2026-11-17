@@ -15,30 +15,14 @@
     const { paths, bbox } = map_paths[state_code];
     const color_scale = scaleSequential([0, 15], interpolateReds);
 
-    $: {
-        if (district_breakups_list && totals_list) {
-            updateMap();
-        }
-    }
+    // Declare every selection dependency here: Svelte cannot see store reads
+    // hidden inside a function, so a date change otherwise retains old counts.
+    $: updateMap(district_breakups_list, totals_list, $isRangeMode, $hoverOut, $highlightedDate);
 
-    $: if ($hoverOut === false && $highlightedDate) {
-        updateMap();
-    }
-
-    $: if ($hoverOut === true) {
-        updateMap();
-    }
-
-    function updateMap() {
-        if ($hoverOut) {
-            if ($isRangeMode) {
-                getRangeData();
-            } else {
-                getSingleDateData();
-            }
-        } else {
-            getSingleDateData();
-        }
+    function updateMap(districts, totals, rangeMode, outsideChart, date) {
+        if (!districts || !totals) return;
+        if (rangeMode && outsideChart) getRangeData();
+        else getSingleDateData(date);
     }
 
     function getRangeData() {
@@ -48,11 +32,11 @@
         updateDistrictNameAndCount();
     }
 
-    function getSingleDateData() {
+    function getSingleDateData(date) {
         if (!district_breakups_list || !totals_list) return;
 
-        district_breakup = district_breakups_list[$highlightedDate];
-        total = totals_list[$highlightedDate];
+        district_breakup = district_breakups_list[date];
+        total = totals_list[date];
         updateDistrictNameAndCount();
     }
 

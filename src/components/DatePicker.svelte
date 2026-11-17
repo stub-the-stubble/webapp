@@ -10,11 +10,12 @@
         isRangeMode,
         isMenuMinimised,
         fires_data,
+        hoverOut,
     } from '../stores.js';
     import { timeFormat } from 'd3-time-format';
-    import { startOfMonth, startOfDay, subDays, getTime } from 'date-fns';
+    import { startOfDay, getTime } from 'date-fns';
     import { cn, getDateIST } from '$lib/utils';
-    import { latestReportedDate, reportedDate } from '$lib/utils/dashboardSummary.js';
+    import { latestReportedDate, dashboardPresetRange } from '$lib/utils/dashboardSummary.js';
     import { Button } from './external/button';
     import { RangeCalendar } from './external/range-calendar';
     import { Toggle } from './external/toggle';
@@ -70,49 +71,15 @@
     }
 
     function updateSelection(selected, latestDate) {
-        switch (selected) {
-            case 'latest':
-                sd = reportedDate(latestDate);
-                ed = null;
-                showCustomRangePicker = false;
-                break;
-            case '':
-            case 'today':
-                sd = todayDate;
-                ed = null;
-                showCustomRangePicker = false;
-
-                break;
-            case 'yesterday':
-                sd = subDays(todayDate, 1);
-                ed = null;
-                showCustomRangePicker = false;
-
-                break;
-            case 'month':
-                sd = startOfMonth(todayDate);
-                ed = todayDate;
-                showCustomRangePicker = false;
-
-                break;
-            case 'thirty_days':
-                sd = subDays(todayDate, 29);
-                ed = todayDate;
-                showCustomRangePicker = false;
-
-                break;
-            case 'all_time':
-                sd = new Date(2021, 8, 3);
-                ed = todayDate;
-                showCustomRangePicker = false;
-
-                break;
-            case 'custom':
-                showCustomRangePicker = true;
-                break;
-            default:
-                sd = todayDate;
+        $hoverOut = true;
+        if (selected === 'custom') {
+            showCustomRangePicker = true;
+            return;
         }
+        const range = dashboardPresetRange(selected || 'today', latestDate, todayDate);
+        sd = range.start;
+        ed = range.end;
+        showCustomRangePicker = false;
         updateDateString();
     }
 

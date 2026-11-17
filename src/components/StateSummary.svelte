@@ -84,7 +84,9 @@
                 </p>
             {:else if historical_data && !selectionComplete}
                 <p role="status" class="mb-3 text-sm text-grey">
-                    Some selected dates have no report.
+                    {$isRangeMode
+                        ? 'Some dates are missing; shown totals are partial.'
+                        : 'No report for this date.'}
                 </p>
             {/if}
             {#if unassignedCount > 0}
@@ -114,7 +116,9 @@
                         <!-- New districts lack older history. Keep known districts visible;
                              their missing neighbours remain grey instead of hiding the state. -->
                         <StateMap
-                            complete={selectionTotal !== null}
+                            complete={$isRangeMode
+                                ? Object.keys(total_count_list).length > 0
+                                : selectionTotal !== null}
                             {state}
                             totals_list={total_count_list}
                             {district_breakups_list}

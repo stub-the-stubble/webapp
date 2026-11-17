@@ -167,7 +167,7 @@ test('district component excludes zero bars when all fires are unassigned', () =
     );
     const fn = source.slice(
         source.indexOf('function getRangeData()'),
-        source.indexOf('function getSingleDateData()'),
+        source.indexOf('function getSingleDateData('),
     );
     const context = {
         sumDistricts,

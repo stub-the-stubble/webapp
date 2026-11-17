@@ -4,6 +4,7 @@
     import { axisLeft, axisBottom } from 'd3-axis';
     import { max, extent, bisector } from 'd3-array';
     import { timeFormat } from 'd3-time-format';
+    import { timeDay } from 'd3-time';
     import { format } from 'd3-format';
     import { select, pointer } from 'd3-selection';
     import { area, curveStep } from 'd3-shape';
@@ -163,8 +164,14 @@
             .call(
                 axisBottom(xScale)
                     .tickSizeOuter(0)
-                    .ticks(Math.max(2, Math.floor(dimensions.width / 100)))
-                    .tickFormat(timeFormat('%d %b')),
+                    // Daily data has no intraday observations. Short custom
+                    // ranges must not repeat the same date on hourly ticks.
+                    .ticks(
+                        getRange() < 7
+                            ? timeDay.every(1)
+                            : Math.max(2, Math.floor(dimensions.width / 100)),
+                    )
+                    .tickFormat(timeFormat(getRange() > 365 ? '%b %Y' : '%d %b')),
             );
 
         // Add the y-axis and labels
