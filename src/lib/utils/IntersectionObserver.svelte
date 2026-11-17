@@ -1,21 +1,3 @@
-<script>
-    import { onMount } from 'svelte';
-    let container,
-        intersecting = false;
-    onMount(() => {
-        const observer = new IntersectionObserver((entries) => {
-            intersecting = entries[0].isIntersecting;
-
-            if (intersecting) {
-                observer.unobserve(container);
-            }
-        });
-
-        observer.observe(container);
-        return () => observer.unobserve(container);
-    });
-</script>
-
-<div bind:this={container} class:animate-fadein-up={intersecting} class="opacity-0 w-full">
-    <slot />
-</div>
+<!-- Keep section content visible immediately. Delayed opacity animations made
+     already-loaded numbers and maps look as though they were still fetching. -->
+<div class="w-full"><slot /></div>

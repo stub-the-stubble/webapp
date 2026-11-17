@@ -1,24 +1,32 @@
 <script>
-    import { fires_data, highlightedDate } from '../stores.js';
+    import { fires_data } from '../stores.js';
     import { Header, Footer } from '$components';
-    import { browser } from '$app/environment';
+    import { onMount } from 'svelte';
+    import { page } from '$app/stores';
+    import { loadFireData } from '$lib/utils/loadFireData.js';
     import '../app.css';
 
-
-
-    export let data;
-
-    $: if (data) {
-        if (browser) {
+    let mounted = false;
+    let controller;
+    $: isDashboard = ['/', '/punjab', '/haryana'].includes(
+        $page.url.pathname.replace(/\/$/, '') || '/',
+    );
+    // Editorial pages render independently of the fire-data service. Load once
+    // when a visitor first enters a dashboard, including client-side navigation.
+    $: if (mounted && isDashboard && !controller) {
+        controller = new AbortController();
+        loadFireData(window.fetch.bind(window), controller.signal, (data) => {
             $fires_data = data;
-        } else {
-            $fires_data = null;
-        }
+        }).then((data) => {
+            if (!controller.signal.aborted) $fires_data = data;
+        });
     }
+    onMount(() => {
+        mounted = true;
+        return () => controller?.abort();
+    });
 </script>
 
-
 <Header />
-<slot />
+<main><slot /></main>
 <Footer />
-

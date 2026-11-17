@@ -1,108 +1,42 @@
 <script>
-    import { parse, getMonth, isAfter, isBefore, getYear, isToday, isYesterday } from 'date-fns';
-    import { getDateIST } from '$lib/utils';
-    import { fade } from 'svelte/transition';
-
-    // Get data as a prop
-    export let data, last_updated = undefined, layout, style;
-    export const periods = [
-        'Today',
-        'Yesterday',
-        'This month',
-        'This season',
-    ];
-    export const styleClasses = {
-        default: {
-            table: 'w-full text-sm xs:text-base text-center',
-            thead: 'flex h-12 border-b-2 border-lightest-grey',
-            thead_th: 'w-1/4 flex-none flex justify-center items-center p-1 bg-light-grey font-semibold capitalize border-r-2 last:border-r-0 border-lightest-grey',
-            tbody: 'flex h-12',
-            tbody_td: 'w-1/4 flex-none flex justify-center items-center p-1 bg-light-grey font-semibold capitalize border-r-2 last:border-r-0 border-lightest-grey',
-        },
-        minimal: {
-            table: 'w-full md:h-full text-sm xs:text-base text-center',
-            thead: 'md:sr-only flex h-12',
-            thead_th: 'w-1/4 flex justify-center items-center p-1 font-normal border border-dashed border-lightish-grey capitalize',
-            tbody: 'flex h-10 md:h-full',
-            tbody_td: 'w-1/4 md:flex-none flex justify-center items-center md:h-full p-1 md:py-2 text-center capitalize border-l last:border-r border-b md:border-b-0 border-dashed border-lightish-grey',
-        },
-    };
-
-    let fc_today = 0,
-        fc_yesterday = 0,
-        fc_all = 0,
-        fc_this_month = 0
-
-    const today = getDateIST();
-    const this_month = getMonth(today);
-    const this_year = getYear(today);
-
-    $: {
-        layout = layout ?? 'default';
-        style = style ?? 'default';
-
-        if (data) {
-            // Calculate fire counts for this month and for all season
-            fc_this_month = 0;
-            fc_all = 0;
-            for (const [date, count] of Object.entries(data)) {
-                const parsed_date = parse(date, 'yyyy-MM-dd', today);
-                const month = getMonth(parsed_date);
-                const year = getYear(parsed_date);
-
-                if (isToday(parsed_date)) {
-                    fc_today = count;
-                } else if (isYesterday(parsed_date)) {
-                    fc_yesterday = count;
-                }
-                if (month == this_month && year == this_year) {
-                    fc_this_month += count;
-                }
-                if (isAfter(parsed_date, new Date(2024, 3, 15)) && isBefore(parsed_date, new Date(2024, 4, 30))) {
-                    fc_all += count;
-                }
-            }
-        }
-    }
+    import { endDate, startDate, isRangeMode } from '../stores.js';
+    import { summaryPeriods } from '$lib/utils/dashboardSummary.js';
+    export let data,
+        loading = false,
+        style = 'default';
+    $: periods = summaryPeriods(data, $isRangeMode ? $endDate : $startDate);
+    $: cells = periods.length
+        ? periods
+        : ['Day', 'Previous day', 'Month', 'Season'].map((label) => ({ label, value: null }));
 </script>
 
-
-
-<div class={styleClasses[style].table}>
-    <div class={styleClasses[style].thead}>
-            {#each periods as period}
-                <div class={styleClasses[style].thead_th}>
-                    {period}
-                </div>
-            {/each}
-    </div>
-    <div class={styleClasses[style].tbody}>
-            <div class={styleClasses[style].tbody_td}>
-                {#if data}
-                    <span in:fade>{fc_today}</span>
-                {/if}
+<div
+    class="grid grid-cols-4 w-full text-center {style === 'minimal'
+        ? 'h-full text-sm'
+        : 'bg-light-grey text-sm xs:text-base'}"
+    aria-busy={loading}
+>
+    {#each cells as cell}
+        <div class="min-w-0 border-r border-lightest-grey last:border-r-0">
+            <div
+                class="px-1 py-3 font-medium {style === 'minimal'
+                    ? 'md:sr-only'
+                    : 'border-b border-lightest-grey'}"
+            >
+                {cell.label}
             </div>
-            <div class={styleClasses[style].tbody_td}>
-                {#if data}
-                    <span in:fade>{fc_yesterday}</span>
-                {/if}
+            <div
+                class="px-1 py-3 font-semibold tabular-nums"
+                title={loading
+                    ? 'Loading data'
+                    : cell.value === null
+                    ? 'Not reported for this period'
+                    : undefined}
+            >
+                {#if loading}<span class="animate-pulse" aria-label="Loading data">…</span>
+                {:else if cell.value === null}<span aria-label="Not reported">—</span>
+                {:else}{cell.value.toLocaleString()}{/if}
             </div>
-            <div class={styleClasses[style].tbody_td}>
-                {#if data}
-                    <span in:fade>{fc_this_month}</span>
-                {/if}
-            </div>
-            <div class={styleClasses[style].tbody_td}>
-                {#if data}
-                    <span in:fade>{fc_all}</span>
-                {/if}
-            </div>
-    </div>
+        </div>
+    {/each}
 </div>
-{#if layout != 'narrow' && last_updated}
-    <p class="mt-2 italic text-xs text-left xs:text-right text-grey">
-        * The current Rabi season started on 15th April 2024. New data is added to the system as soon as it is available to us. Last updated at {#if last_updated}
-            <span in:fade>{last_updated}</span>.
-        {/if}
-    </p>
-{/if}

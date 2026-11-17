@@ -1,13 +1,12 @@
 <script>
-    import { draw } from 'svelte/transition';
+    import { sumDistricts, isCount } from '$lib/utils/datahelpers.js';
+    export let complete = true;
     import { scaleSequential } from 'd3-scale';
     import { interpolateReds } from 'd3-scale-chromatic';
     import { map_paths } from '$lib/data/map_paths';
     import { states } from '$lib/data/site_info.js';
     import { highlightedDate, isRangeMode, hoverOut } from '../stores';
-    import { simpleKebab } from '../lib/utils/stringHelpers.js'
-
-
+    import { simpleKebab } from '../lib/utils/stringHelpers.js';
 
     export let state, totals_list, district_breakups_list;
 
@@ -17,54 +16,44 @@
     const color_scale = scaleSequential([0, 15], interpolateReds);
 
     $: {
-        if(district_breakups_list && totals_list) {
-            updateMap()
+        if (district_breakups_list && totals_list) {
+            updateMap();
         }
     }
 
-    $: if($hoverOut === false && $highlightedDate){
-        updateMap()
+    $: if ($hoverOut === false && $highlightedDate) {
+        updateMap();
     }
 
-    $: if($hoverOut === true) {
-        updateMap()
+    $: if ($hoverOut === true) {
+        updateMap();
     }
 
     function updateMap() {
-        if($hoverOut) {
-            if($isRangeMode) {
-                getRangeData()
+        if ($hoverOut) {
+            if ($isRangeMode) {
+                getRangeData();
             } else {
-                getSingleDateData()
+                getSingleDateData();
             }
         } else {
-            getSingleDateData()
+            getSingleDateData();
         }
     }
 
     function getRangeData() {
-        let combined = {}
-        let ks = Object.keys(district_breakups_list)
-        ks.forEach((k) => {
-            let ds = Object.keys(district_breakups_list[k])
-            ds.forEach(d => {
-                if ( combined[d] !== undefined)
-                    combined[d] += district_breakups_list[k][d]
-                else
-                    combined[d] = 0
-            })
-        })
-        district_breakup = combined
+        const combined = sumDistricts(district_breakups_list);
+        district_breakup = combined;
         total = Object.values(totals_list).reduce((acc, value) => acc + value, 0);
-        updateDistrictNameAndCount()
+        updateDistrictNameAndCount();
     }
 
     function getSingleDateData() {
-        if(!district_breakups_list && !totals_list) return
+        if (!district_breakups_list || !totals_list) return;
 
         district_breakup = district_breakups_list[$highlightedDate];
-        total = totals_list[$highlightedDate]
-        updateDistrictNameAndCount()
+        total = totals_list[$highlightedDate];
+        updateDistrictNameAndCount();
     }
 
     function updateDistrictNameAndCount() {
@@ -75,9 +64,10 @@
     function handleMouseMove(e) {
         let districtEl = e.target;
         district_name = districtEl.dataset.district;
-        district_count = districtEl.dataset.fireCount;
+        district_count =
+            districtEl.dataset.fireCount === 'null' ? null : districtEl.dataset.fireCount;
     }
-    function handleMouseOut(e) {
+    function handleMouseOut() {
         district_name = states[state].name.toUpperCase();
         district_count = total;
     }
@@ -99,37 +89,45 @@
     }
 </script>
 
-
-
-<div class="w-full h-full">
-    {#if !isNaN(district_count)}
-        <div class="absolute top-0 left-0">
-            <h4 class="text-sm text-grey">
-                {district_name}
-            </h4>
-            <h5 class="text-xl text-red font-semibold">
-                {district_count}
-            </h5>
-        </div>
-    {/if}
+<div class="w-full">
+    <div class="mb-3 min-h-[48px]">
+        <h4 class="text-sm text-grey">
+            {district_name ?? states[state].name.toUpperCase()}
+        </h4>
+        <h5 class="text-xl text-red font-semibold">
+            {complete && district_count != null && isCount(Number(district_count))
+                ? district_count
+                : '—'}
+        </h5>
+    </div>
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-    <svg xmlns="http://www.w3.org/2000/svg" bind:this={state_map} class="w-full h-full stroke-black" viewBox={bbox} on:mouseout={handleMouseOut} role="presentation">
-        {#if district_breakup}
-            <g>
-                {#each Object.entries(district_breakup) as [district, count]}
-                    <path
-                        on:mouseenter={handleMouseMove}
-                        on:click={handleClick}
-                        class="hover:fill-brown transition-colors duration-150"
-                        fill={color_scale(Math.log2(count))}
-                        in:draw|global={{ duration: 1000, delay: 800 }}
-                        d={paths[district]}
-                        role="presentation"
-                        data-district={district}
-                        data-fire-count={count}
-                    />
-                {/each}
-            </g>
-        {/if}
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        bind:this={state_map}
+        class="w-full h-auto stroke-black"
+        viewBox={bbox}
+        preserveAspectRatio="xMidYMid meet"
+        on:mouseout={handleMouseOut}
+        role="presentation"
+    >
+        <g>
+            <!-- Geography is independent of observations. Drawing only districts in
+                     the response leaves a tiny fragment when coverage is incomplete. -->
+            {#each Object.entries(paths) as [district, path]}
+                {@const count = complete ? district_breakup?.[district] : null}
+                <path
+                    on:mouseenter={handleMouseMove}
+                    on:click={handleClick}
+                    class="hover:fill-brown transition-colors duration-150"
+                    fill={isCount(count) ? color_scale(Math.log2(Math.max(count, 1))) : '#d1d5db'}
+                    fill-rule="evenodd"
+                    d={path}
+                    role="presentation"
+                    data-district={district}
+                    data-fire-count={isCount(count) ? count : 'null'}
+                    ><title>{district}: {isCount(count) ? count : 'Unavailable'}</title></path
+                >
+            {/each}
+        </g>
     </svg>
 </div>
