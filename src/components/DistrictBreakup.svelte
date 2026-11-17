@@ -1,13 +1,12 @@
 <script>
     import { CumulativeDataTable, FireCountChart } from '$components';
     import { states } from '$lib/data/site_info.js';
-    import { fires_data } from '../stores.js';
+    import { fires_data, startDate, endDate, isRangeMode } from '../stores.js';
     import { simpleKebab } from '../lib/utils/stringHelpers.js';
-    import { getMonitoringSeason } from '$lib/utils/season.js';
-    import { getDateIST } from '$lib/utils/datetime.js';
+    import { summaryPeriods } from '$lib/utils/dashboardSummary.js';
 
     export let state, state_code, historical_data, districts_data;
-    const periods = ['Today', 'Yesterday', 'This month', getMonitoringSeason(getDateIST()).label];
+    $: periods = summaryPeriods(null, $isRangeMode ? $endDate : $startDate).map((p) => p.label);
 
     $: state_code = states[state].code;
 

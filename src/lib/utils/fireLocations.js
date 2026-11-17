@@ -1,7 +1,16 @@
-import { addDays, format, startOfDay, startOfMonth, subDays } from 'date-fns';
+import { addDays, format, parseISO, startOfDay, startOfMonth, subDays } from 'date-fns';
 import { getMonitoringSeason } from './season.js';
 import { validPayload } from './loadFireData.js';
 import { getDateIST } from './datetime.js';
+
+export function locationViewDates(period, latestDate, istDate) {
+    if (period === 'latest') return latestDate ? [latestDate] : [];
+    // Calendar-day options stay literal. Longer windows end at the most recent
+    // report and always display that date range beside the location count.
+    const anchor =
+        latestDate && !['today', 'yesterday'].includes(period) ? parseISO(latestDate) : istDate;
+    return locationDates(period, anchor);
+}
 
 export function locationDates(period, istDate) {
     const today = startOfDay(istDate);
@@ -86,6 +95,12 @@ export async function loadLocations(fetcher, state, dates, signal, cache = new M
     await Promise.all(Array.from({ length: Math.min(4, dates.length) }, worker));
     if (signal.aborted) throw new DOMException('Cancelled', 'AbortError');
     return {
+        sources: [
+            ...new Set(results.filter(Boolean).map((data) => data.source?.series ?? 'nrsc-legacy')),
+        ],
+        sharedObservations: results
+            .flatMap((data) => data?.locations ?? [])
+            .filter((point) => point.shared_observation_states?.length > 1).length,
         locations: results.flatMap(
             (data, i) =>
                 data?.locations.map((point) => ({ ...point, observation_date: dates[i] })) ?? [],

@@ -9,10 +9,12 @@
         endDate,
         isRangeMode,
         isMenuMinimised,
+        fires_data,
     } from '../stores.js';
     import { timeFormat } from 'd3-time-format';
     import { startOfMonth, startOfDay, subDays, getTime } from 'date-fns';
     import { cn, getDateIST } from '$lib/utils';
+    import { latestReportedDate, reportedDate } from '$lib/utils/dashboardSummary.js';
     import { Button } from './external/button';
     import { RangeCalendar } from './external/range-calendar';
     import { Toggle } from './external/toggle';
@@ -22,7 +24,8 @@
     import * as DropdownMenu from './external/dropdown-menu';
 
     let showCustomRangePicker = false;
-    let preset = 'today';
+    let preset = 'latest';
+    $: latest = latestReportedDate($fires_data);
     const formatter = timeFormat('%d %b %Y');
     const tz = 'Asia/Kolkata';
     const todayDate = startOfDay(getDateIST());
@@ -34,6 +37,7 @@
     let sd, ed, dateString;
 
     const presets = {
+        latest: 'Latest reported',
         today: 'Today',
         yesterday: 'Yesterday',
         month: 'This month',
@@ -51,7 +55,7 @@
     let singleValue = undefined;
 
     $: {
-        updateSelection(preset);
+        updateSelection(preset, latest);
     }
 
     $: {
@@ -65,8 +69,13 @@
         updateDateString();
     }
 
-    function updateSelection(selected) {
+    function updateSelection(selected, latestDate) {
         switch (selected) {
+            case 'latest':
+                sd = reportedDate(latestDate);
+                ed = null;
+                showCustomRangePicker = false;
+                break;
             case '':
             case 'today':
                 sd = todayDate;
@@ -108,6 +117,15 @@
     }
 
     function updateDateString() {
+        if (!sd) {
+            dateString =
+                $fires_data?.errors?.PB_historical && $fires_data?.errors?.HR_historical
+                    ? 'Could not load data'
+                    : 'Loading data…';
+            $startDate = $endDate = $highlightedDate = null;
+            $isRangeMode = false;
+            return;
+        }
         const sdString = formatter(sd);
 
         if (sd && ed) {
@@ -153,7 +171,7 @@
             <span class="text-xl md:text-2xl text-brown font-bold">
                 {mounted ? dateString : 'Loading dates…'}
             </span>
-            {#if mounted && preset !== 'custom'}
+            {#if mounted && sd && preset !== 'custom'}
                 <span class="align-text-bottom md:text-lg text-grey whitespace-nowrap">
                     ({presets[preset]})
                 </span>
@@ -178,6 +196,9 @@
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content class="w-56" align="start">
                     <DropdownMenu.RadioGroup bind:value={preset}>
+                        <DropdownMenu.RadioItem value="latest"
+                            >Latest reported</DropdownMenu.RadioItem
+                        >
                         <DropdownMenu.RadioItem value="today">Today</DropdownMenu.RadioItem>
                         <DropdownMenu.RadioItem value="yesterday">Yesterday</DropdownMenu.RadioItem>
                         <DropdownMenu.RadioItem value="month">This month</DropdownMenu.RadioItem>
@@ -189,6 +210,10 @@
                     </DropdownMenu.RadioGroup>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
+            <button
+                class="text-sm text-grey hover:text-brown self-start px-2 py-2"
+                on:click={() => window.location.reload()}>Refresh</button
+            >
 
             {#if showCustomRangePicker}
                 <div class="flex flex-wrap" in:fade>

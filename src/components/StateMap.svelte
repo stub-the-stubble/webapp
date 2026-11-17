@@ -89,25 +89,22 @@
     }
 </script>
 
-<div class="w-full h-full">
-    {#if !complete}<p class="text-sm text-grey">
-            Map totals unavailable for the selected dates.
-        </p>{/if}
-    <div class="absolute top-0 left-0">
+<div class="w-full">
+    <div class="mb-3 min-h-[48px]">
         <h4 class="text-sm text-grey">
             {district_name ?? states[state].name.toUpperCase()}
         </h4>
         <h5 class="text-xl text-red font-semibold">
             {complete && district_count != null && isCount(Number(district_count))
                 ? district_count
-                : 'Unavailable'}
+                : '—'}
         </h5>
     </div>
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
     <svg
         xmlns="http://www.w3.org/2000/svg"
         bind:this={state_map}
-        class="w-full h-full stroke-black"
+        class="w-full h-auto stroke-black"
         viewBox={bbox}
         preserveAspectRatio="xMidYMid meet"
         on:mouseout={handleMouseOut}
@@ -123,6 +120,7 @@
                     on:click={handleClick}
                     class="hover:fill-brown transition-colors duration-150"
                     fill={isCount(count) ? color_scale(Math.log2(Math.max(count, 1))) : '#d1d5db'}
+                    fill-rule="evenodd"
                     d={path}
                     role="presentation"
                     data-district={district}
@@ -132,5 +130,4 @@
             {/each}
         </g>
     </svg>
-    <p class="absolute bottom-0 left-0 text-xs text-grey">Grey districts: data unavailable.</p>
 </div>

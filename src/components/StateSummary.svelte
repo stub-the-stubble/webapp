@@ -1,10 +1,9 @@
 <script>
-    import { format } from 'date-fns';
     import { page } from '$app/stores';
     import { StateMap, CumulativeDataTable, FireCountChart, DistrictBarchart } from '$components';
     import { states } from '$lib/data/site_info.js';
     import { endDate, fires_data, isRangeMode, startDate } from '../stores.js';
-    import { getDateIST, IntersectionObserver } from '$lib/utils';
+    import { IntersectionObserver } from '$lib/utils';
     import {
         getFiresTotals,
         getFiresBreakupsByDistrict,
@@ -16,21 +15,18 @@
     export let state,
         layout = 'default';
 
-    let state_code, todays_data, historical_data, isStatePage, headingLevel, subheadingLevel;
+    let state_code, historical_data, isStatePage, headingLevel, subheadingLevel;
 
     // Variables for state map
     // TODO: Audit all variables for this component
     let totals_data, districts_data, total_count_list, district_breakups_list;
 
-    let latestDate, selectionTotal, selectionComplete;
+    let selectionTotal, selectionComplete;
     $: unassignedCount = periodTotal(
         historical_data?.unassigned?.dates,
         $startDate,
         $isRangeMode ? $endDate : $startDate,
     );
-    $: latestDate = Object.keys(historical_data?.total.dates ?? {})
-        .sort()
-        .at(-1);
     $: selectionTotal = periodTotal(
         historical_data?.total.dates,
         $startDate,
@@ -48,7 +44,6 @@
     $: headingLevel = isStatePage ? 'h1' : 'h2';
     $: subheadingLevel = isStatePage ? 'h2' : 'h3';
 
-    $: todays_data = $fires_data?.[state_code + '_today'];
     $: historical_data = $fires_data?.[state_code + '_historical'];
     $: totals_data = historical_data?.total.dates;
     $: districts_data = historical_data?.districts;
@@ -83,40 +78,23 @@
                     {/if}
                 </a>
             </svelte:element>
-            <div role="status" aria-live="polite" class="mb-4 text-sm text-grey">
-                {#if !$fires_data}
-                    Loading fire data…
-                {:else if !historical_data}
-                    Historical fire data is unavailable. Please try refreshing the page.
-                {:else}
-                    {#if latestDate}
-                        Latest observation date {latestDate} (IST).
-                        {#if latestDate < format(getDateIST(), 'yyyy-MM-dd')}
-                            Data is stale. Recent observations are unavailable.
-                        {/if}
-                    {/if}
-                    {#if !selectionComplete}
-                        Data is unavailable or incomplete for the selected dates.
-                    {/if}
-                {/if}
-                {#if $fires_data && !todays_data}
-                    Today's daily file is unavailable. Historical counts are shown where available.
-                {/if}
-            </div>
-            {#if unassignedCount > 0}
-                <p role="note" class="mb-4 text-sm text-brown">
-                    District unassigned: {unassignedCount}. Included in the state total, excluded
-                    from district figures. State assignment follows NRSC.
+            {#if $fires_data?.errors?.[state_code + '_historical']}
+                <p role="status" class="mb-3 text-sm text-grey">
+                    Could not load counts. Please refresh.
                 </p>
-            {:else if historical_data?.unassigned && unassignedCount === null}
-                <p role="note" class="mb-4 text-sm text-grey">
-                    District assignment coverage is unknown for some selected dates.
+            {:else if historical_data && !selectionComplete}
+                <p role="status" class="mb-3 text-sm text-grey">
+                    Some selected dates have no report.
+                </p>
+            {/if}
+            {#if unassignedCount > 0}
+                <p class="mb-3 text-sm text-grey">
+                    {unassignedCount} fires have no district assignment.
                 </p>
             {/if}
             <CumulativeDataTable
                 data={historical_data?.total.dates}
-                last_updated={historical_data?.last_update}
-                {layout}
+                loading={!historical_data && !$fires_data?.errors?.[state_code + '_historical']}
             />
         </div>
         {#if historical_data}
@@ -132,9 +110,11 @@
                     >
                         State and District Fire Counts
                     </svelte:element>
-                    <div class="mb-8 aspect-w-1 aspect-h-1">
+                    <div class="mb-8">
+                        <!-- New districts lack older history. Keep known districts visible;
+                             their missing neighbours remain grey instead of hiding the state. -->
                         <StateMap
-                            complete={selectionComplete}
+                            complete={selectionTotal !== null}
                             {state}
                             totals_list={total_count_list}
                             {district_breakups_list}
@@ -169,6 +149,10 @@
         {/if}
         <IntersectionObserver>
             <FireLocations
+                dataPending={!historical_data && !$fires_data?.errors?.[state_code + '_historical']}
+                latestDate={Object.keys(historical_data?.total.dates ?? {})
+                    .sort()
+                    .at(-1)}
                 headingLevel={subheadingLevel}
                 {state_code}
                 center={states[state].center}

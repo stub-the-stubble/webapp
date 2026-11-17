@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import { scaleLinear, scaleTime } from 'd3-scale';
-    import { axisRight, axisBottom } from 'd3-axis';
+    import { axisLeft, axisBottom } from 'd3-axis';
     import { max, extent, bisector } from 'd3-array';
     import { timeFormat } from 'd3-time-format';
     import { format } from 'd3-format';
@@ -20,15 +20,21 @@
         data_filtered = [],
         data_filtered_object = {};
     let xScale, yMax, yScale;
+    let chartWidth = 600;
     let condenseChart = false;
     let dimensions = {
         width: 600,
         height: height,
-        marginLeft: 15,
-        marginRight: 36,
-        marginTop: 10,
-        marginBottom: 30,
+        marginLeft: 48,
+        marginRight: 24,
+        marginTop: 12,
+        marginBottom: 40,
     };
+    $: if (chartWidth) {
+        dimensions.width = Math.max(240, chartWidth);
+        updateGraph(data_filtered);
+        updateHighlightedDate($highlightedDate);
+    }
 
     onMount(() => {
         // svg dom element is only available after mount
@@ -100,7 +106,7 @@
 
         xScale = scaleTime()
             .domain(extent(data_filtered, (d) => new Date(d[0])))
-            .range([dimensions.marginLeft, dimensions.width - dimensions.marginRight]);
+            .range([dimensions.marginLeft + 10, dimensions.width - dimensions.marginRight]);
 
         yMax = max(data_filtered, (d) => d[1]);
         // Prevent 0 tick to show up in the middle of y axis and add two extra ticks if all values are zero
@@ -152,17 +158,27 @@
         // Add the x-axis and labels
         svgSelection
             .append('g')
-            .attr('transform', `translate(0, ${dimensions.height - dimensions.marginBottom})`)
-            .call(axisBottom(xScale).tickSizeOuter(0).ticks(6));
+            .attr('class', 'date-axis')
+            .attr('transform', `translate(0, ${dimensions.height - dimensions.marginBottom + 8})`)
+            .call(
+                axisBottom(xScale)
+                    .tickSizeOuter(0)
+                    .ticks(Math.max(2, Math.floor(dimensions.width / 100)))
+                    .tickFormat(timeFormat('%d %b')),
+            );
 
         // Add the y-axis and labels
         svgSelection
             .append('g')
-            .attr('transform', `translate(${dimensions.width - dimensions.marginRight}, 0)`)
-            .call(axisRight(yScale).tickSizeOuter(0).ticks(5).tickFormat(format('.0f')))
+            .attr('class', 'count-axis')
+            .attr('transform', `translate(${dimensions.marginLeft}, 0)`)
+            .call(axisLeft(yScale).tickSizeOuter(0).ticks(4).tickFormat(format('.0f')))
             .selectAll('.tick')
             .filter((d) => !Number.isInteger(d))
             .attr('class', 'hidden');
+        svgSelection.selectAll('.domain').attr('stroke', '#d1d5db');
+        svgSelection.selectAll('.tick line').attr('stroke', '#d1d5db');
+        svgSelection.selectAll('.tick text').attr('fill', '#737373').attr('font-size', 11);
     }
 
     function changeHoverState() {
@@ -206,13 +222,13 @@
     }
 </script>
 
-<div class="relative">
-    <div class="md:absolute top-0 left-0">
+<div bind:clientWidth={chartWidth}>
+    <div class="mb-3 min-h-[48px]">
         <h4 class="text-xs text-grey">
             {$highlightedDate ? timeFormat('%d %B %Y')($highlightedDate) : 'Select a date'}
         </h4>
         <h5 class="text-xl text-red font-semibold">
-            {highlightedCount ?? 'Unavailable'}
+            {highlightedCount ?? '—'}
         </h5>
     </div>
     <svg

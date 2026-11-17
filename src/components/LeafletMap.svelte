@@ -100,24 +100,22 @@
     }
 </script>
 
-<div class="mb-2 flex flex-wrap items-center gap-3">
+{#if initError}<p role="alert" class="mb-2 text-sm">The map could not load. Please refresh.</p>{/if}
+{#if tileError}<p role="status" class="mb-2 text-sm text-grey">
+        Some satellite tiles could not load.
+    </p>{/if}
+<div class="relative">
     <button
         type="button"
-        class="rounded border border-light-brown bg-white px-3 py-2 text-sm disabled:opacity-50"
+        class="absolute top-3 right-3 z-[1000] rounded bg-white px-3 py-2 text-sm shadow disabled:opacity-50"
         disabled={!ready || !locations_data?.length}
+        aria-label="Fit all fire locations"
         aria-controls={`map-${state_code}`}
-        on:click={showAllFires}>Show all fires</button
+        on:click={showAllFires}>Fit map</button
     >
-    <p class="text-xs text-grey">
-        Zoom is preserved when changing periods. Show all fires resets the view.
-    </p>
+    <div
+        id={`map-${state_code}`}
+        class="w-full rounded min-h-[320px] h-[420px] md:h-[500px]"
+        bind:this={mapElement}
+    />
 </div>
-{#if initError}<p role="alert">The map could not load. Please refresh to retry.</p>{/if}
-{#if tileError}<p role="status" class="text-sm text-grey">
-        Some background tiles could not load. Fire detections are shown independently.
-    </p>{/if}
-<div
-    id={`map-${state_code}`}
-    class="w-full rounded min-h-[320px] h-[420px] md:h-[500px]"
-    bind:this={mapElement}
-/>

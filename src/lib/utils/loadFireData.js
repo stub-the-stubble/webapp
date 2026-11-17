@@ -29,6 +29,39 @@ export function validPayload(data, historical) {
             )
         );
     }
+    if (data.source?.series === 'iari-creams-paddy-v1') {
+        // Official totals and displayed points must come from the same accepted
+        // records. Keep the looser legacy schema below for older NRSC snapshots.
+        if (!Array.isArray(data.locations) || data.total !== data.locations.length) return false;
+        const ids = new Set();
+        const counts = {};
+        for (const point of data.locations) {
+            if (
+                !isObject(point) ||
+                typeof point.event_id !== 'string' ||
+                !point.event_id ||
+                ids.has(point.event_id)
+            )
+                return false;
+            if (
+                !Number.isFinite(point.lat) ||
+                point.lat < -90 ||
+                point.lat > 90 ||
+                !Number.isFinite(point.lon) ||
+                point.lon < -180 ||
+                point.lon > 180 ||
+                !Object.hasOwn(data.districts, point.district)
+            )
+                return false;
+            ids.add(point.event_id);
+            counts[point.district] = (counts[point.district] ?? 0) + 1;
+        }
+        if (
+            data.unassigned_total !== 0 ||
+            Object.entries(data.districts).some(([name, count]) => (counts[name] ?? 0) !== count)
+        )
+            return false;
+    }
     return (
         isCount(data.total) &&
         (data.unassigned_total === undefined ||
@@ -44,48 +77,60 @@ export function validPayload(data, historical) {
     );
 }
 
-export async function loadFireData(fetcher, signal) {
+export async function loadFireData(fetcher, signal, onUpdate) {
     // Fetch each state/history independently: a missing current-day file must not
     // hide historical charts or the other state's available observations.
     const date = getDateISO();
     const errors = {};
+    const settled = {};
     const entries = await Promise.all(
-        ['PB_today', 'PB_historical', 'HR_today', 'HR_historical'].map(async (key) => {
-            const [state, kind] = key.split('_');
-            const historical = kind === 'historical';
-            const controller = new AbortController();
-            // Bound each request and also cancel it when the owning component unmounts.
-            const abort = () => controller.abort();
-            signal?.addEventListener('abort', abort, { once: true });
-            if (signal?.aborted) controller.abort();
-            const timeout = setTimeout(abort, 12000);
-            try {
-                const response = await fetcher(
-                    `${baseURL}/${state}/${historical ? 'historical_data' : date}.json`,
-                    // Refresh dashboard must revalidate summaries as well as map files.
-                    { signal: controller.signal, cache: 'no-cache' },
-                );
-                if (!response.ok) throw new Error(response.status === 404 ? 'missing' : 'request');
-                if (
-                    !response.headers
-                        .get('content-type')
-                        ?.toLowerCase()
-                        .includes('application/json')
-                )
-                    throw new Error('format');
-                const data = await response.json();
-                if (!validPayload(data, historical)) throw new Error('schema');
-                return [key, data];
-            } catch (error) {
-                errors[key] = ['missing', 'request', 'format', 'schema'].includes(error.message)
-                    ? error.message
-                    : 'request';
-                return [key, null];
-            } finally {
-                clearTimeout(timeout);
-                signal?.removeEventListener('abort', abort);
-            }
-        }),
+        ['PB_today', 'PB_historical', 'HR_today', 'HR_historical']
+            .map(async (key) => {
+                const [state, kind] = key.split('_');
+                const historical = kind === 'historical';
+                const controller = new AbortController();
+                // Bound each request and also cancel it when the owning component unmounts.
+                const abort = () => controller.abort();
+                signal?.addEventListener('abort', abort, { once: true });
+                if (signal?.aborted) controller.abort();
+                const timeout = setTimeout(abort, 12000);
+                try {
+                    const response = await fetcher(
+                        `${baseURL}/${state}/${historical ? 'historical_data' : date}.json`,
+                        // Refresh dashboard must revalidate summaries as well as map files.
+                        { signal: controller.signal, cache: 'no-cache' },
+                    );
+                    if (!response.ok)
+                        throw new Error(response.status === 404 ? 'missing' : 'request');
+                    if (
+                        !response.headers
+                            .get('content-type')
+                            ?.toLowerCase()
+                            .includes('application/json')
+                    )
+                        throw new Error('format');
+                    const data = await response.json();
+                    if (!validPayload(data, historical)) throw new Error('schema');
+                    return [key, data];
+                } catch (error) {
+                    errors[key] = ['missing', 'request', 'format', 'schema'].includes(error.message)
+                        ? error.message
+                        : 'request';
+                    return [key, null];
+                } finally {
+                    clearTimeout(timeout);
+                    signal?.removeEventListener('abort', abort);
+                }
+            })
+            .map((request) =>
+                request.then(([key, data]) => {
+                    settled[key] = data;
+                    // Render each history immediately; a slow/missing daily file must
+                    // not keep already validated summary numbers behind a loading screen.
+                    if (!signal?.aborted) onUpdate?.({ ...settled, errors: { ...errors } });
+                    return [key, data];
+                }),
+            ),
     );
     return { ...Object.fromEntries(entries), errors };
 }
