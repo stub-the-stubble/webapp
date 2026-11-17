@@ -10,17 +10,7 @@ documented LGD-derived Hansi district split.
 These outlines only clip the optional display overlay. They do not reclassify
 IARI fire counts and are not cadastral boundaries.
 
-The overlay is Copernicus GWIS's public WMS layer `nrt.ba`, requested for the
-fire-location filter's inclusive date range. GWIS derives estimated perimeters
-from MODIS/VIIRS active-fire detections. It is not the delayed, reflectance-based
-MODIS MCD64A1 burned-area product, Sentinel-2 burn-scar classification, or a
-confirmed map of stubble burning. GWIS renders overview symbols at smaller
-scales and estimated polygons when zoomed in. Missing shading is not proof of
-no burning. Its values never enter the IARI count summaries.
-
-Source and methodology: https://gwis.jrc.ec.europa.eu/about-gwis/technical-background/burnt-areas
-Service: https://maps.effis.emergency.copernicus.eu/gwis
-Reuse terms: https://gwis.jrc.ec.europa.eu/about-gwis/data-license
-Attribution: European Union / Copernicus GWIS. The displayed layer is clipped
-to the selected state and displayed at 70% opacity; underlying estimates are
-otherwise unchanged. No service key is required or bundled.
+The previous active-fire-derived perimeter overlay has been removed. These
+masks are retained for clipping the Sentinel-2 imagery analysis to Punjab and
+Haryana. A burn-scar layer must carry its actual observation dates and coverage;
+missing or cloud-covered imagery must never be labelled as unburned land.

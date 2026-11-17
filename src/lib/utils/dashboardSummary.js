@@ -36,3 +36,26 @@ export function summaryPeriods(data, selectedDate) {
 export function reportedDate(value) {
     return value ? parseISO(value) : null;
 }
+
+export function dashboardPresetRange(preset, latestDate, today) {
+    const reported = reportedDate(latestDate);
+    const through = reported && reported <= today ? reported : today;
+    switch (preset) {
+        case 'latest':
+            return { start: reported, end: null };
+        case 'today':
+            return { start: today, end: null };
+        case 'yesterday':
+            return { start: subDays(today, 1), end: null };
+        case 'month': {
+            const start = startOfMonth(today);
+            return { start, end: through >= start ? through : today };
+        }
+        case 'thirty_days':
+            return { start: subDays(through, 29), end: through };
+        case 'all_time':
+            return { start: new Date(2021, 8, 3), end: through };
+        default:
+            throw new RangeError('Unknown dashboard date preset');
+    }
+}
