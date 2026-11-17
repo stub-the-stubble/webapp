@@ -1,27 +1,14 @@
 <script>
     import { StateSummary } from '$components';
-    import { fires_data } from '../stores.js';
     import { site } from '$lib/data/site_info.js';
     import logoIcon from '$lib/assets/logo/stub_the_stubble_icon.svg';
-
-
-
-    let last_updated;
-
-    $: if ($fires_data) {
-        last_updated = $fires_data.PB_today?.last_update;
-    }
 </script>
-
-
 
 <svelte:head>
     <title>
         {site.name}
     </title>
 </svelte:head>
-
-
 
 <div class="container my-12">
     <div class="w-full xl:w-5/6 mx-auto">
@@ -41,12 +28,6 @@
                 stubble burning in India.
             </h2>
         </div>
-        <p class="italic text-sm transition-colors duration-300 {last_updated ? 'text-grey' : 'text-transparent'}">
-            * The current Rabi season started on 15th April 2024. New data is added to the system as soon as it is available to us. Last updated at
-            {#if last_updated}
-                <span>{last_updated}</span>.
-            {/if}
-        </p>
         <div class="md:grid md:grid-cols-2 md:gap-20">
             <StateSummary state="punjab" layout="narrow" />
             <StateSummary state="haryana" layout="narrow" />

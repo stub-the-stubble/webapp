@@ -1,59 +1,59 @@
 <script>
     import { CumulativeDataTable, FireCountChart } from '$components';
     import { states } from '$lib/data/site_info.js';
-    import { fires_data } from '../stores.js';
-    import { simpleKebab } from '../lib/utils/stringHelpers.js'
-
-
+    import { fires_data, startDate, endDate, isRangeMode } from '../stores.js';
+    import { simpleKebab } from '../lib/utils/stringHelpers.js';
+    import { summaryPeriods } from '$lib/utils/dashboardSummary.js';
 
     export let state, state_code, historical_data, districts_data;
-    export const periods = [
-        'Today',
-        'Yesterday',
-        'This month',
-        'This season',
-    ];
+    $: periods = summaryPeriods(null, $isRangeMode ? $endDate : $startDate).map((p) => p.label);
 
     $: state_code = states[state].code;
 
     $: if ($fires_data) {
         historical_data = $fires_data[state_code + '_' + 'historical'];
-        districts_data = Object.entries(historical_data.districts);
+        districts_data = Object.entries(historical_data?.districts ?? {});
     }
 </script>
 
-
-
-<h2 class="mb-6 text-2xl font-semibold capitalize">
-    District-Wise Data Breakup
-</h2>
+<h2 class="mb-6 text-2xl font-semibold capitalize">District-Wise Data Breakup</h2>
 <div class="mb-12 last:mb-0">
-    {#if $fires_data }
-        <div class="hidden md:flex md:justify-between md:items-center md:gap-4 px-2 md:border-b md:border-dashed md:border-lightish-grey bg-lightest-grey/90 backdrop-blur-sm z-10">
-            <div class="basis-1/6 flex-none"></div>
+    {#if historical_data}
+        <div
+            class="hidden md:flex md:justify-between md:items-center md:gap-4 px-2 md:border-b md:border-dashed md:border-lightish-grey bg-lightest-grey/90 backdrop-blur-sm z-10"
+        >
+            <div class="basis-1/6 flex-none" />
             <div class="md:basis-2/5 md:flex-none flex">
                 {#each periods as period}
-                    <div class="basis-1/4 w-1/4 flex-none flex justify-center items-center px-1 py-4 text-center capitalize border-l last:border-r border-dashed border-lightish-grey">
+                    <div
+                        class="basis-1/4 w-1/4 flex-none flex justify-center items-center px-1 py-4 text-center capitalize border-l last:border-r border-dashed border-lightish-grey"
+                    >
                         <span class="font-normal break-words">
                             {period}
                         </span>
                     </div>
                 {/each}
             </div>
-            <div class="basis-2/5 flex-none"></div>
+            <div class="basis-2/5 flex-none" />
         </div>
-        {#each districts_data as district }
-            <div id={simpleKebab(district[0])} class="flex flex-col md:flex-row md:justify-between md:gap-4 -mt-2 md:mt-0 -mx-2 md:mx-0 mb-8 md:mb-0 last:mb-0 pt-2 md:pt-0 px-2 md:px-2 rounded md:rounded-none md:border-b md:last:border-none md:border-dashed md:border-lightish-grey transition-colors duration-300">
+        {#each districts_data as district}
+            <div
+                id={simpleKebab(district[0])}
+                class="flex flex-col md:flex-row md:justify-between md:gap-4 -mt-2 md:mt-0 -mx-2 md:mx-0 mb-8 md:mb-0 last:mb-0 pt-2 md:pt-0 px-2 md:px-2 rounded md:rounded-none md:border-b md:last:border-none md:border-dashed md:border-lightish-grey transition-colors duration-300"
+            >
                 <h4 class="md:basis-1/6 md:flex-none md:flex md:items-center mb-2 md:mb-0">
                     <span class="md:ml-4 text-lg md:text-base font-semibold break-all">
                         {district[0]}
                     </span>
                 </h4>
                 <div class="md:basis-2/5 md:flex-none">
-                    <CumulativeDataTable data={historical_data?.districts[district[0]].dates} style="minimal" />
+                    <CumulativeDataTable
+                        data={historical_data?.districts[district[0]].dates}
+                        style="minimal"
+                    />
                 </div>
                 <div class="md:basis-2/5 md:flex-none pt-4 pb-2">
-                    <FireCountChart data={district[1].dates} height=200 />
+                    <FireCountChart data={district[1].dates} height="200" />
                 </div>
             </div>
         {/each}
