@@ -210,11 +210,6 @@
                     </DropdownMenu.RadioGroup>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
-            <button
-                class="text-sm text-grey hover:text-brown self-start px-2 py-2"
-                on:click={() => window.location.reload()}>Refresh</button
-            >
-
             {#if showCustomRangePicker}
                 <div class="flex flex-wrap" in:fade>
                     <Popover.Root openFocus>
