@@ -86,7 +86,9 @@
                 </p>
             {:else if historical_data && !selectionComplete}
                 <p role="status" class="mb-3 text-sm text-grey">
-                    {$isRangeMode
+                    {$fires_data?.pending?.[state_code + '_historical']
+                        ? 'Loading older observations…'
+                        : $isRangeMode
                         ? 'Some dates are missing; shown totals are partial.'
                         : 'No report for this date.'}
                 </p>
@@ -98,7 +100,7 @@
             {/if}
             <CumulativeDataTable
                 data={historical_data?.total.dates}
-                loading={!historical_data && !$fires_data?.errors?.[state_code + '_historical']}
+                loading={Boolean($fires_data?.pending?.[state_code + '_historical'])}
             />
         </div>
         {#if historical_data}

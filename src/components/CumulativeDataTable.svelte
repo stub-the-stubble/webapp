@@ -27,15 +27,16 @@
             </div>
             <div
                 class="px-1 py-3 font-semibold tabular-nums"
-                title={loading
+                title={cell.value !== null
+                    ? undefined
+                    : loading
                     ? 'Loading data'
-                    : cell.value === null
-                    ? 'Not reported for this period'
-                    : undefined}
+                    : 'Not reported for this period'}
             >
-                {#if loading}<span class="animate-pulse" aria-label="Loading data">…</span>
+                {#if cell.value !== null}{cell.value.toLocaleString()}
+                {:else if loading}<span class="animate-pulse" aria-label="Loading data">…</span>
                 {:else if cell.value === null}<span aria-label="Not reported">—</span>
-                {:else}{cell.value.toLocaleString()}{/if}
+                {/if}
             </div>
         </div>
     {/each}

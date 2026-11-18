@@ -49,6 +49,7 @@
                 <div class="md:basis-2/5 md:flex-none">
                     <CumulativeDataTable
                         data={historical_data?.districts[district[0]].dates}
+                        loading={Boolean($fires_data?.pending?.[state_code + '_historical'])}
                         style="minimal"
                     />
                 </div>
