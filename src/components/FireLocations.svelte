@@ -153,5 +153,5 @@
             <p class="mt-1">{result.missing.join(', ')}</p>
         </details>
     {/if}
-    <LeafletMap locations_data={result?.locations ?? []} {state_code} {dates} />
+    <LeafletMap locations_data={result?.locations ?? []} {state_code} />
 </section>

@@ -5,11 +5,9 @@
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
     import map_marker from '$lib/assets/icons/fire_map_marker.png';
-    import SentinelBurnLayer from './SentinelBurnLayer.svelte';
     import extents from '$lib/data/stateExtents.json';
 
     export let locations_data, state_code;
-    export let dates = [];
     function showState() {
         if (!map) return;
         stateView = true;
@@ -54,9 +52,6 @@
                         renderer: L.svg(),
                     },
                 }).addTo(map);
-                map.createPane('sentinelBurnScars');
-                map.getPane('sentinelBurnScars').style.zIndex = 420;
-                map.getPane('sentinelBurnScars').style.pointerEvents = 'none';
                 // Imagery has no baked-in place names. Keep labels in a separate pane
                 // above imagery and below markers so they cannot intercept clicks.
                 const imagery = L.tileLayer(
@@ -149,7 +144,6 @@
 {#if tileError}<p role="status" class="mb-2 text-sm text-grey">
         Some satellite tiles could not load.
     </p>{/if}
-{#if ready}<SentinelBurnLayer {L} {map} {state_code} {dates} />{/if}
 <div class="relative">
     <button
         type="button"
