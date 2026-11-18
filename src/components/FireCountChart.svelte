@@ -15,6 +15,7 @@
     export let data,
         height = 300;
 
+    let visible = false;
     let svg,
         svgSelection,
         highlightedCount,
@@ -42,9 +43,28 @@
         svgSelection = select(svg);
         addEventListeners();
 
-        // we already have data, show it
-        updateGraph(data_filtered);
-        updateHighlightedDate($highlightedDate);
+        const show = () => {
+            visible = true;
+            updateGraph(data_filtered);
+            updateHighlightedDate($highlightedDate);
+        };
+        // State pages contain dozens of district charts. Keep their numbers in
+        // HTML, but defer SVG drawing until a chart approaches the viewport.
+        if (!('IntersectionObserver' in window)) {
+            show();
+            return;
+        }
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries.some((entry) => entry.isIntersecting)) {
+                    observer.disconnect();
+                    show();
+                }
+            },
+            { rootMargin: '400px' },
+        );
+        observer.observe(svg);
+        return () => observer.disconnect();
     });
 
     $: {
@@ -71,9 +91,9 @@
     }
 
     function updateHighlightedDate(highlightedDate) {
-        if (!svgSelection) return;
-
         highlightedCount = data_filtered_object[highlightedDate] ?? null;
+        // The number belongs in static HTML too; only drawing requires the DOM.
+        if (!svgSelection || !visible) return;
         if (highlightedCount === null || !data_filtered.length) {
             svgSelection.selectAll('circle').attr('r', 0);
             return;
@@ -93,7 +113,7 @@
     }
 
     function updateGraph(data_filtered) {
-        if (!svgSelection) return;
+        if (!svgSelection || !visible) return;
 
         svgSelection.selectChildren().remove();
         if (!data_filtered?.length) {

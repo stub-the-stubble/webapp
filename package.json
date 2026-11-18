@@ -5,7 +5,7 @@
     "scripts": {
         "start": "npm run dev",
         "dev": "vite dev",
-        "build": "vite build",
+        "build": "node scripts/prepare-dashboard.mjs && vite build",
         "preview": "vite build && vite preview --open --host",
         "lint": "prettier --plugin-search-dir . --check . && eslint .",
         "format": "prettier --plugin-search-dir . --write ."
@@ -13,7 +13,7 @@
     "devDependencies": {
         "@sveltejs/adapter-auto": "^3.2.0",
         "@sveltejs/adapter-static": "^3.0.1",
-        "@sveltejs/kit": "^2.5.6",
+        "@sveltejs/kit": "2.5.6",
         "@sveltejs/vite-plugin-svelte": "^3.1.0",
         "@tailwindcss/aspect-ratio": "^0.4.2",
         "autoprefixer": "^10.4.16",
