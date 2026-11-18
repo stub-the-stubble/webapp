@@ -71,9 +71,9 @@
     }
 
     function updateHighlightedDate(highlightedDate) {
-        if (!svgSelection) return;
-
         highlightedCount = data_filtered_object[highlightedDate] ?? null;
+        // The number belongs in static HTML too; only drawing requires the DOM.
+        if (!svgSelection) return;
         if (highlightedCount === null || !data_filtered.length) {
             svgSelection.selectAll('circle').attr('r', 0);
             return;

@@ -1,5 +1,4 @@
 <script>
-    import { onMount } from 'svelte';
     import { fade, slide } from 'svelte/transition';
     import { CalendarIcon, ChevronDown } from 'lucide-svelte';
     import CrossIcon from '$lib/assets/icons/cross.svg?raw';
@@ -30,10 +29,6 @@
     const formatter = timeFormat('%d %b %Y');
     const tz = 'Asia/Kolkata';
     const todayDate = startOfDay(getDateIST());
-    let mounted = false;
-    onMount(() => {
-        mounted = true;
-    });
 
     let sd, ed, dateString;
 
@@ -136,9 +131,9 @@
                 </Toggle>
             </div>
             <span class="text-xl md:text-2xl text-brown font-bold">
-                {mounted ? dateString : 'Loading dates…'}
+                {dateString}
             </span>
-            {#if mounted && sd && preset !== 'custom'}
+            {#if sd && preset !== 'custom'}
                 <span class="align-text-bottom md:text-lg text-grey whitespace-nowrap">
                     ({presets[preset]})
                 </span>

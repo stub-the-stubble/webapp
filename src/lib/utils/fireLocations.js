@@ -113,6 +113,10 @@ export async function loadLocations(fetcher, state, dates, signal, cache = new M
     }
     await Promise.all(Array.from({ length: Math.min(4, dates.length) }, worker));
     if (signal.aborted) throw new DOMException('Cancelled', 'AbortError');
+    return summarizeLocations(results, dates);
+}
+
+export function summarizeLocations(results, dates) {
     return {
         sources: [
             ...new Set(results.filter(Boolean).map((data) => data.source?.series ?? 'nrsc-legacy')),

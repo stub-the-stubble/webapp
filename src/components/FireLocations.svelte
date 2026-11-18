@@ -7,12 +7,12 @@
         locationViewDates,
         selectedLocationDates,
         loadLocations,
+        summarizeLocations,
     } from '$lib/utils/fireLocations.js';
     import { startDate, endDate, isRangeMode } from '../stores.js';
+    import snapshot from '$lib/data/dashboardSnapshot.json';
     import { getMonitoringSeason } from '$lib/utils/season.js';
     export let state_code,
-        center,
-        layout,
         latestDate,
         dataPending = false,
         headingLevel = 'h2';
@@ -33,6 +33,12 @@
             ? selectedLocationDates($startDate, $endDate, $isRangeMode)
             : locationViewDates(period, latestDate, getDateIST());
     $: season = getMonitoringSeason(latestDate ? parseISO(latestDate) : getDateIST());
+    $: initialFiles = dates.map((date) => snapshot.locations[`${state_code}/${date}`]);
+    $: initialLocations =
+        initialFiles.length && initialFiles.every(Boolean)
+            ? summarizeLocations(initialFiles, dates)
+            : null;
+    $: if (!mounted) result = initialLocations;
     $: rangeLabel = dates.length
         ? dates.length === 1
             ? format(parseISO(dates[0]), 'd MMM yyyy')
@@ -45,8 +51,8 @@
         mounted = true;
     });
     onDestroy(() => request?.abort());
-    $: if (mounted) refresh(dates, state_code);
-    async function refresh(requestedDates, state) {
+    $: if (mounted) refresh(dates, state_code, initialLocations);
+    async function refresh(requestedDates, state, savedLocations) {
         request?.abort();
         if (!requestedDates.length) {
             request = null;
@@ -56,14 +62,25 @@
         }
         const current = new AbortController();
         request = current;
-        loading = true;
-        result = null;
+        loading = !savedLocations;
+        result = savedLocations;
         try {
             const loaded = await loadLocations(fetch, state, requestedDates, current.signal, cache);
-            if (request === current) result = loaded;
+            if (request === current)
+                result = loaded.availableDays
+                    ? loaded
+                    : savedLocations
+                    ? { ...savedLocations, saved: true }
+                    : loaded;
         } catch (error) {
             if (error.name !== 'AbortError' && request === current)
-                result = { locations: [], missing: requestedDates, availableDays: 0 };
+                result = savedLocations
+                    ? { ...savedLocations, saved: true }
+                    : {
+                          locations: [],
+                          missing: requestedDates,
+                          availableDays: 0,
+                      };
         } finally {
             if (request === current) loading = false;
         }
@@ -97,6 +114,7 @@
                 >{result.locations.length.toLocaleString()} fires</span
             >
             · {rangeLabel}
+            {#if result.saved} · Saved locations{/if}
             {#if result.missing.length} · {result.availableDays}/{dates.length} days reported{/if}
         {:else if !dates.length && $startDate != null}Choose a period of one year or less to view
             locations.
@@ -108,5 +126,5 @@
             <p class="mt-1">{result.missing.join(', ')}</p>
         </details>
     {/if}
-    <LeafletMap locations_data={result?.locations ?? []} {state_code} {center} {layout} />
+    <LeafletMap locations_data={result?.locations ?? []} {state_code} {dates} />
 </section>

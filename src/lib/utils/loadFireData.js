@@ -8,24 +8,30 @@ const validDate = (value) =>
     /^\d{4}-\d{2}-\d{2}$/.test(value) &&
     !Number.isNaN(parseISO(value).getTime()) &&
     format(parseISO(value), 'yyyy-MM-dd') === value;
-const validSeries = (value) =>
+const validSeries = (value, dates) =>
     isObject(value) &&
-    Object.entries(value).every(([date, count]) => validDate(date) && isCount(count));
+    Object.entries(value).every(([date, count]) => {
+        // Every district repeats the same calendar keys. Parse each date once
+        // per payload instead of tens of thousands of times on the main thread.
+        if (!dates.has(date)) dates.set(date, validDate(date));
+        return dates.get(date) && isCount(count);
+    });
 
 export function validPayload(data, historical) {
     if (!isObject(data) || !isObject(data.districts)) return false;
     if (historical) {
+        const dates = new Map();
         return (
             isObject(data.total) &&
-            validSeries(data.total.dates) &&
+            validSeries(data.total.dates, dates) &&
             (data.unassigned === undefined ||
                 (isObject(data.unassigned) &&
-                    validSeries(data.unassigned.dates) &&
+                    validSeries(data.unassigned.dates, dates) &&
                     Object.entries(data.unassigned.dates).every(
                         ([date, count]) => count <= data.total.dates[date],
                     ))) &&
             Object.values(data.districts).every(
-                (district) => isObject(district) && validSeries(district.dates),
+                (district) => isObject(district) && validSeries(district.dates, dates),
             )
         );
     }
@@ -77,14 +83,17 @@ export function validPayload(data, historical) {
     );
 }
 
-export async function loadFireData(fetcher, signal, onUpdate) {
+export async function loadFireData(fetcher, signal, onUpdate, { includeToday = true } = {}) {
     // Fetch each state/history independently: a missing current-day file must not
     // hide historical charts or the other state's available observations.
     const date = getDateISO();
     const errors = {};
     const settled = {};
     const entries = await Promise.all(
-        ['PB_today', 'PB_historical', 'HR_today', 'HR_historical']
+        (includeToday
+            ? ['PB_today', 'PB_historical', 'HR_today', 'HR_historical']
+            : ['PB_historical', 'HR_historical']
+        )
             .map(async (key) => {
                 const [state, kind] = key.split('_');
                 const historical = kind === 'historical';
