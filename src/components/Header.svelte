@@ -57,11 +57,15 @@
     <div class="container pt-4 sticky top-0 bg-lightest-grey/90 z-50 backdrop-blur">
         <div class="w-full xl:w-5/6 mx-auto">
             {#if !$isMenuMinimised || !isDashboard}
-                <nav class="flex justify-between pb-2 border-b border-light-grey" transition:slide>
+                <nav
+                    aria-label="Main navigation"
+                    class="flex flex-wrap justify-between gap-x-4 gap-y-2 pb-2 border-b border-light-grey"
+                    transition:slide
+                >
                     {#if primaryNavItems.length}
                         <ul class="flex">
                             {#each primaryNavItems as item}
-                                <li class="flex-none mr-4 last:mr-0 hidden sm:block first:block">
+                                <li class="flex-none mr-4 last:mr-0">
                                     <a href={item.url} class="hover:text-brown">
                                         {item.text}
                                     </a>

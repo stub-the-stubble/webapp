@@ -29,7 +29,8 @@
         fittingState = false;
     onMount(() => {
         let disposed = false,
-            observer;
+            observer,
+            viewportObserver;
         async function initialize() {
             try {
                 L = await import('leaflet');
@@ -111,11 +112,25 @@
                 if (!disposed) initError = true;
             }
         }
-        initialize();
+        // Satellite tiles and Leaflet are unnecessary for a reader who stays
+        // above the maps. Begin loading shortly before the map enters view.
+        if ('IntersectionObserver' in window) {
+            viewportObserver = new IntersectionObserver(
+                (entries) => {
+                    if (entries.some((entry) => entry.isIntersecting)) {
+                        viewportObserver.disconnect();
+                        initialize();
+                    }
+                },
+                { rootMargin: '400px' },
+            );
+            viewportObserver.observe(mapElement);
+        } else initialize();
         return () => {
             disposed = true;
             ready = false;
             observer?.disconnect();
+            viewportObserver?.disconnect();
             map?.remove();
         };
     });

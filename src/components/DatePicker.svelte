@@ -10,27 +10,32 @@
         isMenuMinimised,
         fires_data,
         hoverOut,
+        calendarDay,
+        datePreset,
     } from '../stores.js';
     import { timeFormat } from 'd3-time-format';
-    import { startOfDay, getTime } from 'date-fns';
-    import { cn, getDateIST } from '$lib/utils';
+    import { parseISO, getTime } from 'date-fns';
+    import { cn } from '$lib/utils';
     import { latestReportedDate, dashboardPresetRange } from '$lib/utils/dashboardSummary.js';
     import { Button } from './external/button';
     import { RangeCalendar } from './external/range-calendar';
     import { Toggle } from './external/toggle';
-    import { today, CalendarDate, getLocalTimeZone } from '@internationalized/date';
+    import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
 
     import * as Popover from './external/popover';
     import * as DropdownMenu from './external/dropdown-menu';
 
     let showCustomRangePicker = false;
-    let preset = 'latest';
+    let preset = $datePreset;
+    $: $datePreset = preset;
     $: latest = latestReportedDate($fires_data);
     const formatter = timeFormat('%d %b %Y');
-    const tz = 'Asia/Kolkata';
-    const todayDate = startOfDay(getDateIST());
+    $: todayDate = parseISO($calendarDay);
+    $: maxCalendarDate = new CalendarDate(...$calendarDay.split('-').map(Number));
 
-    let sd, ed, dateString;
+    let sd = $startDate == null ? null : new Date($startDate),
+        ed = $isRangeMode ? new Date($endDate) : null,
+        dateString;
 
     const presets = {
         latest: 'Latest reported',
@@ -43,15 +48,19 @@
     };
 
     //These values use CalendarDate from @internationalized/date library
+    const calendar = (date) =>
+        date
+            ? new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate())
+            : undefined;
     let value = {
-        start: undefined,
-        end: undefined,
+        start: preset === 'custom' ? calendar(sd) : undefined,
+        end: preset === 'custom' ? calendar(ed) : undefined,
     };
 
-    let singleValue = undefined;
+    let singleValue = preset === 'custom' && !ed ? calendar(sd) : undefined;
 
     $: {
-        updateSelection(preset, latest);
+        updateSelection(preset, latest, todayDate);
     }
 
     $: {
@@ -65,13 +74,21 @@
         updateDateString();
     }
 
-    function updateSelection(selected, latestDate) {
+    function updateSelection(selected, latestDate, currentDay) {
         $hoverOut = true;
         if (selected === 'custom') {
+            if (value?.start && value?.end) {
+                sd = value.start.toDate(getLocalTimeZone());
+                ed = value.end.toDate(getLocalTimeZone());
+            } else if (singleValue) {
+                sd = singleValue.toDate(getLocalTimeZone());
+                ed = null;
+            }
             showCustomRangePicker = true;
+            updateDateString();
             return;
         }
-        const range = dashboardPresetRange(selected || 'today', latestDate, todayDate);
+        const range = dashboardPresetRange(selected || 'today', latestDate, currentDay);
         sd = range.start;
         ed = range.end;
         showCustomRangePicker = false;
@@ -102,6 +119,7 @@
             $startDate = getTime(sd);
             $highlightedDate = getTime(sd);
             $isRangeMode = false;
+            $endDate = null;
         }
     }
 </script>
@@ -210,7 +228,7 @@
                                 numberOfMonths={1}
                                 placeholder={value?.start}
                                 minValue={new CalendarDate(2021, 9, 3)}
-                                maxValue={today(tz)}
+                                maxValue={maxCalendarDate}
                                 pagedNavigation
                             />
                         </Popover.Content>
