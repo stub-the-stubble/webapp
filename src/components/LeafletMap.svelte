@@ -5,13 +5,17 @@
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
     import map_marker from '$lib/assets/icons/fire_map_marker.png';
+    import SentinelBurnLayer from './SentinelBurnLayer.svelte';
+    import extents from '$lib/data/stateExtents.json';
 
-    export let locations_data, state_code, center, layout;
-    let fitted = false;
-    function showAllFires() {
-        if (!ready || !locations_data?.length) return;
-        map.fitBounds(markers.getBounds(), { padding: [30, 30], maxZoom: 12 });
-        fitted = true;
+    export let locations_data, state_code;
+    export let dates = [];
+    function showState() {
+        if (!map) return;
+        stateView = true;
+        fittingState = true;
+        map.fitBounds(extents[state_code].bounds, { padding: [24, 24], animate: false });
+        fittingState = false;
     }
     let mapElement,
         map,
@@ -20,7 +24,9 @@
         icon,
         ready = false,
         tileError = false,
-        initError = false;
+        initError = false,
+        stateView = true,
+        fittingState = false;
     onMount(() => {
         let disposed = false,
             observer;
@@ -29,8 +35,27 @@
                 L = await import('leaflet');
                 const cluster = await import('leaflet.markercluster/dist/leaflet.markercluster.js');
                 if (disposed) return;
-                map = L.map(mapElement, { preferCanvas: true, minZoom: 5, maxZoom: 19 });
-                map.setView(center, layout === 'narrow' ? 7 : 8);
+                map = L.map(mapElement, {
+                    preferCanvas: true,
+                    minZoom: 5,
+                    maxZoom: 19,
+                    zoomSnap: 0.25,
+                });
+                showState();
+                L.geoJSON(extents[state_code].outline, {
+                    interactive: false,
+                    style: {
+                        color: '#ffffff',
+                        weight: 2,
+                        opacity: 0.85,
+                        fill: false,
+                        className: 'state-outline',
+                        renderer: L.svg(),
+                    },
+                }).addTo(map);
+                map.createPane('sentinelBurnScars');
+                map.getPane('sentinelBurnScars').style.zIndex = 420;
+                map.getPane('sentinelBurnScars').style.pointerEvents = 'none';
                 // Imagery has no baked-in place names. Keep labels in a separate pane
                 // above imagery and below markers so they cannot intercept clicks.
                 const imagery = L.tileLayer(
@@ -70,7 +95,16 @@
                 // queue adding obsolete markers after the next selection has loaded.
                 markers = new cluster.MarkerClusterGroup({ showCoverageOnHover: false });
                 map.addLayer(markers);
-                observer = new ResizeObserver(() => map.invalidateSize());
+                // Keep the whole state visible across responsive layout changes.
+                // Once someone explores a field, resizing preserves that view.
+                map.on('dragstart', () => (stateView = false));
+                map.on('zoomstart', () => {
+                    if (!fittingState) stateView = false;
+                });
+                observer = new ResizeObserver(() => {
+                    map.invalidateSize({ pan: false });
+                    if (stateView) showState();
+                });
                 observer.observe(mapElement);
                 ready = true;
             } catch {
@@ -92,11 +126,7 @@
                 L.marker([point.lat, point.lon], { icon }).bindPopup(firePopupHtml(point)),
             ),
         );
-        // Start over the observed fires, not a hard-coded centre in neighbouring
-        // hills. Later filter changes preserve the user's chosen farm-level zoom.
-        if (!fitted && locations_data.length) {
-            showAllFires();
-        }
+        // Observations never change the initial statewide view or a user's zoom.
     }
 </script>
 
@@ -104,14 +134,15 @@
 {#if tileError}<p role="status" class="mb-2 text-sm text-grey">
         Some satellite tiles could not load.
     </p>{/if}
+{#if ready}<SentinelBurnLayer {L} {map} {state_code} {dates} />{/if}
 <div class="relative">
     <button
         type="button"
         class="absolute top-3 right-3 z-[1000] rounded bg-white px-3 py-2 text-sm shadow disabled:opacity-50"
-        disabled={!ready || !locations_data?.length}
-        aria-label="Fit all fire locations"
+        disabled={!ready}
+        aria-label={`Show all of ${state_code === 'PB' ? 'Punjab' : 'Haryana'}`}
         aria-controls={`map-${state_code}`}
-        on:click={showAllFires}>Fit map</button
+        on:click={showState}>Show state</button
     >
     <div
         id={`map-${state_code}`}

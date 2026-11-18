@@ -80,7 +80,9 @@
             </svelte:element>
             {#if $fires_data?.errors?.[state_code + '_historical']}
                 <p role="status" class="mb-3 text-sm text-grey">
-                    Could not load counts. Please refresh.
+                    {historical_data
+                        ? 'Update unavailable. Showing saved observations.'
+                        : 'Could not load counts. Please refresh.'}
                 </p>
             {:else if historical_data && !selectionComplete}
                 <p role="status" class="mb-3 text-sm text-grey">
@@ -159,8 +161,6 @@
                     .at(-1)}
                 headingLevel={subheadingLevel}
                 {state_code}
-                center={states[state].center}
-                {layout}
             />
         </IntersectionObserver>
     </div>

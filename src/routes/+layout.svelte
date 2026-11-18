@@ -15,11 +15,21 @@
     // when a visitor first enters a dashboard, including client-side navigation.
     $: if (mounted && isDashboard && !controller) {
         controller = new AbortController();
-        loadFireData(window.fetch.bind(window), controller.signal, (data) => {
-            $fires_data = data;
-        }).then((data) => {
-            if (!controller.signal.aborted) $fires_data = data;
-        });
+        loadFireData(
+            window.fetch.bind(window),
+            controller.signal,
+            (data) => {
+                // Keep the dated first-render counts while refreshing. One state's
+                // response must not erase the other's already rendered snapshot.
+                const updated = { ...$fires_data, errors: data.errors };
+                for (const state of ['PB', 'HR']) {
+                    const key = `${state}_historical`;
+                    if (data[key]) updated[key] = data[key];
+                }
+                $fires_data = updated;
+            },
+            { includeToday: false },
+        );
     }
     onMount(() => {
         mounted = true;
